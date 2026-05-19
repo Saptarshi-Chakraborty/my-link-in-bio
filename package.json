@@ -1,11 +1,17 @@
 {
-  "name": "cloudflare-workers-openapi",
+  "name": "my-link-in-bio",
   "version": "0.0.1",
   "private": true,
+  "workspaces": [
+    "dashboard"
+  ],
   "scripts": {
-    "deploy": "wrangler deploy",
     "dev": "wrangler dev",
     "start": "wrangler dev",
+    "dev:backend": "wrangler dev",
+    "dev:dashboard": "bun run --cwd dashboard dev",
+    "build:dashboard": "bun run --cwd dashboard build",
+    "deploy": "bun run build:dashboard && wrangler deploy",
     "cf-typegen": "wrangler types"
   },
   "dependencies": {

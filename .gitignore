@@ -165,3 +165,9 @@ dist
 .env*
 !.env.example
 .wrangler/
+
+# agent Skills
+.agents/
+
+#examples folder
+.examples/

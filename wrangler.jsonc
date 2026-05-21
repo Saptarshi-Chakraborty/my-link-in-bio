@@ -11,9 +11,12 @@
     "enabled": true,
   },
   "upload_source_maps": false,
-  "compatibility_flags": ["nodejs_compat"],
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
   "assets": {
     "directory": "./dashboard/dist",
+    "binding": "ASSETS"
   },
   /**
    * Smart Placement

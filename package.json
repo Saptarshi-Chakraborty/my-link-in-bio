@@ -6,7 +6,7 @@
     "dashboard"
   ],
   "scripts": {
-    "dev": "wrangler dev",
+    "dev": "concurrently \"bun run dev:backend\" \"bun run dev:dashboard\"",
     "start": "wrangler dev",
     "dev:backend": "wrangler dev",
     "dev:dashboard": "bun run --cwd dashboard dev",
@@ -16,11 +16,14 @@
   },
   "dependencies": {
     "chanfana": "^3.3.0",
+    "drizzle-orm": "^0.45.2",
     "hono": "^4.12.12",
     "zod": "^4.3.6"
   },
   "devDependencies": {
     "@types/node": "^25.9.0",
+    "concurrently": "^9.2.1",
+    "drizzle-kit": "^0.31.10",
     "wrangler": "^4.92.0"
   }
 }

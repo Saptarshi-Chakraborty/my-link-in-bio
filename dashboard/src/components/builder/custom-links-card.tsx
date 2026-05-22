@@ -1,6 +1,9 @@
+import { useState, useMemo } from 'react'
 import { Plus, Info } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardAction, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { DragDropProvider, DragOverlay } from '@dnd-kit/react'
+import { isSortable } from '@dnd-kit/react/sortable'
 import { LinkEditorItem } from './link-editor-item'
 import type { PageElement } from './types'
 
@@ -11,6 +14,7 @@ interface CustomLinksCardProps {
   handleDeleteLink: (id: string) => void
   handleUpdateLink: (id: string, key: string, value: any) => void
   toggleLink: (id: string) => void
+  handleReorderLinks: (fromIndex: number, toIndex: number) => void
 }
 
 export function CustomLinksCard({
@@ -19,8 +23,16 @@ export function CustomLinksCard({
   handleAddElement,
   handleDeleteLink,
   handleUpdateLink,
-  toggleLink
+  toggleLink,
+  handleReorderLinks
 }: CustomLinksCardProps) {
+  const [activeId, setActiveId] = useState<string | null>(null)
+
+  const activeItem = useMemo(
+    () => links.find((item) => item.id === activeId),
+    [links, activeId],
+  )
+
   return (
     <Card>
       <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4">
@@ -68,18 +80,51 @@ export function CustomLinksCard({
           </div>
         )}
 
-        <div className="flex flex-col gap-3">
-          {links.map((item) => (
-            <LinkEditorItem
-              key={item.id}
-              item={item}
-              handleDeleteLink={handleDeleteLink}
-              handleUpdateLink={handleUpdateLink}
-              toggleLink={toggleLink}
-            />
-          ))}
-        </div>
+        <DragDropProvider
+          onDragStart={(event) => {
+            setActiveId(event.operation.source?.id as string)
+          }}
+          onDragEnd={(event) => {
+            setActiveId(null)
+            if (event.canceled) return
+
+            const { source } = event.operation
+            if (isSortable(source)) {
+              const { initialIndex, index } = source
+              if (initialIndex !== index) {
+                handleReorderLinks(initialIndex, index)
+              }
+            }
+          }}
+        >
+          <div className="flex flex-col gap-3">
+            {links.map((item, index) => (
+              <LinkEditorItem
+                key={item.id}
+                item={item}
+                index={index}
+                handleDeleteLink={handleDeleteLink}
+                handleUpdateLink={handleUpdateLink}
+                toggleLink={toggleLink}
+              />
+            ))}
+          </div>
+
+          <DragOverlay>
+            {activeId && activeItem ? (
+              <LinkEditorItem
+                item={activeItem}
+                index={-1}
+                handleDeleteLink={() => {}}
+                handleUpdateLink={() => {}}
+                toggleLink={() => {}}
+                isOverlay
+              />
+            ) : null}
+          </DragOverlay>
+        </DragDropProvider>
       </CardContent>
     </Card>
   )
 }
+

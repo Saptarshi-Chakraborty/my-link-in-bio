@@ -214,6 +214,15 @@ function BuilderPage() {
     )
   }
 
+  const handleReorderLinks = (fromIndex: number, toIndex: number) => {
+    setLinks((prev) => {
+      const updated = [...prev]
+      const [moved] = updated.splice(fromIndex, 1)
+      updated.splice(toIndex, 0, moved)
+      return updated
+    })
+  }
+
   const handleUpdateSocial = (platform: keyof SocialsState, value: string) => {
     setSocials((prev) => ({ ...prev, [platform]: value }))
   }
@@ -350,6 +359,7 @@ function BuilderPage() {
                   handleDeleteLink={handleDeleteLink}
                   handleUpdateLink={handleUpdateLink}
                   toggleLink={toggleLink}
+                  handleReorderLinks={handleReorderLinks}
                 />
               </div>
             </ScrollArea>

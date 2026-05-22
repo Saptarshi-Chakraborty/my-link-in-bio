@@ -19,21 +19,31 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
+import { useSortable } from '@dnd-kit/react/sortable'
 import type { PageElement } from './types'
 
 interface LinkEditorItemProps {
   item: PageElement
+  index: number
   handleDeleteLink: (id: string) => void
   handleUpdateLink: (id: string, key: string, value: any) => void
   toggleLink: (id: string) => void
+  isOverlay?: boolean
 }
 
 export function LinkEditorItem({
   item,
+  index,
   handleDeleteLink,
   handleUpdateLink,
-  toggleLink
+  toggleLink,
+  isOverlay = false
 }: LinkEditorItemProps) {
+  const { ref, handleRef, isDragging } = useSortable({
+    id: item.id,
+    index,
+    disabled: isOverlay,
+  })
   
   // Extract YouTube ID helper for preview thumbnail
   const getYoutubeId = (url: string) => {
@@ -53,12 +63,22 @@ export function LinkEditorItem({
 
   return (
     <div
+      ref={ref}
       className={`group rounded-xl border p-4 transition-all duration-200 bg-white ${
-        item.active ? 'border-zinc-200 shadow-sm' : 'border-zinc-200/55 bg-zinc-50/50 opacity-80'
+        isOverlay
+          ? 'border-zinc-300 shadow-2xl scale-[1.02] pointer-events-none ring-4 ring-indigo-500/10'
+          : isDragging
+          ? 'opacity-40 border-dashed border-zinc-300 bg-zinc-50/50'
+          : item.active
+          ? 'border-zinc-200 shadow-sm'
+          : 'border-zinc-200/55 bg-zinc-50/50 opacity-80'
       }`}
     >
       <div className="mb-3 flex items-start gap-3">
-        <div className="inline-flex h-8 items-center text-zinc-400 cursor-grab">
+        <div
+          ref={handleRef}
+          className="inline-flex h-8 items-center text-zinc-400 cursor-grab active:cursor-grabbing hover:text-zinc-600 p-1 -m-1 rounded transition-colors"
+        >
           <GripVertical size={16} />
         </div>
         
@@ -272,7 +292,7 @@ export function LinkEditorItem({
                     }`}
                     onClick={() => handleUpdateLink(item.id, 'style.shape', shape)}
                   >
-                    {shape === 'rectangle' ? 'Rect' : shape === 'rounded' ? 'Rnd' : 'Pill'}
+                    {shape === 'rectangle' ? 'Rect' : shape === 'rounded' ? 'Round' : 'Pill'}
                   </button>
                 ))}
               </div>

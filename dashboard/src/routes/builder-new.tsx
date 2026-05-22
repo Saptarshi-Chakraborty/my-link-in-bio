@@ -26,8 +26,7 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 // Extracted Modular Components & Types
 import type { PageElement, SocialsState, SocialsActiveState } from '@/components/builder/types'
 import { MobileMockup } from '@/components/builder/mobile-mockup'
-import { ProfileDetailsCard, avatarPresets } from '@/components/builder/profile-details-card'
-import { SocialAccountsCard } from '@/components/builder/social-accounts-card'
+import { ProfileHeaderCard, avatarPresets } from '@/components/builder/profile-header-card'
 import { CustomLinksCard } from '@/components/builder/custom-links-card'
 
 const defaultLinks: PageElement[] = [
@@ -332,8 +331,8 @@ function BuilderPage() {
                   <p className="text-sm text-muted-foreground">Design your public page, add custom links, and check your performance.</p>
                 </div>
 
-                {/* Card 1: Profile Details */}
-                <ProfileDetailsCard
+                {/* Card 1: Profile Header & Socials (Read-only + Slide Edit) */}
+                <ProfileHeaderCard
                   profileName={profileName}
                   setProfileName={setProfileName}
                   profileBio={profileBio}
@@ -341,10 +340,6 @@ function BuilderPage() {
                   profileAvatar={profileAvatar}
                   setProfileAvatar={setProfileAvatar}
                   activeAvatarCss={activeAvatarCss}
-                />
-
-                {/* Card 2: Social Accounts */}
-                <SocialAccountsCard
                   socials={socials}
                   socialsActive={socialsActive}
                   handleUpdateSocial={handleUpdateSocial}

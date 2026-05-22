@@ -1,6 +1,7 @@
-import { Share2, ExternalLink } from 'lucide-react'
+import { Share2 } from 'lucide-react'
 import { GithubIcon, LinkedinIcon, FacebookIcon, InstagramIcon } from './icons'
-import type { LinkItem, SocialsState, SocialsActiveState } from './types'
+import type { PageElement, SocialsState, SocialsActiveState } from './types'
+import { ElementRenderer } from './element-renderer'
 
 interface MobileMockupProps {
   profileName: string
@@ -8,7 +9,7 @@ interface MobileMockupProps {
   activeAvatarCss: string
   socials: SocialsState
   socialsActive: SocialsActiveState
-  activeLinks: LinkItem[]
+  activeLinks: PageElement[]
   selectedTheme: string
 }
 
@@ -80,29 +81,13 @@ export function MobileMockup({
         </div>
 
         {/* Active custom link list buttons inside mockup */}
-        <div className="w-full space-y-2 flex-1">
+        <div className="w-full space-y-2.5 flex-1">
           {activeLinks.map((item) => (
-            <a
-              key={item.id}
-              href={item.url}
-              target="_blank"
-              rel="noreferrer"
-              className="flex w-full items-center justify-between rounded-xl border px-3 py-2 text-left text-[10px] font-bold tracking-wide transition duration-150 select-none shadow-sm active:scale-[0.98]"
-              style={{
-                backgroundColor: 'var(--phone-btn-bg)',
-                borderColor: 'var(--phone-btn-border)',
-                color: 'var(--phone-btn-text)',
-                backdropFilter: 'var(--phone-backdrop-blur)',
-                WebkitBackdropFilter: 'var(--phone-backdrop-blur)'
-              }}
-            >
-              <span className="truncate flex-1 pr-2">{item.title}</span>
-              <ExternalLink size={10} className="opacity-60 shrink-0" />
-            </a>
+            <ElementRenderer key={item.id} element={item} />
           ))}
           {activeLinks.length === 0 && (
             <div className="py-6 text-center text-[9px] opacity-40 font-semibold italic">
-              No links to display
+              No elements to display
             </div>
           )}
         </div>

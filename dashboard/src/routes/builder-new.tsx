@@ -21,36 +21,75 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet'
 import { TooltipProvider } from '@/components/ui/tooltip'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
 // Extracted Modular Components & Types
-import type { LinkItem, SocialsState, SocialsActiveState } from '@/components/builder/types'
+import type { PageElement, SocialsState, SocialsActiveState } from '@/components/builder/types'
 import { MobileMockup } from '@/components/builder/mobile-mockup'
 import { ProfileDetailsCard, avatarPresets } from '@/components/builder/profile-details-card'
 import { SocialAccountsCard } from '@/components/builder/social-accounts-card'
 import { CustomLinksCard } from '@/components/builder/custom-links-card'
 
-const defaultLinks: LinkItem[] = [
+const defaultLinks: PageElement[] = [
   {
     id: 'github',
+    type: 'button',
     title: 'GitHub',
     url: 'https://github.com/Saptarshi-Chakraborty',
     clicks: 33,
     active: true,
+    style: {
+      align: 'center',
+      shape: 'pill',
+      variant: 'fill'
+    }
   },
   {
     id: 'linkedin',
+    type: 'button',
     title: 'LinkedIn',
     url: 'https://www.linkedin.com/in/saptarshi-chakraborty-sc/',
     clicks: 16,
     active: true,
+    style: {
+      align: 'center',
+      shape: 'rounded',
+      variant: 'outline'
+    }
   },
   {
-    id: 'portfolio',
-    title: 'Portfolio Website',
-    url: 'https://saptarshi.design',
-    clicks: 9,
-    active: false,
+    id: 'youtube-intro',
+    type: 'youtube',
+    videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+    active: true,
+    style: {
+      shape: 'rounded',
+      aspectRatio: '16:9'
+    }
   },
+  {
+    id: 'carousel-gallery',
+    type: 'carousel',
+    active: true,
+    style: {
+      aspectRatio: '16:9',
+      shape: 'rounded'
+    },
+    items: [
+      {
+        id: 'slide-1',
+        imageUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400',
+        title: 'Project Alpha',
+        url: 'https://github.com'
+      },
+      {
+        id: 'slide-2',
+        imageUrl: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=400',
+        title: 'Design Showcase',
+        url: 'https://saptarshi.design'
+      }
+    ]
+  }
 ]
 
 export const Route = createFileRoute('/builder-new')({
@@ -58,8 +97,8 @@ export const Route = createFileRoute('/builder-new')({
 })
 
 function BuilderPage() {
-  // Links State
-  const [links, setLinks] = useState<LinkItem[]>(defaultLinks)
+  // Elements State
+  const [links, setLinks] = useState<PageElement[]>(defaultLinks)
   
   // Profile State
   const [profileName, setProfileName] = useState('Saptarshi Chakraborty')
@@ -90,27 +129,80 @@ function BuilderPage() {
   )
 
   // Handlers
-  const handleAddLink = () => {
-    const newId = `link-${Date.now()}`
-    setLinks((prev) => [
-      {
+  const handleAddElement = (type: 'button' | 'carousel' | 'youtube') => {
+    const newId = `${type}-${Date.now()}`
+    let newElement: PageElement
+
+    if (type === 'button') {
+      newElement = {
         id: newId,
+        type: 'button',
         title: 'My New Link',
         url: 'https://example.com',
         clicks: 0,
         active: true,
-      },
-      ...prev,
-    ])
+        style: {
+          align: 'center',
+          shape: 'rounded',
+          variant: 'fill'
+        }
+      }
+    } else if (type === 'youtube') {
+      newElement = {
+        id: newId,
+        type: 'youtube',
+        videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+        active: true,
+        style: {
+          shape: 'rounded',
+          aspectRatio: '16:9'
+        }
+      }
+    } else {
+      newElement = {
+        id: newId,
+        type: 'carousel',
+        active: true,
+        style: {
+          aspectRatio: '1:1',
+          shape: 'rounded'
+        },
+        items: [
+          {
+            id: `slide-${Date.now()}`,
+            imageUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400',
+            title: 'New Slide',
+            url: ''
+          }
+        ]
+      }
+    }
+
+    setLinks((prev) => [newElement, ...prev])
   }
 
   const handleDeleteLink = (id: string) => {
     setLinks((prev) => prev.filter((item) => item.id !== id))
   }
 
-  const handleUpdateLink = (id: string, key: 'title' | 'url', value: string) => {
+  const handleUpdateLink = (id: string, key: string, value: any) => {
     setLinks((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, [key]: value } : item)),
+      prev.map((item) => {
+        if (item.id !== id) return item
+        
+        if (key.startsWith('style.')) {
+          const styleKey = key.split('.')[1]
+          return {
+            ...item,
+            style: {
+              ...(item.style || {}),
+              [styleKey]: value
+            }
+          } as PageElement
+        }
+        
+        return { ...item, [key]: value } as PageElement
+      }),
     )
   }
 
@@ -222,43 +314,45 @@ function BuilderPage() {
           {/* Main workspace layout */}
           <div className="flex flex-1 flex-row overflow-hidden">
             {/* Scrollable Editor Container */}
-            <div className="flex-1 overflow-y-auto px-4 py-8 md:px-8 max-w-4xl mx-auto w-full flex flex-col gap-6 custom-scrollbar">
-              
-              {/* Page Title */}
-              <div className="flex flex-col gap-1">
-                <h1 className="text-2xl font-bold font-display text-zinc-900 tracking-tight">Builder Workspace</h1>
-                <p className="text-sm text-muted-foreground">Design your public page, add custom links, and check your performance.</p>
+            <ScrollArea className="flex-1 w-full">
+              <div className="max-w-4xl mx-auto px-4 py-8 md:px-8 flex flex-col gap-6">
+                
+                {/* Page Title */}
+                <div className="flex flex-col gap-1">
+                  <h1 className="text-2xl font-bold font-display text-zinc-900 tracking-tight">Builder Workspace</h1>
+                  <p className="text-sm text-muted-foreground">Design your public page, add custom links, and check your performance.</p>
+                </div>
+
+                {/* Card 1: Profile Details */}
+                <ProfileDetailsCard
+                  profileName={profileName}
+                  setProfileName={setProfileName}
+                  profileBio={profileBio}
+                  setProfileBio={setProfileBio}
+                  profileAvatar={profileAvatar}
+                  setProfileAvatar={setProfileAvatar}
+                  activeAvatarCss={activeAvatarCss}
+                />
+
+                {/* Card 2: Social Accounts */}
+                <SocialAccountsCard
+                  socials={socials}
+                  socialsActive={socialsActive}
+                  handleUpdateSocial={handleUpdateSocial}
+                  handleToggleSocial={handleToggleSocial}
+                />
+
+                {/* Card 3: Manage Links */}
+                <CustomLinksCard
+                  links={links}
+                  activeLinks={activeLinks}
+                  handleAddElement={handleAddElement}
+                  handleDeleteLink={handleDeleteLink}
+                  handleUpdateLink={handleUpdateLink}
+                  toggleLink={toggleLink}
+                />
               </div>
-
-              {/* Card 1: Profile Details */}
-              <ProfileDetailsCard
-                profileName={profileName}
-                setProfileName={setProfileName}
-                profileBio={profileBio}
-                setProfileBio={setProfileBio}
-                profileAvatar={profileAvatar}
-                setProfileAvatar={setProfileAvatar}
-                activeAvatarCss={activeAvatarCss}
-              />
-
-              {/* Card 2: Social Accounts */}
-              <SocialAccountsCard
-                socials={socials}
-                socialsActive={socialsActive}
-                handleUpdateSocial={handleUpdateSocial}
-                handleToggleSocial={handleToggleSocial}
-              />
-
-              {/* Card 3: Manage Links */}
-              <CustomLinksCard
-                links={links}
-                activeLinks={activeLinks}
-                handleAddLink={handleAddLink}
-                handleDeleteLink={handleDeleteLink}
-                handleUpdateLink={handleUpdateLink}
-                toggleLink={toggleLink}
-              />
-            </div>
+            </ScrollArea>
 
             {/* Desktop Right Preview Panel (Sticky) */}
             <div className="hidden xl:flex w-[380px] border-l bg-zinc-50/50 flex-col items-center justify-center p-6 shrink-0 h-[calc(100vh-4rem)] sticky top-16">

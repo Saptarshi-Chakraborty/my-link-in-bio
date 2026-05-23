@@ -10,7 +10,8 @@ import {
   AlignRight,
   Plus,
   Play,
-  Sparkles
+  Sparkles,
+  SlidersHorizontal
 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
@@ -41,6 +42,7 @@ export function LinkEditorItem({
   const toggleLink = useBuilderStore((state) => state.toggleLink)
 
   const [isFetching, setIsFetching] = useState(false)
+  const [showSettings, setShowSettings] = useState(false)
 
   const triggerFetch = async (url: string) => {
     if (!url) return
@@ -298,219 +300,8 @@ export function LinkEditorItem({
 
       {/* CUSTOM STYLE SETTINGS DROPDOWN / TOGGLES FOR PREMIUM DESIGN */}
       <div className="border-t border-zinc-100 pt-3 mt-1 space-y-2.5">
-        
-        {/* Buttons: Alignments, Shapes, Style Variants */}
-        {item.type === 'button' && (
-          <div className="grid grid-cols-3 gap-3 text-[10px]">
-            {/* Alignment segment */}
-            <div className="space-y-1">
-              <label className="font-semibold text-zinc-400 uppercase tracking-wider text-[8px] block">Alignment</label>
-              <div className="flex border border-zinc-200 rounded-lg p-0.5 bg-zinc-50 w-fit">
-                {(['left', 'center', 'right'] as const).map((align) => (
-                  <button
-                    key={align}
-                    type="button"
-                    className={`p-1.5 rounded transition ${
-                      (item.style?.align || 'left') === align
-                        ? 'bg-white shadow-sm text-[var(--brand)]'
-                        : 'text-zinc-500 hover:text-zinc-800'
-                    }`}
-                    onClick={() => handleUpdateLink(item.id, 'style.align', align)}
-                    title={`Align ${align}`}
-                  >
-                    {align === 'left' && <AlignLeft size={12} />}
-                    {align === 'center' && <AlignCenter size={12} />}
-                    {align === 'right' && <AlignRight size={12} />}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Shape segment */}
-            <div className="space-y-1">
-              <label className="font-semibold text-zinc-400 uppercase tracking-wider text-[8px] block">Shape</label>
-              <div className="flex border border-zinc-200 rounded-lg p-0.5 bg-zinc-50 w-fit">
-                {(['rectangle', 'rounded', 'pill'] as const).map((shape) => (
-                  <button
-                    key={shape}
-                    type="button"
-                    className={`px-2 py-1 text-[9px] font-bold rounded transition capitalize ${
-                      (item.style?.shape || 'rounded') === shape
-                        ? 'bg-white shadow-sm text-[var(--brand)]'
-                        : 'text-zinc-500 hover:text-zinc-800'
-                    }`}
-                    onClick={() => handleUpdateLink(item.id, 'style.shape', shape)}
-                  >
-                    {shape === 'rectangle' ? 'Rect' : shape === 'rounded' ? 'Round' : 'Pill'}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Variant Style segment */}
-            <div className="space-y-1">
-              <label className="font-semibold text-zinc-400 uppercase tracking-wider text-[8px] block">Style Theme</label>
-              <div className="flex border border-zinc-200 rounded-lg p-0.5 bg-zinc-50 w-fit">
-                {(['fill', 'outline', 'soft', 'glass'] as const).map((variant) => (
-                  <button
-                    key={variant}
-                    type="button"
-                    className={`px-1.5 py-1 text-[9px] font-bold rounded transition capitalize ${
-                      (item.style?.variant || 'fill') === variant
-                        ? 'bg-white shadow-sm text-[var(--brand)]'
-                        : 'text-zinc-500 hover:text-zinc-800'
-                    }`}
-                    onClick={() => handleUpdateLink(item.id, 'style.variant', variant)}
-                  >
-                    {variant === 'fill' ? 'Fill' : variant === 'outline' ? 'Out' : variant === 'soft' ? 'Soft' : 'Glas'}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Carousel: Shape & Aspect Ratio */}
-        {item.type === 'carousel' && (
-          <div className="grid grid-cols-2 gap-3 text-[10px]">
-            {/* Shape */}
-            <div className="space-y-1">
-              <label className="font-semibold text-zinc-400 uppercase tracking-wider text-[8px] block">Card Corner Shape</label>
-              <div className="flex border border-zinc-200 rounded-lg p-0.5 bg-zinc-50 w-fit">
-                {(['rectangle', 'rounded'] as const).map((shape) => (
-                  <button
-                    key={shape}
-                    type="button"
-                    className={`px-2 py-1 text-[9px] font-bold rounded transition capitalize ${
-                      (item.style?.shape || 'rounded') === shape
-                        ? 'bg-white shadow-sm text-[var(--brand)]'
-                        : 'text-zinc-500 hover:text-zinc-800'
-                    }`}
-                    onClick={() => handleUpdateLink(item.id, 'style.shape', shape)}
-                  >
-                    {shape === 'rectangle' ? 'Sharp' : 'Rounded'}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Aspect Ratio */}
-            <div className="space-y-1">
-              <label className="font-semibold text-zinc-400 uppercase tracking-wider text-[8px] block">Aspect Ratio</label>
-              <div className="flex border border-zinc-200 rounded-lg p-0.5 bg-zinc-50 w-fit">
-                {(['1:1', '16:9'] as const).map((ratio) => (
-                  <button
-                    key={ratio}
-                    type="button"
-                    className={`px-2 py-1 text-[9px] font-bold rounded transition ${
-                      (item.style?.aspectRatio || '1:1') === ratio
-                        ? 'bg-white shadow-sm text-[var(--brand)]'
-                        : 'text-zinc-500 hover:text-zinc-800'
-                    }`}
-                    onClick={() => handleUpdateLink(item.id, 'style.aspectRatio', ratio)}
-                  >
-                    {ratio}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* YouTube: Shape & Aspect Ratio & Layout Customizations */}
-        {item.type === 'youtube' && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-            {/* Shape & Aspect Ratio */}
-            <div className="space-y-2">
-              <div className="space-y-1">
-                <label className="font-semibold text-zinc-400 uppercase tracking-wider text-[10px] block">Video Player Corners</label>
-                <div className="flex border border-zinc-200 rounded-lg p-0.5 bg-zinc-50 w-fit">
-                  {(['rectangle', 'rounded'] as const).map((shape) => (
-                    <button
-                      key={shape}
-                      type="button"
-                      className={`px-2.5 py-1 text-[11px] font-bold rounded transition capitalize ${
-                        (item.style?.shape || 'rounded') === shape
-                          ? 'bg-white shadow-sm text-[var(--brand)]'
-                          : 'text-zinc-500 hover:text-zinc-800'
-                      }`}
-                      onClick={() => handleUpdateLink(item.id, 'style.shape', shape)}
-                    >
-                      {shape === 'rectangle' ? 'Square' : 'Rounded'}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="space-y-1">
-                <label className="font-semibold text-zinc-400 uppercase tracking-wider text-[10px] block">Aspect Ratio</label>
-                <div className="flex border border-zinc-200 rounded-lg p-0.5 bg-zinc-50 w-fit">
-                  {(['16:9', '9:16'] as const).map((ratio) => (
-                    <button
-                      key={ratio}
-                      type="button"
-                      className={`px-2 py-1 text-[11px] font-bold rounded transition ${
-                        (item.style?.aspectRatio || '16:9') === ratio
-                          ? 'bg-white shadow-sm text-[var(--brand)]'
-                          : 'text-zinc-500 hover:text-zinc-800'
-                      }`}
-                      onClick={() => handleUpdateLink(item.id, 'style.aspectRatio', ratio)}
-                    >
-                      {ratio === '16:9' ? '16:9 Std' : '9:16 Shorts'}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Layout type & Switch Toggles */}
-            <div className="space-y-2">
-              <div className="space-y-1">
-                <label className="font-semibold text-zinc-400 uppercase tracking-wider text-[10px] block">Layout Style</label>
-                <div className="flex border border-zinc-200 rounded-lg p-0.5 bg-zinc-50 w-fit">
-                  {(['feed', 'card', 'inline'] as const).map((layout) => (
-                    <button
-                      key={layout}
-                      type="button"
-                      className={`px-2.5 py-1 text-[11px] font-bold rounded transition capitalize ${
-                        (item.style?.layout || 'feed') === layout
-                          ? 'bg-white shadow-sm text-[var(--brand)]'
-                          : 'text-zinc-500 hover:text-zinc-800'
-                      }`}
-                      onClick={() => handleUpdateLink(item.id, 'style.layout', layout)}
-                    >
-                      {layout}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="flex gap-4 pt-1">
-                <div className="flex items-center gap-1.5">
-                  <Switch
-                    id={`show-stats-${item.id}`}
-                    checked={item.style?.showStats !== false}
-                    onCheckedChange={(checked) => handleUpdateLink(item.id, 'style.showStats', checked)}
-                    className="scale-75 data-[state=checked]:bg-[var(--brand)]"
-                  />
-                  <label htmlFor={`show-stats-${item.id}`} className="text-xs font-medium text-zinc-600">Show Stats</label>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <Switch
-                    id={`show-desc-${item.id}`}
-                    checked={item.style?.showDescription !== false}
-                    onCheckedChange={(checked) => handleUpdateLink(item.id, 'style.showDescription', checked)}
-                    className="scale-75 data-[state=checked]:bg-[var(--brand)]"
-                  />
-                  <label htmlFor={`show-desc-${item.id}`} className="text-xs font-medium text-zinc-600">Show Subtitle</label>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Footer toolbar buttons (dx: view stats, copy link, etc) */}
-        <div className="flex items-center justify-between pt-2 border-t border-zinc-100/70 text-xs">
+        {/* Footer toolbar buttons (dx: view stats, copy link, settings, delete block etc) */}
+        <div className="flex items-center justify-between text-xs">
           <div className="flex items-center gap-1 text-zinc-400">
             <TooltipProvider>
               <Tooltip>
@@ -561,6 +352,25 @@ export function LinkEditorItem({
                     type="button"
                     variant="ghost" 
                     size="icon" 
+                    className={`h-7 w-7 transition-colors ${
+                      showSettings ? 'text-[var(--brand)] bg-zinc-100' : 'text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100'
+                    }`}
+                    onClick={() => setShowSettings(!showSettings)}
+                  >
+                    <SlidersHorizontal size={14} />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Settings</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button 
+                    type="button"
+                    variant="ghost" 
+                    size="icon" 
                     className="h-7 w-7 text-red-500 hover:text-red-600 hover:bg-red-50" 
                     onClick={() => handleDeleteLink(item.id)}
                   >
@@ -578,6 +388,221 @@ export function LinkEditorItem({
             </div>
           )}
         </div>
+
+        {/* Dynamic block settings toggled by settings button */}
+        {showSettings && (
+          <div className="border-t border-zinc-100 pt-3 mt-1.5 space-y-2.5 animate-in fade-in slide-in-from-top-1 duration-200">
+            {/* Buttons: Alignments, Shapes, Style Variants */}
+            {item.type === 'button' && (
+              <div className="grid grid-cols-3 gap-3 text-[10px]">
+                {/* Alignment segment */}
+                <div className="space-y-1">
+                  <label className="font-semibold text-zinc-400 uppercase tracking-wider text-[8px] block">Alignment</label>
+                  <div className="flex border border-zinc-200 rounded-lg p-0.5 bg-zinc-50 w-fit">
+                    {(['left', 'center', 'right'] as const).map((align) => (
+                      <button
+                        key={align}
+                        type="button"
+                        className={`p-1.5 rounded transition ${
+                          (item.style?.align || 'left') === align
+                            ? 'bg-white shadow-sm text-[var(--brand)]'
+                            : 'text-zinc-500 hover:text-zinc-800'
+                        }`}
+                        onClick={() => handleUpdateLink(item.id, 'style.align', align)}
+                        title={`Align ${align}`}
+                      >
+                        {align === 'left' && <AlignLeft size={12} />}
+                        {align === 'center' && <AlignCenter size={12} />}
+                        {align === 'right' && <AlignRight size={12} />}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Shape segment */}
+                <div className="space-y-1">
+                  <label className="font-semibold text-zinc-400 uppercase tracking-wider text-[8px] block">Shape</label>
+                  <div className="flex border border-zinc-200 rounded-lg p-0.5 bg-zinc-50 w-fit">
+                    {(['rectangle', 'rounded', 'pill'] as const).map((shape) => (
+                      <button
+                        key={shape}
+                        type="button"
+                        className={`px-2 py-1 text-[9px] font-bold rounded transition capitalize ${
+                          (item.style?.shape || 'rounded') === shape
+                            ? 'bg-white shadow-sm text-[var(--brand)]'
+                            : 'text-zinc-500 hover:text-zinc-800'
+                        }`}
+                        onClick={() => handleUpdateLink(item.id, 'style.shape', shape)}
+                      >
+                        {shape === 'rectangle' ? 'Rect' : shape === 'rounded' ? 'Round' : 'Pill'}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Variant Style segment */}
+                <div className="space-y-1">
+                  <label className="font-semibold text-zinc-400 uppercase tracking-wider text-[8px] block">Style Theme</label>
+                  <div className="flex border border-zinc-200 rounded-lg p-0.5 bg-zinc-50 w-fit">
+                    {(['fill', 'outline', 'soft', 'glass'] as const).map((variant) => (
+                      <button
+                        key={variant}
+                        type="button"
+                        className={`px-1.5 py-1 text-[9px] font-bold rounded transition capitalize ${
+                          (item.style?.variant || 'fill') === variant
+                            ? 'bg-white shadow-sm text-[var(--brand)]'
+                            : 'text-zinc-500 hover:text-zinc-800'
+                        }`}
+                        onClick={() => handleUpdateLink(item.id, 'style.variant', variant)}
+                      >
+                        {variant === 'fill' ? 'Fill' : variant === 'outline' ? 'Out' : variant === 'soft' ? 'Soft' : 'Glas'}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Carousel: Shape & Aspect Ratio */}
+            {item.type === 'carousel' && (
+              <div className="grid grid-cols-2 gap-3 text-[10px]">
+                {/* Shape */}
+                <div className="space-y-1">
+                  <label className="font-semibold text-zinc-400 uppercase tracking-wider text-[8px] block">Card Corner Shape</label>
+                  <div className="flex border border-zinc-200 rounded-lg p-0.5 bg-zinc-50 w-fit">
+                    {(['rectangle', 'rounded'] as const).map((shape) => (
+                      <button
+                        key={shape}
+                        type="button"
+                        className={`px-2 py-1 text-[9px] font-bold rounded transition capitalize ${
+                          (item.style?.shape || 'rounded') === shape
+                            ? 'bg-white shadow-sm text-[var(--brand)]'
+                            : 'text-zinc-500 hover:text-zinc-800'
+                        }`}
+                        onClick={() => handleUpdateLink(item.id, 'style.shape', shape)}
+                      >
+                        {shape === 'rectangle' ? 'Sharp' : 'Rounded'}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Aspect Ratio */}
+                <div className="space-y-1">
+                  <label className="font-semibold text-zinc-400 uppercase tracking-wider text-[8px] block">Aspect Ratio</label>
+                  <div className="flex border border-zinc-200 rounded-lg p-0.5 bg-zinc-50 w-fit">
+                    {(['1:1', '16:9'] as const).map((ratio) => (
+                      <button
+                        key={ratio}
+                        type="button"
+                        className={`px-2 py-1 text-[9px] font-bold rounded transition ${
+                          (item.style?.aspectRatio || '1:1') === ratio
+                            ? 'bg-white shadow-sm text-[var(--brand)]'
+                            : 'text-zinc-500 hover:text-zinc-800'
+                        }`}
+                        onClick={() => handleUpdateLink(item.id, 'style.aspectRatio', ratio)}
+                      >
+                        {ratio}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* YouTube: Shape & Aspect Ratio & Layout Customizations */}
+            {item.type === 'youtube' && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                {/* Shape & Aspect Ratio */}
+                <div className="space-y-2">
+                  <div className="space-y-1">
+                    <label className="font-semibold text-zinc-400 uppercase tracking-wider text-[10px] block">Video Player Corners</label>
+                    <div className="flex border border-zinc-200 rounded-lg p-0.5 bg-zinc-50 w-fit">
+                      {(['rectangle', 'rounded'] as const).map((shape) => (
+                        <button
+                          key={shape}
+                          type="button"
+                          className={`px-2.5 py-1 text-[11px] font-bold rounded transition capitalize ${
+                            (item.style?.shape || 'rounded') === shape
+                              ? 'bg-white shadow-sm text-[var(--brand)]'
+                              : 'text-zinc-500 hover:text-zinc-800'
+                          }`}
+                          onClick={() => handleUpdateLink(item.id, 'style.shape', shape)}
+                        >
+                          {shape === 'rectangle' ? 'Square' : 'Rounded'}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="font-semibold text-zinc-400 uppercase tracking-wider text-[10px] block">Aspect Ratio</label>
+                    <div className="flex border border-zinc-200 rounded-lg p-0.5 bg-zinc-50 w-fit">
+                      {(['16:9', '9:16'] as const).map((ratio) => (
+                        <button
+                          key={ratio}
+                          type="button"
+                          className={`px-2 py-1 text-[11px] font-bold rounded transition ${
+                            (item.style?.aspectRatio || '16:9') === ratio
+                              ? 'bg-white shadow-sm text-[var(--brand)]'
+                              : 'text-zinc-500 hover:text-zinc-800'
+                          }`}
+                          onClick={() => handleUpdateLink(item.id, 'style.aspectRatio', ratio)}
+                        >
+                          {ratio === '16:9' ? '16:9 Std' : '9:16 Shorts'}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Layout type & Switch Toggles */}
+                <div className="space-y-2">
+                  <div className="space-y-1">
+                    <label className="font-semibold text-zinc-400 uppercase tracking-wider text-[10px] block">Layout Style</label>
+                    <div className="flex border border-zinc-200 rounded-lg p-0.5 bg-zinc-50 w-fit">
+                      {(['feed', 'card', 'inline'] as const).map((layout) => (
+                        <button
+                          key={layout}
+                          type="button"
+                          className={`px-2.5 py-1 text-[11px] font-bold rounded transition capitalize ${
+                            (item.style?.layout || 'feed') === layout
+                              ? 'bg-white shadow-sm text-[var(--brand)]'
+                              : 'text-zinc-500 hover:text-zinc-800'
+                          }`}
+                          onClick={() => handleUpdateLink(item.id, 'style.layout', layout)}
+                        >
+                          {layout}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="flex gap-4 pt-1">
+                    <div className="flex items-center gap-1.5">
+                      <Switch
+                        id={`show-stats-${item.id}`}
+                        checked={item.style?.showStats !== false}
+                        onCheckedChange={(checked) => handleUpdateLink(item.id, 'style.showStats', checked)}
+                        className="scale-75 data-[state=checked]:bg-[var(--brand)]"
+                      />
+                      <label htmlFor={`show-stats-${item.id}`} className="text-xs font-medium text-zinc-600">Show Stats</label>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <Switch
+                        id={`show-desc-${item.id}`}
+                        checked={item.style?.showDescription !== false}
+                        onCheckedChange={(checked) => handleUpdateLink(item.id, 'style.showDescription', checked)}
+                        className="scale-75 data-[state=checked]:bg-[var(--brand)]"
+                      />
+                      <label htmlFor={`show-desc-${item.id}`} className="text-xs font-medium text-zinc-600">Show Subtitle</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   )

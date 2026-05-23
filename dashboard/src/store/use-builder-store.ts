@@ -34,10 +34,16 @@ const defaultLinks: PageElement[] = [
     id: 'youtube-intro',
     type: 'youtube',
     videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+    videoTitle: 'Rick Astley - Never Gonna Give You Up (Official Music Video)',
+    videoDescription: 'Rick Astley',
+    videoStats: '1.2B views • 14 years ago',
     active: true,
     style: {
       shape: 'rounded',
-      aspectRatio: '16:9'
+      aspectRatio: '16:9',
+      layout: 'card',
+      showStats: true,
+      showDescription: true
     }
   },
   {
@@ -186,10 +192,16 @@ export const useBuilderStore = create<BuilderState>((set) => ({
           id: newId,
           type: 'youtube',
           videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+          videoTitle: 'Rick Astley - Never Gonna Give You Up (Official Music Video)',
+          videoDescription: 'Rick Astley',
+          videoStats: '1.2B views • 14 years ago',
           active: true,
           style: {
             shape: 'rounded',
             aspectRatio: '16:9',
+            layout: 'card',
+            showStats: true,
+            showDescription: true
           },
         }
       } else {

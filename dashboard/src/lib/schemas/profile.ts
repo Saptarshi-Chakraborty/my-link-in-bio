@@ -44,9 +44,15 @@ export const CarouselElementSchema = BaseElementSchema.extend({
 export const YoutubeElementSchema = BaseElementSchema.extend({
   type: z.literal('youtube'),
   videoUrl: z.string(),
+  videoTitle: z.string().optional(),
+  videoDescription: z.string().optional(),
+  videoStats: z.string().optional(),
   style: z.object({
     shape: z.enum(['rectangle', 'rounded']).optional(),
     aspectRatio: z.enum(['16:9', '9:16']).optional(),
+    layout: z.enum(['card', 'inline', 'feed']).optional(),
+    showStats: z.boolean().optional(),
+    showDescription: z.boolean().optional(),
   }).optional(),
 })
 

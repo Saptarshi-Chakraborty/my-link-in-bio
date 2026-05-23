@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useRef } from 'react'
 import { Settings2, User, Share2, Plus } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -14,7 +14,6 @@ import {
   SheetTitle,
   SheetDescription,
   SheetTrigger,
-  SheetClose,
   SheetFooter,
 } from '@/components/ui/sheet'
 import {
@@ -47,12 +46,49 @@ export function ProfileHeaderCard() {
   const socialsActive = useBuilderStore((state) => state.socialsActive)
   const handleUpdateSocial = useBuilderStore((state) => state.updateSocial)
   const handleToggleSocial = useBuilderStore((state) => state.toggleSocial)
+  const cleanEmptySocials = useBuilderStore((state) => state.cleanEmptySocials)
+  const updateProfileHeader = useBuilderStore((state) => state.updateProfileHeader)
 
   const activeAvatarCss = useMemo(() => {
     const preset = avatarPresets.find(p => p.id === profileAvatar)
     return preset ? preset.css : 'bg-zinc-800'
   }, [profileAvatar])
   const [isOpen, setIsOpen] = useState(false)
+  const backupRef = useRef<{
+    profileName: string
+    profileBio: string
+    profileAvatar: string
+    socials: SocialsState
+    socialsActive: SocialsActiveState
+  } | null>(null)
+  const isSavingRef = useRef(false)
+
+  const handleOpenChange = (open: boolean) => {
+    if (open) {
+      backupRef.current = {
+        profileName,
+        profileBio,
+        profileAvatar,
+        socials: { ...socials },
+        socialsActive: { ...socialsActive },
+      }
+      setIsOpen(true)
+    } else {
+      if (!isSavingRef.current) {
+        if (backupRef.current) {
+          updateProfileHeader(backupRef.current)
+        }
+      }
+      isSavingRef.current = false
+      setIsOpen(false)
+    }
+  }
+
+  const handleSave = () => {
+    isSavingRef.current = true
+    cleanEmptySocials()
+    setIsOpen(false)
+  }
 
   // Determine active socials list to render quick icon badges
   const activeSocialList = useMemo(() => {
@@ -142,7 +178,7 @@ export function ProfileHeaderCard() {
   }
 
   return (
-    <Sheet open={isOpen} onOpenChange={setIsOpen}>
+    <Sheet open={isOpen} onOpenChange={handleOpenChange}>
       <Card className="border border-zinc-200/80 shadow-sm bg-white overflow-hidden relative group/header transition-all duration-200 hover:shadow-md py-2">
         <CardContent className="p-6 py-2">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
@@ -354,15 +390,14 @@ export function ProfileHeaderCard() {
           </div>
         </ScrollArea>
 
-        {/* Footer Area with Done button */}
+        {/* Footer Area with Save button */}
         <SheetFooter className="p-4 border-t border-zinc-100 shrink-0 bg-zinc-50/50">
-          <SheetClose asChild>
-            <Button
-              className="w-full bg-[var(--brand)] hover:bg-[var(--brand)]/90 text-white font-semibold text-xs h-10 shadow-sm active:scale-[0.98] transition-transform duration-100"
-            >
-              Done
-            </Button>
-          </SheetClose>
+          <Button
+            onClick={handleSave}
+            className="w-full bg-[var(--brand)] hover:bg-[var(--brand)]/90 text-white font-semibold text-xs h-10 shadow-sm active:scale-[0.98] transition-transform duration-100"
+          >
+            Save
+          </Button>
         </SheetFooter>
       </SheetContent>
     </Sheet>

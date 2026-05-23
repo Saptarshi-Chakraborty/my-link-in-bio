@@ -104,6 +104,14 @@ interface BuilderState {
   setProfileAvatar: (avatar: string) => void
   updateSocial: (platform: keyof SocialsState, value: string) => void
   toggleSocial: (platform: keyof SocialsActiveState) => void
+  cleanEmptySocials: () => void
+  updateProfileHeader: (data: {
+    profileName: string
+    profileBio: string
+    profileAvatar: string
+    socials: SocialsState
+    socialsActive: SocialsActiveState
+  }) => void
   addElement: (type: 'button' | 'carousel' | 'youtube') => void
   deleteLink: (id: string) => void
   updateLink: (id: string, key: string, value: any) => void
@@ -132,6 +140,28 @@ export const useBuilderStore = create<BuilderState>((set) => ({
     set((state) => ({
       socialsActive: { ...state.socialsActive, [platform]: !state.socialsActive[platform] },
     })),
+  cleanEmptySocials: () =>
+    set((state) => {
+      const nextSocials = { ...state.socials }
+      const nextSocialsActive = { ...state.socialsActive }
+      let changed = false
+
+      ;(Object.keys(state.socials) as Array<keyof SocialsState>).forEach((platform) => {
+        const val = state.socials[platform]
+        const isActive = state.socialsActive[platform]
+        if (isActive && (!val || val.trim() === '')) {
+          nextSocials[platform] = ''
+          nextSocialsActive[platform] = false
+          changed = true
+        }
+      })
+
+      if (changed) {
+        return { socials: nextSocials, socialsActive: nextSocialsActive }
+      }
+      return {}
+    }),
+  updateProfileHeader: (data) => set((state) => ({ ...state, ...data })),
   addElement: (type) =>
     set((state) => {
       const newId = `${type}-${Date.now()}`

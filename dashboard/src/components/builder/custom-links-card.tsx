@@ -1,7 +1,14 @@
 import { useState, useMemo } from 'react'
-import { Plus, Info } from 'lucide-react'
+import { Plus, Info, MoreHorizontal } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardAction, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { ButtonGroup } from '@/components/ui/button-group'
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from '@/components/ui/dropdown-menu'
 import { DragDropProvider, DragOverlay } from '@dnd-kit/react'
 import { isSortable } from '@dnd-kit/react/sortable'
 import { LinkEditorItem } from './link-editor-item'
@@ -32,35 +39,39 @@ export function CustomLinksCard() {
           <CardDescription>Add, edit, and style your links, carousels, and embeds</CardDescription>
         </div>
         <CardAction className="flex flex-wrap gap-2 self-start sm:self-auto">
-          <Button
-            type="button"
-            onClick={() => handleAddElement('button')}
-            size="sm"
-            className="h-8 px-3 text-[10px] gap-1 font-bold shadow-sm bg-[var(--brand)] text-white hover:bg-[var(--brand-light)] transition-all active:scale-95 shrink-0"
-          >
-            <Plus size={11} />
-            Add Link
-          </Button>
-          <Button
-            type="button"
-            onClick={() => handleAddElement('carousel')}
-            variant="outline"
-            size="sm"
-            className="h-8 px-3 text-[10px] gap-1 font-bold shadow-sm border-zinc-200 hover:bg-zinc-50 active:scale-95 text-zinc-700 bg-white shrink-0"
-          >
-            <Plus size={11} />
-            Add Carousel
-          </Button>
-          <Button
-            type="button"
-            onClick={() => handleAddElement('youtube')}
-            variant="outline"
-            size="sm"
-            className="h-8 px-3 text-[10px] gap-1 font-bold shadow-sm border-zinc-200 hover:bg-zinc-50 active:scale-95 text-zinc-700 bg-white shrink-0"
-          >
-            <Plus size={11} />
-            Add YouTube
-          </Button>
+          <ButtonGroup>
+            <Button
+              type="button"
+              onClick={() => handleAddElement('button')}
+              size="sm"
+              className="h-8 px-3 text-[10px] gap-1 font-bold shadow-sm bg-[var(--brand)] text-white hover:bg-[var(--brand-light)] transition-all active:scale-95 shrink-0"
+            >
+              <Plus size={11} />
+              Add Link
+            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="h-8 px-2.5 shadow-sm border-zinc-200 hover:bg-zinc-50 active:scale-95 text-zinc-700 bg-white shrink-0"
+                >
+                  <MoreHorizontal size={14} />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => handleAddElement('carousel')} className="cursor-pointer">
+                  <Plus />
+                  <span>Carousel</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleAddElement('youtube')} className="cursor-pointer">
+                  <Plus />
+                  <span>YouTube</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </ButtonGroup>
         </CardAction>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">

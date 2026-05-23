@@ -603,7 +603,7 @@ function BuilderPage() {
                 </div>
 
                 {/* Inner Device Screen */}
-                <div className={`flex-1 min-h-0 rounded-[1.8rem] p-3 pt-6 flex flex-col items-center relative overflow-y-auto overflow-x-hidden no-scrollbar theme-preview-${selectedTheme} transition-all duration-300`} style={{ background: 'var(--phone-bg)', color: 'var(--phone-text)' }}>
+                <div className={`flex-1 min-h-0 rounded-[1.8rem] p-3 pt-6 flex flex-col items-center relative overflow-y-auto overflow-x-hidden phone-scrollbar theme-preview-${selectedTheme} transition-all duration-300`} style={{ background: 'var(--phone-bg)', color: 'var(--phone-text)' }}>
                   
                   {/* Phone Address Header */}
                   <div className="w-full bg-black/10 backdrop-blur-md rounded-lg py-1 px-2 mb-4 flex items-center justify-between text-[8px] text-[var(--phone-text)] font-semibold border border-white/5">

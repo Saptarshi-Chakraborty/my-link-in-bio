@@ -227,6 +227,8 @@ body {
   --phone-btn-text: #f4f4f5;
   --phone-btn-hover-bg: rgba(99, 102, 241, 0.2);
   --phone-shadow: 0 0 20px rgba(99, 102, 241, 0.35);
+  --phone-scrollbar-thumb: rgba(244, 244, 245, 0.25);
+  --phone-scrollbar-thumb-hover: rgba(244, 244, 245, 0.45);
 }
 
 .theme-preview-warm {
@@ -238,6 +240,8 @@ body {
   --phone-btn-text: #78350f;
   --phone-btn-hover-bg: #fffbeb;
   --phone-shadow: 0 4px 6px -1px rgba(180, 83, 9, 0.1);
+  --phone-scrollbar-thumb: rgba(120, 53, 15, 0.25);
+  --phone-scrollbar-thumb-hover: rgba(120, 53, 15, 0.45);
 }
 
 .theme-preview-vivid {
@@ -249,6 +253,8 @@ body {
   --phone-btn-text: #ffffff;
   --phone-btn-hover-bg: rgba(255, 255, 255, 0.25);
   --phone-shadow: none;
+  --phone-scrollbar-thumb: rgba(255, 255, 255, 0.25);
+  --phone-scrollbar-thumb-hover: rgba(255, 255, 255, 0.45);
 }
 
 .theme-preview-minimalist {
@@ -260,6 +266,8 @@ body {
   --phone-btn-text: #ffffff;
   --phone-btn-hover-bg: #27272a;
   --phone-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --phone-scrollbar-thumb: rgba(24, 24, 27, 0.2);
+  --phone-scrollbar-thumb-hover: rgba(24, 24, 27, 0.35);
 }
 
 .theme-preview-glass {
@@ -272,6 +280,8 @@ body {
   --phone-btn-hover-bg: rgba(255, 255, 255, 0.22);
   --phone-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.25);
   --phone-backdrop-blur: blur(8px);
+  --phone-scrollbar-thumb: rgba(255, 255, 255, 0.25);
+  --phone-scrollbar-thumb-hover: rgba(255, 255, 255, 0.45);
 }
 
 /* Hide scrollbar for Chrome, Safari, Opera and Firefox */
@@ -281,6 +291,25 @@ body {
 .no-scrollbar {
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
+}
+
+/* Sleek custom scrollbar specifically for the Mobile Mockup phone container */
+.phone-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.phone-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.phone-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--phone-scrollbar-thumb, rgba(120, 120, 120, 0.3));
+  border-radius: 999px;
+}
+.phone-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--phone-scrollbar-thumb-hover, rgba(120, 120, 120, 0.5));
+}
+.phone-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--phone-scrollbar-thumb, rgba(120, 120, 120, 0.3)) transparent;
 }
 
 /* Custom premium scrollbar for containerized areas */
@@ -311,6 +340,21 @@ body {
 }
 .dark .custom-scrollbar {
   scrollbar-color: rgba(255, 255, 255, 0.16) transparent;
+}
+
+/* Radix ScrollArea custom scrollbar thumb styling (overrides default bg-border) */
+[data-slot="scroll-area-thumb"] {
+  background-color: rgba(24, 24, 27, 0.22) !important;
+  transition: background-color 150ms ease-in-out;
+}
+[data-slot="scroll-area-thumb"]:hover {
+  background-color: rgba(24, 24, 27, 0.38) !important;
+}
+.dark [data-slot="scroll-area-thumb"] {
+  background-color: rgba(255, 255, 255, 0.22) !important;
+}
+.dark [data-slot="scroll-area-thumb"]:hover {
+  background-color: rgba(255, 255, 255, 0.38) !important;
 }
 
 @theme inline {

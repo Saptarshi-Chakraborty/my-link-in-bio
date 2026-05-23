@@ -21,24 +21,23 @@ import {
 } from '@/components/ui/tooltip'
 import { useSortable } from '@dnd-kit/react/sortable'
 import type { PageElement } from './types'
+import { useBuilderStore } from '@/store/use-builder-store'
 
 interface LinkEditorItemProps {
   item: PageElement
   index: number
-  handleDeleteLink: (id: string) => void
-  handleUpdateLink: (id: string, key: string, value: any) => void
-  toggleLink: (id: string) => void
   isOverlay?: boolean
 }
 
 export function LinkEditorItem({
   item,
   index,
-  handleDeleteLink,
-  handleUpdateLink,
-  toggleLink,
   isOverlay = false
 }: LinkEditorItemProps) {
+  const handleDeleteLink = useBuilderStore((state) => state.deleteLink)
+  const handleUpdateLink = useBuilderStore((state) => state.updateLink)
+  const toggleLink = useBuilderStore((state) => state.toggleLink)
+
   const { ref, handleRef, isDragging } = useSortable({
     id: item.id,
     index,

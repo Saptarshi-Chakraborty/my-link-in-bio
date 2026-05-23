@@ -26,6 +26,7 @@ import {
 
 import { SocialInputField } from './social-input-field'
 import { GithubIcon, LinkedinIcon, FacebookIcon, InstagramIcon } from './icons'
+import { useBuilderStore } from '@/store/use-builder-store'
 import type { SocialsState, SocialsActiveState } from './types'
 
 export const avatarPresets = [
@@ -35,33 +36,22 @@ export const avatarPresets = [
   { id: 'minimalist', name: 'Minimalist Zinc', css: 'bg-zinc-800' },
 ]
 
-interface ProfileHeaderCardProps {
-  profileName: string
-  setProfileName: (val: string) => void
-  profileBio: string
-  setProfileBio: (val: string) => void
-  profileAvatar: string
-  setProfileAvatar: (val: string) => void
-  activeAvatarCss: string
-  socials: SocialsState
-  socialsActive: SocialsActiveState
-  handleUpdateSocial: (platform: keyof SocialsState, value: string) => void
-  handleToggleSocial: (platform: keyof SocialsActiveState) => void
-}
+export function ProfileHeaderCard() {
+  const profileName = useBuilderStore((state) => state.profileName)
+  const setProfileName = useBuilderStore((state) => state.setProfileName)
+  const profileBio = useBuilderStore((state) => state.profileBio)
+  const setProfileBio = useBuilderStore((state) => state.setProfileBio)
+  const profileAvatar = useBuilderStore((state) => state.profileAvatar)
+  const setProfileAvatar = useBuilderStore((state) => state.setProfileAvatar)
+  const socials = useBuilderStore((state) => state.socials)
+  const socialsActive = useBuilderStore((state) => state.socialsActive)
+  const handleUpdateSocial = useBuilderStore((state) => state.updateSocial)
+  const handleToggleSocial = useBuilderStore((state) => state.toggleSocial)
 
-export function ProfileHeaderCard({
-  profileName,
-  setProfileName,
-  profileBio,
-  setProfileBio,
-  profileAvatar,
-  setProfileAvatar,
-  activeAvatarCss,
-  socials,
-  socialsActive,
-  handleUpdateSocial,
-  handleToggleSocial,
-}: ProfileHeaderCardProps) {
+  const activeAvatarCss = useMemo(() => {
+    const preset = avatarPresets.find(p => p.id === profileAvatar)
+    return preset ? preset.css : 'bg-zinc-800'
+  }, [profileAvatar])
   const [isOpen, setIsOpen] = useState(false)
 
   // Determine active socials list to render quick icon badges

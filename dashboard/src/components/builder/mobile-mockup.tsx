@@ -1,27 +1,28 @@
+import { useMemo } from 'react'
 import { Share2 } from 'lucide-react'
 import { GithubIcon, LinkedinIcon, FacebookIcon, InstagramIcon } from './icons'
-import type { PageElement, SocialsState, SocialsActiveState } from './types'
 import { ElementRenderer } from './element-renderer'
+import { useBuilderStore } from '@/store/use-builder-store'
+import { avatarPresets } from './profile-header-card'
 
-interface MobileMockupProps {
-  profileName: string
-  profileBio: string
-  activeAvatarCss: string
-  socials: SocialsState
-  socialsActive: SocialsActiveState
-  activeLinks: PageElement[]
-  selectedTheme: string
-}
+export function MobileMockup() {
+  const profileName = useBuilderStore((state) => state.profileName)
+  const profileBio = useBuilderStore((state) => state.profileBio)
+  const profileAvatar = useBuilderStore((state) => state.profileAvatar)
+  const socials = useBuilderStore((state) => state.socials)
+  const socialsActive = useBuilderStore((state) => state.socialsActive)
+  const links = useBuilderStore((state) => state.links)
+  const selectedTheme = useBuilderStore((state) => state.theme)
 
-export function MobileMockup({
-  profileName,
-  profileBio,
-  activeAvatarCss,
-  socials,
-  socialsActive,
-  activeLinks,
-  selectedTheme
-}: MobileMockupProps) {
+  const activeLinks = useMemo(
+    () => links.filter((item) => item.active),
+    [links],
+  )
+
+  const activeAvatarCss = useMemo(() => {
+    const preset = avatarPresets.find(p => p.id === profileAvatar)
+    return preset ? preset.css : 'bg-zinc-800'
+  }, [profileAvatar])
   return (
     <div className="w-[230px] h-[480px] shrink-0 rounded-[2.2rem] border-[5px] border-zinc-900 bg-zinc-950 p-1.5 shadow-2xl relative overflow-hidden flex flex-col">
       {/* Phone Notch/Speaker */}
@@ -31,7 +32,7 @@ export function MobileMockup({
 
       {/* Inner Device Screen */}
       <div
-        className={`flex-1 min-h-0 rounded-[1.8rem] p-3 pt-6 flex flex-col items-center relative overflow-y-auto overflow-x-hidden no-scrollbar theme-preview-${selectedTheme} transition-all duration-300`}
+        className={`flex-1 min-h-0 rounded-[1.8rem] p-3 pt-6 flex flex-col items-center relative overflow-y-auto overflow-x-hidden phone-scrollbar theme-preview-${selectedTheme} transition-all duration-300`}
         style={{ background: 'var(--phone-bg)', color: 'var(--phone-text)' }}
       >
         {/* Phone Address Header */}

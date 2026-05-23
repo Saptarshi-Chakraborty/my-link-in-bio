@@ -1,67 +1,30 @@
-export type ElementType = 'button' | 'carousel' | 'youtube'
+import { z } from 'zod'
+import {
+  ElementTypeSchema,
+  BaseElementSchema,
+  ButtonElementSchema,
+  CarouselItemSchema,
+  CarouselElementSchema,
+  YoutubeElementSchema,
+  PageElementSchema,
+  SocialsStateSchema,
+  SocialsActiveStateSchema,
+} from '@/lib/schemas/profile'
 
-export interface BaseElement {
-  id: string
-  type: ElementType
-  active: boolean
-}
-
-export interface ButtonElement extends BaseElement {
-  type: 'button'
-  title: string
-  url: string
-  clicks: number
-  style?: {
-    variant?: 'fill' | 'outline' | 'soft' | 'glass'
-    shape?: 'rectangle' | 'rounded' | 'pill'
-    align?: 'left' | 'center' | 'right'
-    animation?: 'none' | 'bounce' | 'wobble' | 'pulse'
-  }
-}
+export type ElementType = z.infer<typeof ElementTypeSchema>
+export type BaseElement = z.infer<typeof BaseElementSchema>
+export type ButtonElement = z.infer<typeof ButtonElementSchema>
 
 // Deprecated: keeping alias for backward compatibility during refactoring
 export type LinkItem = ButtonElement
 
-export interface CarouselItem {
-  id: string
-  imageUrl: string
-  title?: string
-  url?: string
-}
+export type CarouselItem = z.infer<typeof CarouselItemSchema>
+export type CarouselElement = z.infer<typeof CarouselElementSchema>
+export type YoutubeElement = z.infer<typeof YoutubeElementSchema>
+export type PageElement = z.infer<typeof PageElementSchema>
 
-export interface CarouselElement extends BaseElement {
-  type: 'carousel'
-  items: CarouselItem[]
-  style?: {
-    aspectRatio?: '1:1' | '16:9'
-    shape?: 'rectangle' | 'rounded'
-  }
-}
-
-export interface YoutubeElement extends BaseElement {
-  type: 'youtube'
-  videoUrl: string
-  style?: {
-    shape?: 'rectangle' | 'rounded'
-    aspectRatio?: '16:9' | '9:16'
-  }
-}
-
-export type PageElement = ButtonElement | CarouselElement | YoutubeElement
-
-export type SocialsState = {
-  github: string
-  linkedin: string
-  facebook: string
-  instagram: string
-}
-
-export type SocialsActiveState = {
-  github: boolean
-  linkedin: boolean
-  facebook: boolean
-  instagram: boolean
-}
+export type SocialsState = z.infer<typeof SocialsStateSchema>
+export type SocialsActiveState = z.infer<typeof SocialsActiveStateSchema>
 
 export type AvatarPreset = {
   id: string

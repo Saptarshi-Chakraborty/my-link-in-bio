@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { Copy, ExternalLink, Phone } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import { useEffect } from 'react'
 
 import { SidebarProvider, SidebarInset, SidebarTrigger } from '@/components/ui/sidebar'
 import { AppSidebar } from '@/components/app-sidebar'
@@ -23,218 +23,59 @@ import {
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { ScrollArea } from '@/components/ui/scroll-area'
 
-// Extracted Modular Components & Types
-import type { PageElement, SocialsState, SocialsActiveState } from '@/components/builder/types'
+// Extracted Modular Components
 import { MobileMockup } from '@/components/builder/mobile-mockup'
-import { ProfileHeaderCard, avatarPresets } from '@/components/builder/profile-header-card'
+import { ProfileHeaderCard } from '@/components/builder/profile-header-card'
 import { CustomLinksCard } from '@/components/builder/custom-links-card'
 
-const defaultLinks: PageElement[] = [
-  {
-    id: 'github',
-    type: 'button',
-    title: 'GitHub',
-    url: 'https://github.com/Saptarshi-Chakraborty',
-    clicks: 33,
-    active: true,
-    style: {
-      align: 'center',
-      shape: 'pill',
-      variant: 'fill'
-    }
-  },
-  {
-    id: 'linkedin',
-    type: 'button',
-    title: 'LinkedIn',
-    url: 'https://www.linkedin.com/in/saptarshi-chakraborty-sc/',
-    clicks: 16,
-    active: true,
-    style: {
-      align: 'center',
-      shape: 'rounded',
-      variant: 'outline'
-    }
-  },
-  {
-    id: 'youtube-intro',
-    type: 'youtube',
-    videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-    active: true,
-    style: {
-      shape: 'rounded',
-      aspectRatio: '16:9'
-    }
-  },
-  {
-    id: 'carousel-gallery',
-    type: 'carousel',
-    active: true,
-    style: {
-      aspectRatio: '16:9',
-      shape: 'rounded'
-    },
-    items: [
-      {
-        id: 'slide-1',
-        imageUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400',
-        title: 'Project Alpha',
-        url: 'https://github.com'
-      },
-      {
-        id: 'slide-2',
-        imageUrl: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=400',
-        title: 'Design Showcase',
-        url: 'https://saptarshi.design'
-      }
-    ]
-  }
-]
+// Validation Schema & Storage Imports
+import { profileStorage } from '@/lib/storage'
+import type { ProfilePageData } from '@/lib/schemas/profile'
+import { useBuilderStore } from '@/store/use-builder-store'
 
 export const Route = createFileRoute('/builder-new')({
   component: BuilderPage,
 })
 
 function BuilderPage() {
-  // Elements State
-  const [links, setLinks] = useState<PageElement[]>(defaultLinks)
-  
-  // Profile State
-  const [profileName, setProfileName] = useState('Saptarshi Chakraborty')
-  const [profileBio, setProfileBio] = useState('Designer & Developer')
-  const [profileAvatar, setProfileAvatar] = useState('neon')
-  
-  // Socials State
-  const [socials, setSocials] = useState<SocialsState>({
-    github: 'Saptarshi-Chakraborty',
-    linkedin: 'saptarshi-chakraborty-sc',
-    facebook: 'saptarshi.facebook',
-    instagram: 'saptarshichakraborty_tm',
-  })
-  
-  const [socialsActive, setSocialsActive] = useState<SocialsActiveState>({
-    github: true,
-    linkedin: true,
-    facebook: true,
-    instagram: true,
-  })
-  
-  // Theme State
-  const selectedTheme = 'minimalist'
+  // Retrieve Zustand states
+  const profileName = useBuilderStore((state) => state.profileName)
+  const profileBio = useBuilderStore((state) => state.profileBio)
+  const profileAvatar = useBuilderStore((state) => state.profileAvatar)
+  const socials = useBuilderStore((state) => state.socials)
+  const socialsActive = useBuilderStore((state) => state.socialsActive)
+  const links = useBuilderStore((state) => state.links)
+  const theme = useBuilderStore((state) => state.theme)
 
-  const activeLinks = useMemo(
-    () => links.filter((item) => item.active),
-    [links],
-  )
-
-  // Handlers
-  const handleAddElement = (type: 'button' | 'carousel' | 'youtube') => {
-    const newId = `${type}-${Date.now()}`
-    let newElement: PageElement
-
-    if (type === 'button') {
-      newElement = {
-        id: newId,
-        type: 'button',
-        title: 'My New Link',
-        url: 'https://example.com',
-        clicks: 0,
-        active: true,
-        style: {
-          align: 'center',
-          shape: 'rounded',
-          variant: 'fill'
-        }
-      }
-    } else if (type === 'youtube') {
-      newElement = {
-        id: newId,
-        type: 'youtube',
-        videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-        active: true,
-        style: {
-          shape: 'rounded',
-          aspectRatio: '16:9'
-        }
-      }
-    } else {
-      newElement = {
-        id: newId,
-        type: 'carousel',
-        active: true,
-        style: {
-          aspectRatio: '1:1',
-          shape: 'rounded'
-        },
-        items: [
-          {
-            id: `slide-${Date.now()}`,
-            imageUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400',
-            title: 'New Slide',
-            url: ''
-          }
-        ]
-      }
+  // Debounced auto-save effect
+  useEffect(() => {
+    const dataToSave: ProfilePageData = {
+      version: 1,
+      profileName,
+      profileBio,
+      profileAvatar,
+      socials,
+      socialsActive,
+      links,
+      theme,
     }
 
-    setLinks((prev) => [newElement, ...prev])
-  }
+    const timer = setTimeout(() => {
+      profileStorage.save(dataToSave)
+    }, 800) // 800ms debounce
 
-  const handleDeleteLink = (id: string) => {
-    setLinks((prev) => prev.filter((item) => item.id !== id))
-  }
+    // Save immediately if the user closes the page or reloads
+    const handleUnload = () => {
+      profileStorage.save(dataToSave)
+    }
+    window.addEventListener('beforeunload', handleUnload)
 
-  const handleUpdateLink = (id: string, key: string, value: any) => {
-    setLinks((prev) =>
-      prev.map((item) => {
-        if (item.id !== id) return item
-        
-        if (key.startsWith('style.')) {
-          const styleKey = key.split('.')[1]
-          return {
-            ...item,
-            style: {
-              ...(item.style || {}),
-              [styleKey]: value
-            }
-          } as PageElement
-        }
-        
-        return { ...item, [key]: value } as PageElement
-      }),
-    )
-  }
+    return () => {
+      clearTimeout(timer)
+      window.removeEventListener('beforeunload', handleUnload)
+    }
+  }, [profileName, profileBio, profileAvatar, socials, socialsActive, links, theme])
 
-  const toggleLink = (id: string) => {
-    setLinks((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, active: !item.active } : item,
-      ),
-    )
-  }
-
-  const handleReorderLinks = (fromIndex: number, toIndex: number) => {
-    setLinks((prev) => {
-      const updated = [...prev]
-      const [moved] = updated.splice(fromIndex, 1)
-      updated.splice(toIndex, 0, moved)
-      return updated
-    })
-  }
-
-  const handleUpdateSocial = (platform: keyof SocialsState, value: string) => {
-    setSocials((prev) => ({ ...prev, [platform]: value }))
-  }
-
-  const handleToggleSocial = (platform: keyof SocialsActiveState) => {
-    setSocialsActive((prev) => ({ ...prev, [platform]: !prev[platform] }))
-  }
-
-  // Get active avatar CSS class
-  const activeAvatarCss = useMemo(() => {
-    const preset = avatarPresets.find(p => p.id === profileAvatar)
-    return preset ? preset.css : 'bg-zinc-800'
-  }, [profileAvatar])
 
   return (
     <TooltipProvider>
@@ -304,15 +145,7 @@ function BuilderPage() {
                     <SheetTitle>Mobile Preview</SheetTitle>
                   </div>
                   <div className="scale-90 sm:scale-100">
-                    <MobileMockup
-                      profileName={profileName}
-                      profileBio={profileBio}
-                      activeAvatarCss={activeAvatarCss}
-                      socials={socials}
-                      socialsActive={socialsActive}
-                      activeLinks={activeLinks}
-                      selectedTheme={selectedTheme}
-                    />
+                    <MobileMockup />
                   </div>
                 </SheetContent>
               </Sheet>
@@ -332,30 +165,10 @@ function BuilderPage() {
                 </div>
 
                 {/* Card 1: Profile Header & Socials (Read-only + Slide Edit) */}
-                <ProfileHeaderCard
-                  profileName={profileName}
-                  setProfileName={setProfileName}
-                  profileBio={profileBio}
-                  setProfileBio={setProfileBio}
-                  profileAvatar={profileAvatar}
-                  setProfileAvatar={setProfileAvatar}
-                  activeAvatarCss={activeAvatarCss}
-                  socials={socials}
-                  socialsActive={socialsActive}
-                  handleUpdateSocial={handleUpdateSocial}
-                  handleToggleSocial={handleToggleSocial}
-                />
+                <ProfileHeaderCard />
 
                 {/* Card 3: Manage Links */}
-                <CustomLinksCard
-                  links={links}
-                  activeLinks={activeLinks}
-                  handleAddElement={handleAddElement}
-                  handleDeleteLink={handleDeleteLink}
-                  handleUpdateLink={handleUpdateLink}
-                  toggleLink={toggleLink}
-                  handleReorderLinks={handleReorderLinks}
-                />
+                <CustomLinksCard />
               </div>
             </ScrollArea>
 
@@ -365,15 +178,7 @@ function BuilderPage() {
                 <h3 className="font-bold text-sm text-zinc-800">Live Preview</h3>
                 <span className="text-[10px] font-bold bg-white shadow-sm border px-2 py-1 rounded text-zinc-500">Mockup</span>
               </div>
-              <MobileMockup
-                profileName={profileName}
-                profileBio={profileBio}
-                activeAvatarCss={activeAvatarCss}
-                socials={socials}
-                socialsActive={socialsActive}
-                activeLinks={activeLinks}
-                selectedTheme={selectedTheme}
-              />
+              <MobileMockup />
             </div>
           </div>
         </SidebarInset>

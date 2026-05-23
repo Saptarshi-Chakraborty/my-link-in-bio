@@ -5,27 +5,18 @@ import { Button } from '@/components/ui/button'
 import { DragDropProvider, DragOverlay } from '@dnd-kit/react'
 import { isSortable } from '@dnd-kit/react/sortable'
 import { LinkEditorItem } from './link-editor-item'
-import type { PageElement } from './types'
+import { useBuilderStore } from '@/store/use-builder-store'
 
-interface CustomLinksCardProps {
-  links: PageElement[]
-  activeLinks: PageElement[]
-  handleAddElement: (type: 'button' | 'carousel' | 'youtube') => void
-  handleDeleteLink: (id: string) => void
-  handleUpdateLink: (id: string, key: string, value: any) => void
-  toggleLink: (id: string) => void
-  handleReorderLinks: (fromIndex: number, toIndex: number) => void
-}
+export function CustomLinksCard() {
+  const links = useBuilderStore((state) => state.links)
+  const handleAddElement = useBuilderStore((state) => state.addElement)
+  const handleReorderLinks = useBuilderStore((state) => state.reorderLinks)
 
-export function CustomLinksCard({
-  links,
-  activeLinks,
-  handleAddElement,
-  handleDeleteLink,
-  handleUpdateLink,
-  toggleLink,
-  handleReorderLinks
-}: CustomLinksCardProps) {
+  const activeLinks = useMemo(
+    () => links.filter((item) => item.active),
+    [links],
+  )
+
   const [activeId, setActiveId] = useState<string | null>(null)
 
   const activeItem = useMemo(
@@ -103,9 +94,6 @@ export function CustomLinksCard({
                 key={item.id}
                 item={item}
                 index={index}
-                handleDeleteLink={handleDeleteLink}
-                handleUpdateLink={handleUpdateLink}
-                toggleLink={toggleLink}
               />
             ))}
           </div>
@@ -115,9 +103,6 @@ export function CustomLinksCard({
               <LinkEditorItem
                 item={activeItem}
                 index={-1}
-                handleDeleteLink={() => {}}
-                handleUpdateLink={() => {}}
-                toggleLink={() => {}}
                 isOverlay
               />
             ) : null}

@@ -1,9 +1,26 @@
 import { useMemo } from 'react'
 import { Share2 } from 'lucide-react'
-import { GithubIcon, LinkedinIcon, FacebookIcon, InstagramIcon } from './icons'
+import { GithubIcon, LinkedinIcon, FacebookIcon, InstagramIcon, XIcon, SnapchatIcon, ThreadsIcon, MastodonIcon } from './icons'
 import { ElementRenderer } from './element-renderer'
 import { useBuilderStore } from '@/store/use-builder-store'
 import { avatarPresets } from './profile-header-card'
+
+const getMastodonUrl = (val: string) => {
+  if (!val) return ''
+  if (val.startsWith('http://') || val.startsWith('https://')) return val
+  if (val.startsWith('@')) {
+    const parts = val.slice(1).split('@')
+    if (parts.length === 2) {
+      return `https://${parts[1]}/@${parts[0]}`
+    }
+  } else {
+    const parts = val.split('@')
+    if (parts.length === 2) {
+      return `https://${parts[1]}/@${parts[0]}`
+    }
+  }
+  return val
+}
 
 export function MobileMockup() {
   const profileName = useBuilderStore((state) => state.profileName)
@@ -75,6 +92,18 @@ export function MobileMockup() {
               } else if (s.platform === 'instagram') {
                 href = `https://instagram.com/${s.value}`
                 icon = <InstagramIcon className="w-3 h-3" />
+              } else if (s.platform === 'x') {
+                href = `https://x.com/${s.value}`
+                icon = <XIcon className="w-3 h-3" />
+              } else if (s.platform === 'snapchat') {
+                href = `https://snapchat.com/add/${s.value}`
+                icon = <SnapchatIcon className="w-3 h-3" />
+              } else if (s.platform === 'threads') {
+                href = `https://threads.net/@${s.value}`
+                icon = <ThreadsIcon className="w-3 h-3" />
+              } else if (s.platform === 'mastodon') {
+                href = getMastodonUrl(s.value)
+                icon = <MastodonIcon className="w-3 h-3" />
               }
               
               if (!icon) return null

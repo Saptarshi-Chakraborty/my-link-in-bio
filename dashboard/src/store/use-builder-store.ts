@@ -102,7 +102,7 @@ interface BuilderState {
   setProfileBio: (bio: string) => void
   setProfileAvatar: (avatar: string) => void
   updateSocial: (platform: string, value: string) => void
-  addSocial: (platform: 'github' | 'linkedin' | 'facebook' | 'instagram') => void
+  addSocial: (platform: 'github' | 'linkedin' | 'facebook' | 'instagram' | 'x' | 'snapchat' | 'threads' | 'mastodon') => void
   removeSocial: (platform: string) => void
   reorderSocials: (fromIndex: number, toIndex: number) => void
   cleanEmptySocials: () => void

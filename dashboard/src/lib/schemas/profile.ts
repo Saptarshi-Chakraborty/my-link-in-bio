@@ -65,7 +65,7 @@ export const PageElementSchema = z.discriminatedUnion('type', [
 
 // 6. Socials State Schema
 export const SocialInstanceSchema = z.object({
-  platform: z.enum(['github', 'linkedin', 'facebook', 'instagram']),
+  platform: z.enum(['github', 'linkedin', 'facebook', 'instagram', 'x', 'snapchat', 'threads', 'mastodon']),
   value: z.string(),
 })
 

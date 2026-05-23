@@ -34,7 +34,7 @@ import { DragDropProvider, DragOverlay } from '@dnd-kit/react'
 import { isSortable, useSortable } from '@dnd-kit/react/sortable'
 
 import { SocialInputField } from './social-input-field'
-import { GithubIcon, LinkedinIcon, FacebookIcon, InstagramIcon } from './icons'
+import { GithubIcon, LinkedinIcon, FacebookIcon, InstagramIcon, XIcon, SnapchatIcon, ThreadsIcon, MastodonIcon } from './icons'
 import { useBuilderStore } from '@/store/use-builder-store'
 import type { SocialsState } from './types'
 
@@ -94,6 +94,23 @@ function SortableSocialItem({ platformId, label, icon, index, isOverlay = false 
   )
 }
 
+const getMastodonUrl = (val: string) => {
+  if (!val) return ''
+  if (val.startsWith('http://') || val.startsWith('https://')) return val
+  if (val.startsWith('@')) {
+    const parts = val.slice(1).split('@')
+    if (parts.length === 2) {
+      return `https://${parts[1]}/@${parts[0]}`
+    }
+  } else {
+    const parts = val.split('@')
+    if (parts.length === 2) {
+      return `https://${parts[1]}/@${parts[0]}`
+    }
+  }
+  return val
+}
+
 export function ProfileHeaderCard() {
   const profileName = useBuilderStore((state) => state.profileName)
   const setProfileName = useBuilderStore((state) => state.setProfileName)
@@ -103,7 +120,17 @@ export function ProfileHeaderCard() {
   const setProfileAvatar = useBuilderStore((state) => state.setProfileAvatar)
   const socials = useBuilderStore((state) => state.socials)
   const handleUpdateSocial = useBuilderStore((state) => state.updateSocial)
-  const handleAddSocial = useBuilderStore((state) => state.addSocial)
+  const addSocial = useBuilderStore((state) => state.addSocial)
+  const handleAddSocial = (platform: 'github' | 'linkedin' | 'facebook' | 'instagram' | 'x' | 'snapchat' | 'threads' | 'mastodon') => {
+    addSocial(platform)
+    setTimeout(() => {
+      const inputElement = document.getElementById(`social-input-${platform}`)
+      if (inputElement) {
+        inputElement.focus()
+        inputElement.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }
+    }, 80)
+  }
   const handleRemoveSocial = useBuilderStore((state) => state.removeSocial)
   const handleReorderSocials = useBuilderStore((state) => state.reorderSocials)
   const cleanEmptySocials = useBuilderStore((state) => state.cleanEmptySocials)
@@ -177,6 +204,22 @@ export function ProfileHeaderCard() {
           url = `https://instagram.com/${s.value}`
           icon = <InstagramIcon className="w-4 h-4" />
           label = 'Instagram'
+        } else if (s.platform === 'x') {
+          url = `https://x.com/${s.value}`
+          icon = <XIcon className="w-4 h-4" />
+          label = 'X (Twitter)'
+        } else if (s.platform === 'snapchat') {
+          url = `https://snapchat.com/add/${s.value}`
+          icon = <SnapchatIcon className="w-4 h-4" />
+          label = 'Snapchat'
+        } else if (s.platform === 'threads') {
+          url = `https://threads.net/@${s.value}`
+          icon = <ThreadsIcon className="w-4 h-4" />
+          label = 'Threads'
+        } else if (s.platform === 'mastodon') {
+          url = getMastodonUrl(s.value)
+          icon = <MastodonIcon className="w-4 h-4" />
+          label = 'Mastodon'
         }
 
         return {
@@ -204,6 +247,18 @@ export function ProfileHeaderCard() {
     if (!activeSet.has('instagram')) {
       list.push({ id: 'instagram' as const, label: 'Instagram', icon: <InstagramIcon className="w-4 h-4" /> })
     }
+    if (!activeSet.has('x')) {
+      list.push({ id: 'x' as const, label: 'X (Twitter)', icon: <XIcon className="w-4 h-4" /> })
+    }
+    if (!activeSet.has('snapchat')) {
+      list.push({ id: 'snapchat' as const, label: 'Snapchat', icon: <SnapchatIcon className="w-4 h-4" /> })
+    }
+    if (!activeSet.has('threads')) {
+      list.push({ id: 'threads' as const, label: 'Threads', icon: <ThreadsIcon className="w-4 h-4" /> })
+    }
+    if (!activeSet.has('mastodon')) {
+      list.push({ id: 'mastodon' as const, label: 'Mastodon', icon: <MastodonIcon className="w-4 h-4" /> })
+    }
     return list
   }, [socials])
 
@@ -224,6 +279,18 @@ export function ProfileHeaderCard() {
       } else if (s.platform === 'instagram') {
         label = 'Instagram'
         icon = <InstagramIcon className="w-4 h-4" />
+      } else if (s.platform === 'x') {
+        label = 'X (Twitter)'
+        icon = <XIcon className="w-4 h-4" />
+      } else if (s.platform === 'snapchat') {
+        label = 'Snapchat'
+        icon = <SnapchatIcon className="w-4 h-4" />
+      } else if (s.platform === 'threads') {
+        label = 'Threads'
+        icon = <ThreadsIcon className="w-4 h-4" />
+      } else if (s.platform === 'mastodon') {
+        label = 'Mastodon'
+        icon = <MastodonIcon className="w-4 h-4" />
       }
       return {
         id: s.platform,
@@ -446,6 +513,7 @@ export function ProfileHeaderCard() {
                     {activePlatforms.map((platform) => (
                       <SocialInputField
                         key={platform.id}
+                        id={`social-input-${platform.id}`}
                         label={platform.label}
                         icon={platform.icon}
                         value={platform.value}

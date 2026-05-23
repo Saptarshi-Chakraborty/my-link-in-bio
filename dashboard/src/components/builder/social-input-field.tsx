@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Trash2 } from 'lucide-react'
 
 interface SocialInputFieldProps {
+  id?: string
   label: string
   icon: ReactNode
   value: string
@@ -11,7 +12,7 @@ interface SocialInputFieldProps {
   onRemove: () => void
 }
 
-export function SocialInputField({ label, icon, value, onChange, onRemove }: SocialInputFieldProps) {
+export function SocialInputField({ id, label, icon, value, onChange, onRemove }: SocialInputFieldProps) {
   return (
     <div className="flex items-center gap-3 rounded-xl border bg-zinc-50 p-2.5 text-xs">
       <div className="flex items-center gap-2 text-zinc-700 font-semibold shrink-0">
@@ -19,6 +20,7 @@ export function SocialInputField({ label, icon, value, onChange, onRemove }: Soc
         <span className="hidden sm:inline">{label}</span>
       </div>
       <Input
+        id={id}
         type="text"
         value={value}
         onChange={(e) => onChange(e.target.value)}

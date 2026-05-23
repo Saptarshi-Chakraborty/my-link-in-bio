@@ -119,6 +119,8 @@ export function ProfileHeaderCard() {
   const profileAvatar = useBuilderStore((state) => state.profileAvatar)
   const setProfileAvatar = useBuilderStore((state) => state.setProfileAvatar)
   const socials = useBuilderStore((state) => state.socials)
+  const socialsPosition = useBuilderStore((state) => state.socialsPosition)
+  const setSocialsPosition = useBuilderStore((state) => state.setSocialsPosition)
   const handleUpdateSocial = useBuilderStore((state) => state.updateSocial)
   const addSocial = useBuilderStore((state) => state.addSocial)
   const handleAddSocial = (platform: 'github' | 'linkedin' | 'facebook' | 'instagram' | 'x' | 'snapchat' | 'threads' | 'mastodon') => {
@@ -150,6 +152,7 @@ export function ProfileHeaderCard() {
     profileBio: string
     profileAvatar: string
     socials: SocialsState
+    socialsPosition: 'top' | 'bottom'
   } | null>(null)
   const isSavingRef = useRef(false)
 
@@ -160,6 +163,7 @@ export function ProfileHeaderCard() {
         profileBio,
         profileAvatar,
         socials: socials.map(s => ({ ...s })),
+        socialsPosition,
       }
       setIsOpen(true)
     } else {
@@ -505,6 +509,38 @@ export function ProfileHeaderCard() {
                         </DropdownMenuContent>
                       </DropdownMenu>
                     )}
+                  </div>
+                </div>
+
+                {/* Display Position Settings Card */}
+                <div className="flex items-center justify-between bg-zinc-50/50 p-3 rounded-xl border border-zinc-150">
+                  <div className="flex flex-col gap-0.5">
+                    <Label className="text-xs font-bold text-zinc-800">Display Position</Label>
+                    <span className="text-[10px] text-zinc-400">Place social icons at top or bottom.</span>
+                  </div>
+                  <div className="flex border border-zinc-200/80 bg-zinc-100 rounded-lg p-0.5 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => setSocialsPosition('top')}
+                      className={`text-[10px] font-bold px-3 py-1 rounded-md transition-all ${
+                        socialsPosition === 'top'
+                          ? 'bg-white text-zinc-950 shadow-xs'
+                          : 'text-zinc-500 hover:text-zinc-700'
+                      }`}
+                    >
+                      Top
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setSocialsPosition('bottom')}
+                      className={`text-[10px] font-bold px-3 py-1 rounded-md transition-all ${
+                        socialsPosition === 'bottom'
+                          ? 'bg-white text-zinc-950 shadow-xs'
+                          : 'text-zinc-500 hover:text-zinc-750'
+                      }`}
+                    >
+                      Bottom
+                    </button>
                   </div>
                 </div>
 

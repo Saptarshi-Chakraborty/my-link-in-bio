@@ -73,7 +73,7 @@ const defaultLinks: PageElement[] = [
 
 const getInitialData = (): ProfilePageData => {
   return profileStorage.load() || {
-    version: 2,
+    version: 3,
     profileName: 'Saptarshi Chakraborty',
     profileBio: 'Designer & Developer',
     profileAvatar: 'neon',
@@ -83,6 +83,7 @@ const getInitialData = (): ProfilePageData => {
       { platform: 'facebook', value: 'saptarshi.facebook' },
       { platform: 'instagram', value: 'saptarshichakraborty_tm' },
     ],
+    socialsPosition: 'top',
     links: defaultLinks,
     theme: 'minimalist'
   }
@@ -95,12 +96,14 @@ interface BuilderState {
   profileBio: string
   profileAvatar: string
   socials: SocialsState
+  socialsPosition: 'top' | 'bottom'
   links: PageElement[]
   theme: string
 
   setProfileName: (name: string) => void
   setProfileBio: (bio: string) => void
   setProfileAvatar: (avatar: string) => void
+  setSocialsPosition: (position: 'top' | 'bottom') => void
   updateSocial: (platform: string, value: string) => void
   addSocial: (platform: 'github' | 'linkedin' | 'facebook' | 'instagram' | 'x' | 'snapchat' | 'threads' | 'mastodon') => void
   removeSocial: (platform: string) => void
@@ -111,6 +114,7 @@ interface BuilderState {
     profileBio: string
     profileAvatar: string
     socials: SocialsState
+    socialsPosition: 'top' | 'bottom'
   }) => void
   addElement: (type: 'button' | 'carousel' | 'youtube') => void
   deleteLink: (id: string) => void
@@ -125,12 +129,14 @@ export const useBuilderStore = create<BuilderState>((set) => ({
   profileBio: initialData.profileBio,
   profileAvatar: initialData.profileAvatar,
   socials: initialData.socials,
+  socialsPosition: initialData.socialsPosition || 'top',
   links: initialData.links,
   theme: initialData.theme,
 
   setProfileName: (name) => set({ profileName: name }),
   setProfileBio: (bio) => set({ profileBio: bio }),
   setProfileAvatar: (avatar) => set({ profileAvatar: avatar }),
+  setSocialsPosition: (position) => set({ socialsPosition: position }),
   updateSocial: (platform, value) =>
     set((state) => ({
       socials: state.socials.map((s) =>

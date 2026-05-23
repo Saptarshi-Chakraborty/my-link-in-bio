@@ -27,6 +27,7 @@ export function MobileMockup() {
   const profileBio = useBuilderStore((state) => state.profileBio)
   const profileAvatar = useBuilderStore((state) => state.profileAvatar)
   const socials = useBuilderStore((state) => state.socials)
+  const socialsPosition = useBuilderStore((state) => state.socialsPosition)
   const links = useBuilderStore((state) => state.links)
   const selectedTheme = useBuilderStore((state) => state.theme)
 
@@ -39,6 +40,64 @@ export function MobileMockup() {
     const preset = avatarPresets.find(p => p.id === profileAvatar)
     return preset ? preset.css : 'bg-zinc-800'
   }, [profileAvatar])
+
+  const hasActiveSocials = useMemo(() => socials.some(s => s.value && s.value.trim() !== ''), [socials])
+
+  const renderSocialsRow = () => {
+    if (!hasActiveSocials) return null
+    return (
+      <div className={`flex flex-wrap justify-center gap-2 ${socialsPosition === 'bottom' ? 'mt-4 mb-2' : 'mt-3'}`}>
+        {socials.map((s) => {
+          if (!s.value || s.value.trim() === '') return null
+          
+          let href = ''
+          let icon = null
+          
+          if (s.platform === 'github') {
+            href = `https://github.com/${s.value}`
+            icon = <GithubIcon className="w-3 h-3" />
+          } else if (s.platform === 'linkedin') {
+            href = `https://linkedin.com/in/${s.value}`
+            icon = <LinkedinIcon className="w-3 h-3" />
+          } else if (s.platform === 'facebook') {
+            href = `https://facebook.com/${s.value}`
+            icon = <FacebookIcon className="w-3 h-3" />
+          } else if (s.platform === 'instagram') {
+            href = `https://instagram.com/${s.value}`
+            icon = <InstagramIcon className="w-3 h-3" />
+          } else if (s.platform === 'x') {
+            href = `https://x.com/${s.value}`
+            icon = <XIcon className="w-3 h-3" />
+          } else if (s.platform === 'snapchat') {
+            href = `https://snapchat.com/add/${s.value}`
+            icon = <SnapchatIcon className="w-3 h-3" />
+          } else if (s.platform === 'threads') {
+            href = `https://threads.net/@${s.value}`
+            icon = <ThreadsIcon className="w-3 h-3" />
+          } else if (s.platform === 'mastodon') {
+            href = getMastodonUrl(s.value)
+            icon = <MastodonIcon className="w-3 h-3" />
+          }
+          
+          if (!icon) return null
+
+          return (
+            <a
+              key={s.platform}
+              href={href}
+              target="_blank"
+              rel="noreferrer"
+              style={{ color: 'var(--phone-text)' }}
+              className="opacity-80 hover:opacity-100 hover:scale-110 transition-transform"
+            >
+              {icon}
+            </a>
+          )
+        })}
+      </div>
+    )
+  }
+
   return (
     <div className="w-[230px] h-[480px] shrink-0 rounded-[2.2rem] border-[5px] border-zinc-900 bg-zinc-950 p-1.5 shadow-2xl relative overflow-hidden flex flex-col">
       {/* Phone Notch/Speaker */}
@@ -58,7 +117,7 @@ export function MobileMockup() {
         </div>
 
         {/* Profile Info inside mockup */}
-        <div className="flex flex-col items-center text-center mt-2 w-full">
+        <div className="flex flex-col items-center text-center mt-2 w-full mb-4">
           {/* Dynamic Avatar */}
           <div className={`h-12 w-12 rounded-full flex items-center justify-center text-white text-base font-bold shadow-md border-2 border-white/20 mb-2 ${activeAvatarCss}`}>
             {profileName.charAt(0)}
@@ -73,55 +132,7 @@ export function MobileMockup() {
           </p>
 
           {/* Social handles row inside mockup */}
-          <div className="flex flex-wrap justify-center gap-2 mt-3 mb-4">
-            {socials.map((s) => {
-              if (!s.value || s.value.trim() === '') return null
-              
-              let href = ''
-              let icon = null
-              
-              if (s.platform === 'github') {
-                href = `https://github.com/${s.value}`
-                icon = <GithubIcon className="w-3 h-3" />
-              } else if (s.platform === 'linkedin') {
-                href = `https://linkedin.com/in/${s.value}`
-                icon = <LinkedinIcon className="w-3 h-3" />
-              } else if (s.platform === 'facebook') {
-                href = `https://facebook.com/${s.value}`
-                icon = <FacebookIcon className="w-3 h-3" />
-              } else if (s.platform === 'instagram') {
-                href = `https://instagram.com/${s.value}`
-                icon = <InstagramIcon className="w-3 h-3" />
-              } else if (s.platform === 'x') {
-                href = `https://x.com/${s.value}`
-                icon = <XIcon className="w-3 h-3" />
-              } else if (s.platform === 'snapchat') {
-                href = `https://snapchat.com/add/${s.value}`
-                icon = <SnapchatIcon className="w-3 h-3" />
-              } else if (s.platform === 'threads') {
-                href = `https://threads.net/@${s.value}`
-                icon = <ThreadsIcon className="w-3 h-3" />
-              } else if (s.platform === 'mastodon') {
-                href = getMastodonUrl(s.value)
-                icon = <MastodonIcon className="w-3 h-3" />
-              }
-              
-              if (!icon) return null
-
-              return (
-                <a
-                  key={s.platform}
-                  href={href}
-                  target="_blank"
-                  rel="noreferrer"
-                  style={{ color: 'var(--phone-text)' }}
-                  className="opacity-80 hover:opacity-100 hover:scale-110 transition-transform"
-                >
-                  {icon}
-                </a>
-              )
-            })}
-          </div>
+          {socialsPosition === 'top' && renderSocialsRow()}
         </div>
 
         {/* Active custom link list buttons inside mockup */}
@@ -135,6 +146,9 @@ export function MobileMockup() {
             </div>
           )}
         </div>
+
+        {/* Social handles bottom row */}
+        {socialsPosition === 'bottom' && renderSocialsRow()}
         
         {/* Phone Footer brand logo */}
         <div className="mt-4 pt-2 border-t border-white/5 w-full flex justify-center opacity-60">

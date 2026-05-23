@@ -79,13 +79,14 @@ export const SocialsActiveStateSchema = z.object({
   instagram: z.boolean(),
 })
 
-// 8. Unified Root Profile Page Schema (Version 2)
+// 8. Unified Root Profile Page Schema (Version 3)
 export const ProfilePageDataSchema = z.object({
-  version: z.literal(2).default(2),
+  version: z.literal(3).default(3),
   profileName: z.string().default(''),
   profileBio: z.string().default(''),
   profileAvatar: z.string().default('neon'),
   socials: SocialsStateSchema,
+  socialsPosition: z.enum(['top', 'bottom']).default('top'),
   links: z.array(PageElementSchema).default([]),
   theme: z.string().default('minimalist'),
 })
@@ -136,6 +137,16 @@ const MIGRATIONS: Migration[] = [
       
       delete migrated.socialsActive
       return migrated
+    }
+  },
+  {
+    version: 3,
+    migrate: (data) => {
+      if (!data) return data
+      return {
+        ...data,
+        socialsPosition: 'top',
+      }
     }
   }
 ]

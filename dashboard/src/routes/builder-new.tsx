@@ -43,19 +43,17 @@ function BuilderPage() {
   const profileBio = useBuilderStore((state) => state.profileBio)
   const profileAvatar = useBuilderStore((state) => state.profileAvatar)
   const socials = useBuilderStore((state) => state.socials)
-  const socialsActive = useBuilderStore((state) => state.socialsActive)
   const links = useBuilderStore((state) => state.links)
   const theme = useBuilderStore((state) => state.theme)
 
   // Debounced auto-save effect
   useEffect(() => {
     const dataToSave: ProfilePageData = {
-      version: 1,
+      version: 2,
       profileName,
       profileBio,
       profileAvatar,
       socials,
-      socialsActive,
       links,
       theme,
     }
@@ -74,7 +72,7 @@ function BuilderPage() {
       clearTimeout(timer)
       window.removeEventListener('beforeunload', handleUnload)
     }
-  }, [profileName, profileBio, profileAvatar, socials, socialsActive, links, theme])
+  }, [profileName, profileBio, profileAvatar, socials, links, theme])
 
 
   return (

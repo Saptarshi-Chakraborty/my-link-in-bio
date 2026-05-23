@@ -10,7 +10,6 @@ export function MobileMockup() {
   const profileBio = useBuilderStore((state) => state.profileBio)
   const profileAvatar = useBuilderStore((state) => state.profileAvatar)
   const socials = useBuilderStore((state) => state.socials)
-  const socialsActive = useBuilderStore((state) => state.socialsActive)
   const links = useBuilderStore((state) => state.links)
   const selectedTheme = useBuilderStore((state) => state.theme)
 
@@ -58,26 +57,41 @@ export function MobileMockup() {
 
           {/* Social handles row inside mockup */}
           <div className="flex flex-wrap justify-center gap-2 mt-3 mb-4">
-            {socialsActive.github && socials.github && (
-              <a href={`https://github.com/${socials.github}`} target="_blank" rel="noreferrer" style={{ color: 'var(--phone-text)' }} className="opacity-80 hover:opacity-100 hover:scale-110 transition-transform">
-                <GithubIcon className="w-3 h-3" />
-              </a>
-            )}
-            {socialsActive.linkedin && socials.linkedin && (
-              <a href={`https://linkedin.com/in/${socials.linkedin}`} target="_blank" rel="noreferrer" style={{ color: 'var(--phone-text)' }} className="opacity-80 hover:opacity-100 hover:scale-110 transition-transform">
-                <LinkedinIcon className="w-3 h-3" />
-              </a>
-            )}
-            {socialsActive.facebook && socials.facebook && (
-              <a href={`https://facebook.com/${socials.facebook}`} target="_blank" rel="noreferrer" style={{ color: 'var(--phone-text)' }} className="opacity-80 hover:opacity-100 hover:scale-110 transition-transform">
-                <FacebookIcon className="w-3 h-3" />
-              </a>
-            )}
-            {socialsActive.instagram && socials.instagram && (
-              <a href={`https://instagram.com/${socials.instagram}`} target="_blank" rel="noreferrer" style={{ color: 'var(--phone-text)' }} className="opacity-80 hover:opacity-100 hover:scale-110 transition-transform">
-                <InstagramIcon className="w-3 h-3" />
-              </a>
-            )}
+            {socials.map((s) => {
+              if (!s.value || s.value.trim() === '') return null
+              
+              let href = ''
+              let icon = null
+              
+              if (s.platform === 'github') {
+                href = `https://github.com/${s.value}`
+                icon = <GithubIcon className="w-3 h-3" />
+              } else if (s.platform === 'linkedin') {
+                href = `https://linkedin.com/in/${s.value}`
+                icon = <LinkedinIcon className="w-3 h-3" />
+              } else if (s.platform === 'facebook') {
+                href = `https://facebook.com/${s.value}`
+                icon = <FacebookIcon className="w-3 h-3" />
+              } else if (s.platform === 'instagram') {
+                href = `https://instagram.com/${s.value}`
+                icon = <InstagramIcon className="w-3 h-3" />
+              }
+              
+              if (!icon) return null
+
+              return (
+                <a
+                  key={s.platform}
+                  href={href}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{ color: 'var(--phone-text)' }}
+                  className="opacity-80 hover:opacity-100 hover:scale-110 transition-transform"
+                >
+                  {icon}
+                </a>
+              )
+            })}
           </div>
         </div>
 

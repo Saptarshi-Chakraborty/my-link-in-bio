@@ -9,6 +9,7 @@ import {
   PageElementSchema,
   SocialsStateSchema,
   SocialsActiveStateSchema,
+  SocialInstanceSchema,
 } from '@/lib/schemas/profile'
 
 export type ElementType = z.infer<typeof ElementTypeSchema>
@@ -23,6 +24,7 @@ export type CarouselElement = z.infer<typeof CarouselElementSchema>
 export type YoutubeElement = z.infer<typeof YoutubeElementSchema>
 export type PageElement = z.infer<typeof PageElementSchema>
 
+export type SocialInstance = z.infer<typeof SocialInstanceSchema>
 export type SocialsState = z.infer<typeof SocialsStateSchema>
 export type SocialsActiveState = z.infer<typeof SocialsActiveStateSchema>
 

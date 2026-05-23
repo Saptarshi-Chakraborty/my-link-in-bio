@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import type { PageElement, SocialsState, SocialsActiveState } from '@/components/builder/types'
+import type { PageElement, SocialsState } from '@/components/builder/types'
 import type { ProfilePageData } from '@/lib/schemas/profile'
 import { profileStorage } from '@/lib/storage'
 
@@ -73,22 +73,16 @@ const defaultLinks: PageElement[] = [
 
 const getInitialData = (): ProfilePageData => {
   return profileStorage.load() || {
-    version: 1,
+    version: 2,
     profileName: 'Saptarshi Chakraborty',
     profileBio: 'Designer & Developer',
     profileAvatar: 'neon',
-    socials: {
-      github: 'Saptarshi-Chakraborty',
-      linkedin: 'saptarshi-chakraborty-sc',
-      facebook: 'saptarshi.facebook',
-      instagram: 'saptarshichakraborty_tm',
-    },
-    socialsActive: {
-      github: true,
-      linkedin: true,
-      facebook: true,
-      instagram: true,
-    },
+    socials: [
+      { platform: 'github', value: 'Saptarshi-Chakraborty' },
+      { platform: 'linkedin', value: 'saptarshi-chakraborty-sc' },
+      { platform: 'facebook', value: 'saptarshi.facebook' },
+      { platform: 'instagram', value: 'saptarshichakraborty_tm' },
+    ],
     links: defaultLinks,
     theme: 'minimalist'
   }
@@ -101,22 +95,22 @@ interface BuilderState {
   profileBio: string
   profileAvatar: string
   socials: SocialsState
-  socialsActive: SocialsActiveState
   links: PageElement[]
   theme: string
 
   setProfileName: (name: string) => void
   setProfileBio: (bio: string) => void
   setProfileAvatar: (avatar: string) => void
-  updateSocial: (platform: keyof SocialsState, value: string) => void
-  toggleSocial: (platform: keyof SocialsActiveState) => void
+  updateSocial: (platform: string, value: string) => void
+  addSocial: (platform: 'github' | 'linkedin' | 'facebook' | 'instagram') => void
+  removeSocial: (platform: string) => void
+  reorderSocials: (fromIndex: number, toIndex: number) => void
   cleanEmptySocials: () => void
   updateProfileHeader: (data: {
     profileName: string
     profileBio: string
     profileAvatar: string
     socials: SocialsState
-    socialsActive: SocialsActiveState
   }) => void
   addElement: (type: 'button' | 'carousel' | 'youtube') => void
   deleteLink: (id: string) => void
@@ -131,7 +125,6 @@ export const useBuilderStore = create<BuilderState>((set) => ({
   profileBio: initialData.profileBio,
   profileAvatar: initialData.profileAvatar,
   socials: initialData.socials,
-  socialsActive: initialData.socialsActive,
   links: initialData.links,
   theme: initialData.theme,
 
@@ -140,30 +133,35 @@ export const useBuilderStore = create<BuilderState>((set) => ({
   setProfileAvatar: (avatar) => set({ profileAvatar: avatar }),
   updateSocial: (platform, value) =>
     set((state) => ({
-      socials: { ...state.socials, [platform]: value },
+      socials: state.socials.map((s) =>
+        s.platform === platform ? { ...s, value } : s
+      ),
     })),
-  toggleSocial: (platform) =>
+  addSocial: (platform) =>
+    set((state) => {
+      if (state.socials.some((s) => s.platform === platform)) return {}
+      return {
+        socials: [...state.socials, { platform, value: '' }],
+      }
+    }),
+  removeSocial: (platform) =>
     set((state) => ({
-      socialsActive: { ...state.socialsActive, [platform]: !state.socialsActive[platform] },
+      socials: state.socials.filter((s) => s.platform !== platform),
     })),
+  reorderSocials: (fromIndex, toIndex) =>
+    set((state) => {
+      const updated = [...state.socials]
+      const [moved] = updated.splice(fromIndex, 1)
+      updated.splice(toIndex, 0, moved)
+      return { socials: updated }
+    }),
   cleanEmptySocials: () =>
     set((state) => {
-      const nextSocials = { ...state.socials }
-      const nextSocialsActive = { ...state.socialsActive }
-      let changed = false
-
-      ;(Object.keys(state.socials) as Array<keyof SocialsState>).forEach((platform) => {
-        const val = state.socials[platform]
-        const isActive = state.socialsActive[platform]
-        if (isActive && (!val || val.trim() === '')) {
-          nextSocials[platform] = ''
-          nextSocialsActive[platform] = false
-          changed = true
-        }
-      })
-
-      if (changed) {
-        return { socials: nextSocials, socialsActive: nextSocialsActive }
+      const nextSocials = state.socials.filter(
+        (s) => s.value && s.value.trim() !== ''
+      )
+      if (nextSocials.length !== state.socials.length) {
+        return { socials: nextSocials }
       }
       return {}
     }),

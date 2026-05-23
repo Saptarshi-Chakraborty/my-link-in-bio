@@ -64,12 +64,12 @@ export const PageElementSchema = z.discriminatedUnion('type', [
 ])
 
 // 6. Socials State Schema
-export const SocialsStateSchema = z.object({
-  github: z.string(),
-  linkedin: z.string(),
-  facebook: z.string(),
-  instagram: z.string(),
+export const SocialInstanceSchema = z.object({
+  platform: z.enum(['github', 'linkedin', 'facebook', 'instagram']),
+  value: z.string(),
 })
+
+export const SocialsStateSchema = z.array(SocialInstanceSchema)
 
 // 7. Socials Active State Schema
 export const SocialsActiveStateSchema = z.object({
@@ -79,14 +79,13 @@ export const SocialsActiveStateSchema = z.object({
   instagram: z.boolean(),
 })
 
-// 8. Unified Root Profile Page Schema (Version 1)
+// 8. Unified Root Profile Page Schema (Version 2)
 export const ProfilePageDataSchema = z.object({
-  version: z.literal(1).default(1),
+  version: z.literal(2).default(2),
   profileName: z.string().default(''),
   profileBio: z.string().default(''),
   profileAvatar: z.string().default('neon'),
   socials: SocialsStateSchema,
-  socialsActive: SocialsActiveStateSchema,
   links: z.array(PageElementSchema).default([]),
   theme: z.string().default('minimalist'),
 })
@@ -102,7 +101,44 @@ interface Migration {
 
 // In the future, append migration steps here.
 // e.g. { version: 2, migrate: (data) => ({ ...data, newField: 'default' }) }
-const MIGRATIONS: Migration[] = []
+const MIGRATIONS: Migration[] = [
+  {
+    version: 2,
+    migrate: (data) => {
+      if (!data) return data
+      
+      const socialsArray: Array<{ platform: string; value: string }> = []
+      const oldSocials = data.socials || {}
+      const oldActive = data.socialsActive || {}
+      
+      const platforms: Array<'github' | 'linkedin' | 'facebook' | 'instagram'> = [
+        'github',
+        'linkedin',
+        'facebook',
+        'instagram',
+      ]
+      
+      for (const platform of platforms) {
+        const val = oldSocials[platform]
+        const isActive = oldActive[platform]
+        if (isActive && typeof val === 'string' && val.trim() !== '') {
+          socialsArray.push({
+            platform,
+            value: val.trim(),
+          })
+        }
+      }
+      
+      const migrated = {
+        ...data,
+        socials: socialsArray,
+      }
+      
+      delete migrated.socialsActive
+      return migrated
+    }
+  }
+]
 
 export function migrateProfileData(rawData: unknown): any {
   if (typeof rawData !== 'object' || rawData === null) {

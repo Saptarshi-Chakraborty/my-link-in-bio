@@ -8,10 +8,13 @@
   "main": "src/index.ts",
   "compatibility_date": "2026-05-18",
   "observability": {
-    "enabled": true,
-  },
-  "traces": {
-    "enabled": false,
+    "logs": {
+      "enabled": true,
+      "invocation_logs": true,
+    },
+    "traces": {
+      "enabled": false,
+    },
   },
   "upload_source_maps": false,
   "compatibility_flags": ["nodejs_compat"],

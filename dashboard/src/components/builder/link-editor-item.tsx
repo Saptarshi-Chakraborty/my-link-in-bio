@@ -11,7 +11,9 @@ import {
   Plus,
   Play,
   Sparkles,
-  SlidersHorizontal
+  SlidersHorizontal,
+  ChevronUp,
+  ChevronDown
 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
@@ -25,6 +27,14 @@ import {
 import { useSortable } from '@dnd-kit/react/sortable'
 import type { PageElement } from './types'
 import { useBuilderStore } from '@/store/use-builder-store'
+
+const PRESET_IMAGES = [
+  { name: 'Gradient', url: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400' },
+  { name: 'Desk', url: 'https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?w=400' },
+  { name: 'Abstract', url: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=400' },
+  { name: 'Tech', url: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=400' },
+  { name: 'Nature', url: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400' }
+]
 
 interface LinkEditorItemProps {
   item: PageElement
@@ -43,6 +53,21 @@ export function LinkEditorItem({
 
   const [isFetching, setIsFetching] = useState(false)
   const [showSettings, setShowSettings] = useState(false)
+
+  const moveSlide = (slideId: string, direction: 'up' | 'down') => {
+    if (item.type !== 'carousel') return
+    const currentItems = [...(item.items || [])]
+    const slideIdx = currentItems.findIndex(s => s.id === slideId)
+    if (slideIdx === -1) return
+    const targetIdx = direction === 'up' ? slideIdx - 1 : slideIdx + 1
+    if (targetIdx < 0 || targetIdx >= currentItems.length) return
+    
+    const temp = currentItems[slideIdx]
+    currentItems[slideIdx] = currentItems[targetIdx]
+    currentItems[targetIdx] = temp
+    
+    handleUpdateLink(item.id, 'items', currentItems)
+  }
 
   const triggerFetch = async (url: string) => {
     if (!url) return
@@ -113,7 +138,7 @@ export function LinkEditorItem({
         <div className="flex-1 min-w-0 space-y-2">
           {/* Header Info (Element Type Badge) */}
           <div className="flex items-center gap-1.5">
-            <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider ${
+            <span className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider ${
               item.type === 'carousel' 
                 ? 'bg-blue-50 text-blue-600 border border-blue-100'
                 : item.type === 'youtube'
@@ -138,7 +163,7 @@ export function LinkEditorItem({
                 type="text"
                 value={item.url}
                 onChange={(e) => handleUpdateLink(item.id, 'url', e.target.value)}
-                className="w-full h-7 bg-transparent border-0 border-b border-transparent hover:border-zinc-200 focus-visible:border-[var(--brand)] px-0 text-xs text-muted-foreground focus-visible:ring-0 shadow-none rounded-none focus-visible:border-b animate-none"
+                className="w-full h-7 bg-transparent border-0 border-b border-transparent hover:border-zinc-200 focus-visible:border-[var(--brand)] px-0 text-xs text-zinc-700 font-medium focus-visible:ring-0 shadow-none rounded-none focus-visible:border-b animate-none"
                 placeholder="https://example.com"
               />
             </div>
@@ -197,11 +222,11 @@ export function LinkEditorItem({
             <div className="space-y-3">
               {/* Carousel Title for Editor Reference */}
               <div className="flex items-center justify-between border-b pb-1.5">
-                <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Slide Configuration</span>
+                <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider">Slide Configuration</span>
                 <Button 
                   type="button"
                   variant="outline" 
-                  className="h-6 px-2 text-[9px] gap-1 font-bold text-zinc-600 hover:text-zinc-900 border-zinc-200 bg-white"
+                  className="h-6 px-2 text-xs gap-1 font-bold text-zinc-600 hover:text-zinc-900 border-zinc-200 bg-white"
                   onClick={() => {
                     const currentItems = item.items || []
                     const newSlide = { 
@@ -218,66 +243,112 @@ export function LinkEditorItem({
               </div>
 
               {/* List of carousel slides */}
-              <div className="space-y-2 max-h-[180px] overflow-y-auto pr-1 scrollbar-thin">
+              <div className="space-y-2 max-h-[220px] overflow-y-auto pr-1 scrollbar-thin">
                 {(!item.items || item.items.length === 0) && (
-                  <p className="text-[10px] text-zinc-400 italic py-2 text-center">No slides added. Click "Add Slide" to begin.</p>
+                  <p className="text-xs text-zinc-500 font-medium italic py-2 text-center">No slides added. Click "Add Slide" to begin.</p>
                 )}
-                {item.items?.map((slide) => (
-                  <div key={slide.id} className="relative group/slide p-2 rounded-lg border border-zinc-100 bg-zinc-50/50 space-y-1.5">
-                    <button
-                      type="button"
-                      className="absolute top-1.5 right-1.5 text-zinc-400 hover:text-red-500 transition-colors p-0.5 rounded hover:bg-zinc-100"
-                      onClick={() => {
-                        const currentItems = item.items || []
-                        handleUpdateLink(item.id, 'items', currentItems.filter(s => s.id !== slide.id))
-                      }}
-                      title="Delete Slide"
-                    >
-                      <Trash2 size={11} />
-                    </button>
-                    
-                    <div className="grid grid-cols-[45px_1fr] gap-2 pr-4">
-                      {/* Image Thumbnail */}
-                      <div className="w-[45px] h-[45px] rounded border bg-zinc-100 overflow-hidden shrink-0 relative shadow-sm">
+                {item.items?.map((slide, slideIndex) => (
+                  <div key={slide.id} className="p-3 rounded-lg border border-zinc-150 bg-zinc-50/50 transition-all">
+                    <div className="grid grid-cols-[50px_1fr_40px] gap-3 items-center">
+                      {/* Image Thumbnail with Slide Number Badge */}
+                      <div className="w-[50px] h-[50px] rounded-lg border border-zinc-200 bg-zinc-100 overflow-hidden shrink-0 relative shadow-sm self-start mt-0.5">
                         {slide.imageUrl ? (
                           <img src={slide.imageUrl} alt="" className="w-full h-full object-cover" />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center text-[7px] text-zinc-400">No Image</div>
+                          <div className="w-full h-full flex items-center justify-center text-[10px] text-zinc-400 font-bold">No Image</div>
                         )}
+                        {/* Slide Index Badge */}
+                        <div className="absolute top-1 left-1 bg-black/65 backdrop-blur-xs text-[10px] font-black text-white h-4 min-w-[16px] px-1 rounded-full flex items-center justify-center shadow-xs border border-white/10 select-none">
+                          {slideIndex + 1}
+                        </div>
                       </div>
                       
                       {/* Slide Inputs */}
-                      <div className="space-y-1">
-                        <input
+                      <div className="space-y-2">
+                        <Input
                           type="text"
                           value={slide.title || ''}
-                          placeholder="Title"
-                          className="w-full text-[9px] font-semibold bg-white border border-zinc-200 rounded px-1.5 py-0.5 focus:border-[var(--brand)] outline-none"
+                          placeholder="Slide Title"
+                          className="w-full h-8 bg-transparent border-0 border-b border-transparent hover:border-zinc-200 focus-visible:border-[var(--brand)] px-0 font-bold text-sm focus-visible:ring-0 shadow-none rounded-none focus-visible:border-b"
                           onChange={(e) => {
                             const updated = item.items.map(s => s.id === slide.id ? { ...s, title: e.target.value } : s)
                             handleUpdateLink(item.id, 'items', updated)
                           }}
                         />
-                        <input
-                          type="text"
-                          value={slide.imageUrl || ''}
-                          placeholder="Image URL"
-                          className="w-full text-[9px] bg-white border border-zinc-200 rounded px-1.5 py-0.5 focus:border-[var(--brand)] outline-none"
-                          onChange={(e) => {
-                            const updated = item.items.map(s => s.id === slide.id ? { ...s, imageUrl: e.target.value } : s)
-                            handleUpdateLink(item.id, 'items', updated)
-                          }}
-                        />
-                        <input
+                        <div className="space-y-1">
+                          <Input
+                            type="text"
+                            value={slide.imageUrl || ''}
+                            placeholder="https://example.com/image.jpg"
+                            className="w-full h-7 bg-transparent border-0 border-b border-transparent hover:border-zinc-200 focus-visible:border-[var(--brand)] px-0 text-xs text-zinc-700 font-medium focus-visible:ring-0 shadow-none rounded-none focus-visible:border-b animate-none"
+                            onChange={(e) => {
+                              const updated = item.items.map(s => s.id === slide.id ? { ...s, imageUrl: e.target.value } : s)
+                              handleUpdateLink(item.id, 'items', updated)
+                            }}
+                          />
+                          {/* Image Presets Pills */}
+                          {(!slide.imageUrl || slide.imageUrl.trim() === '') && (
+                            <div className="flex flex-wrap items-center gap-1.5 text-xs text-zinc-550 px-0.5 mt-1.5">
+                              <span className="font-bold text-zinc-600">Curated:</span>
+                              {PRESET_IMAGES.map((preset) => (
+                                <button
+                                  key={preset.name}
+                                  type="button"
+                                  onClick={() => {
+                                    const updated = item.items.map(s => s.id === slide.id ? { ...s, imageUrl: preset.url } : s)
+                                    handleUpdateLink(item.id, 'items', updated)
+                                  }}
+                                  className="px-2 py-0.5 rounded border border-zinc-200/80 bg-white hover:bg-zinc-100 hover:text-zinc-950 hover:border-zinc-300 transition font-bold text-xs shadow-xs text-zinc-700"
+                                >
+                                  {preset.name}
+                                </button>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                        <Input
                           type="text"
                           value={slide.url || ''}
-                          placeholder="Redirect Link URL"
-                          className="w-full text-[9px] bg-white border border-zinc-200 rounded px-1.5 py-0.5 focus:border-[var(--brand)] outline-none"
+                          placeholder="https://example.com"
+                          className="w-full h-7 bg-transparent border-0 border-b border-transparent hover:border-zinc-200 focus-visible:border-[var(--brand)] px-0 text-xs text-zinc-700 font-medium focus-visible:ring-0 shadow-none rounded-none focus-visible:border-b animate-none"
                           onChange={(e) => {
                             const updated = item.items.map(s => s.id === slide.id ? { ...s, url: e.target.value } : s)
                             handleUpdateLink(item.id, 'items', updated)
                           }}
                         />
+                      </div>
+
+                      {/* Action Toolbar (Vertically stacked, divider on left) */}
+                      <div className="flex flex-col items-center gap-1.5 border-l border-zinc-200/85 pl-2.5 py-1 self-stretch justify-center shrink-0">
+                        <button
+                          type="button"
+                          className="size-7 flex items-center justify-center rounded-md border border-zinc-300 bg-white hover:bg-zinc-50 hover:text-zinc-950 text-zinc-800 hover:border-zinc-400 shadow-xs transition disabled:opacity-30 disabled:pointer-events-none active:scale-95"
+                          onClick={() => moveSlide(slide.id, 'up')}
+                          disabled={slideIndex === 0}
+                          title="Move Slide Up"
+                        >
+                          <ChevronUp size={14} className="stroke-[2.5]" />
+                        </button>
+                        <button
+                          type="button"
+                          className="size-7 flex items-center justify-center rounded-md border border-zinc-300 bg-white hover:bg-zinc-50 hover:text-zinc-950 text-zinc-800 hover:border-zinc-400 shadow-xs transition disabled:opacity-30 disabled:pointer-events-none active:scale-95"
+                          onClick={() => moveSlide(slide.id, 'down')}
+                          disabled={slideIndex === (item.items || []).length - 1}
+                          title="Move Slide Down"
+                        >
+                          <ChevronDown size={14} className="stroke-[2.5]" />
+                        </button>
+                        <button
+                          type="button"
+                          className="size-7 flex items-center justify-center rounded-md border border-red-200/80 bg-red-50/30 hover:bg-red-50 hover:text-red-600 hover:border-red-300 text-red-500 shadow-xs transition active:scale-95"
+                          onClick={() => {
+                            const currentItems = item.items || []
+                            handleUpdateLink(item.id, 'items', currentItems.filter(s => s.id !== slide.id))
+                          }}
+                          title="Delete Slide"
+                        >
+                          <Trash2 size={14} className="stroke-[2]" />
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -391,46 +462,46 @@ export function LinkEditorItem({
 
         {/* Dynamic block settings toggled by settings button */}
         {showSettings && (
-          <div className="border-t border-zinc-100 pt-3 mt-1.5 space-y-2.5 animate-in fade-in slide-in-from-top-1 duration-200">
+          <div className="border-t border-zinc-100 pt-3 mt-1.5 space-y-3.5 animate-in fade-in slide-in-from-top-1 duration-200">
             {/* Buttons: Alignments, Shapes, Style Variants */}
             {item.type === 'button' && (
-              <div className="grid grid-cols-3 gap-3 text-[10px]">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
                 {/* Alignment segment */}
-                <div className="space-y-1">
-                  <label className="font-semibold text-zinc-400 uppercase tracking-wider text-[8px] block">Alignment</label>
-                  <div className="flex border border-zinc-200 rounded-lg p-0.5 bg-zinc-50 w-fit">
+                <div className="space-y-1.5">
+                  <label className="font-bold text-zinc-650 uppercase tracking-wider text-xs block">Alignment</label>
+                  <div className="flex border border-zinc-200/80 rounded-lg p-0.5 bg-zinc-100/60 w-fit">
                     {(['left', 'center', 'right'] as const).map((align) => (
                       <button
                         key={align}
                         type="button"
-                        className={`p-1.5 rounded transition ${
+                        className={`p-1.5 rounded-md transition ${
                           (item.style?.align || 'left') === align
-                            ? 'bg-white shadow-sm text-[var(--brand)]'
-                            : 'text-zinc-500 hover:text-zinc-800'
+                            ? 'bg-white shadow-xs text-[var(--brand)] font-bold'
+                            : 'text-zinc-600 hover:text-zinc-900'
                         }`}
                         onClick={() => handleUpdateLink(item.id, 'style.align', align)}
                         title={`Align ${align}`}
                       >
-                        {align === 'left' && <AlignLeft size={12} />}
-                        {align === 'center' && <AlignCenter size={12} />}
-                        {align === 'right' && <AlignRight size={12} />}
+                        {align === 'left' && <AlignLeft size={13} />}
+                        {align === 'center' && <AlignCenter size={13} />}
+                        {align === 'right' && <AlignRight size={13} />}
                       </button>
                     ))}
                   </div>
                 </div>
 
                 {/* Shape segment */}
-                <div className="space-y-1">
-                  <label className="font-semibold text-zinc-400 uppercase tracking-wider text-[8px] block">Shape</label>
-                  <div className="flex border border-zinc-200 rounded-lg p-0.5 bg-zinc-50 w-fit">
+                <div className="space-y-1.5">
+                  <label className="font-bold text-zinc-650 uppercase tracking-wider text-xs block">Shape</label>
+                  <div className="flex border border-zinc-200/80 rounded-lg p-0.5 bg-zinc-100/60 w-fit">
                     {(['rectangle', 'rounded', 'pill'] as const).map((shape) => (
                       <button
                         key={shape}
                         type="button"
-                        className={`px-2 py-1 text-[9px] font-bold rounded transition capitalize ${
+                        className={`px-3 py-1 text-xs font-bold rounded-md transition capitalize ${
                           (item.style?.shape || 'rounded') === shape
-                            ? 'bg-white shadow-sm text-[var(--brand)]'
-                            : 'text-zinc-500 hover:text-zinc-800'
+                            ? 'bg-white shadow-xs text-[var(--brand)] font-bold'
+                            : 'text-zinc-600 hover:text-zinc-900'
                         }`}
                         onClick={() => handleUpdateLink(item.id, 'style.shape', shape)}
                       >
@@ -441,17 +512,17 @@ export function LinkEditorItem({
                 </div>
 
                 {/* Variant Style segment */}
-                <div className="space-y-1">
-                  <label className="font-semibold text-zinc-400 uppercase tracking-wider text-[8px] block">Style Theme</label>
-                  <div className="flex border border-zinc-200 rounded-lg p-0.5 bg-zinc-50 w-fit">
+                <div className="space-y-1.5">
+                  <label className="font-bold text-zinc-650 uppercase tracking-wider text-xs block">Style Theme</label>
+                  <div className="flex border border-zinc-200/80 rounded-lg p-0.5 bg-zinc-100/60 w-fit">
                     {(['fill', 'outline', 'soft', 'glass'] as const).map((variant) => (
                       <button
                         key={variant}
                         type="button"
-                        className={`px-1.5 py-1 text-[9px] font-bold rounded transition capitalize ${
+                        className={`px-2.5 py-1 text-xs font-bold rounded-md transition capitalize ${
                           (item.style?.variant || 'fill') === variant
-                            ? 'bg-white shadow-sm text-[var(--brand)]'
-                            : 'text-zinc-500 hover:text-zinc-800'
+                            ? 'bg-white shadow-xs text-[var(--brand)] font-bold'
+                            : 'text-zinc-600 hover:text-zinc-900'
                         }`}
                         onClick={() => handleUpdateLink(item.id, 'style.variant', variant)}
                       >
@@ -463,21 +534,21 @@ export function LinkEditorItem({
               </div>
             )}
 
-            {/* Carousel: Shape & Aspect Ratio */}
+            {/* Carousel: Shape & Aspect Ratio & Custom Layouts */}
             {item.type === 'carousel' && (
-              <div className="grid grid-cols-2 gap-3 text-[10px]">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                 {/* Shape */}
-                <div className="space-y-1">
-                  <label className="font-semibold text-zinc-400 uppercase tracking-wider text-[8px] block">Card Corner Shape</label>
-                  <div className="flex border border-zinc-200 rounded-lg p-0.5 bg-zinc-50 w-fit">
+                <div className="space-y-1.5">
+                  <label className="font-bold text-zinc-650 uppercase tracking-wider text-xs block">Card Corner Shape</label>
+                  <div className="flex border border-zinc-200/80 rounded-lg p-0.5 bg-zinc-100/60 w-fit">
                     {(['rectangle', 'rounded'] as const).map((shape) => (
                       <button
                         key={shape}
                         type="button"
-                        className={`px-2 py-1 text-[9px] font-bold rounded transition capitalize ${
+                        className={`px-3 py-1 text-xs font-bold rounded-md transition capitalize ${
                           (item.style?.shape || 'rounded') === shape
-                            ? 'bg-white shadow-sm text-[var(--brand)]'
-                            : 'text-zinc-500 hover:text-zinc-800'
+                            ? 'bg-white shadow-xs text-[var(--brand)] font-bold'
+                            : 'text-zinc-600 hover:text-zinc-900'
                         }`}
                         onClick={() => handleUpdateLink(item.id, 'style.shape', shape)}
                       >
@@ -488,21 +559,63 @@ export function LinkEditorItem({
                 </div>
 
                 {/* Aspect Ratio */}
-                <div className="space-y-1">
-                  <label className="font-semibold text-zinc-400 uppercase tracking-wider text-[8px] block">Aspect Ratio</label>
-                  <div className="flex border border-zinc-200 rounded-lg p-0.5 bg-zinc-50 w-fit">
-                    {(['1:1', '16:9'] as const).map((ratio) => (
+                <div className="space-y-1.5">
+                  <label className="font-bold text-zinc-650 uppercase tracking-wider text-xs block">Aspect Ratio</label>
+                  <div className="flex border border-zinc-200/80 rounded-lg p-0.5 bg-zinc-100/60 w-fit flex-wrap gap-0.5">
+                    {(['1:1', '16:9', '3:4', '4:3'] as const).map((ratio) => (
                       <button
                         key={ratio}
                         type="button"
-                        className={`px-2 py-1 text-[9px] font-bold rounded transition ${
+                        className={`px-2.5 py-1 text-xs font-bold rounded-md transition ${
                           (item.style?.aspectRatio || '1:1') === ratio
-                            ? 'bg-white shadow-sm text-[var(--brand)]'
-                            : 'text-zinc-500 hover:text-zinc-800'
+                            ? 'bg-white shadow-xs text-[var(--brand)] font-bold'
+                            : 'text-zinc-600 hover:text-zinc-900'
                         }`}
                         onClick={() => handleUpdateLink(item.id, 'style.aspectRatio', ratio)}
                       >
                         {ratio}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Card Style */}
+                <div className="space-y-1.5">
+                  <label className="font-bold text-zinc-650 uppercase tracking-wider text-xs block">Card Style Layout</label>
+                  <div className="flex border border-zinc-200/80 rounded-lg p-0.5 bg-zinc-100/60 w-fit">
+                    {(['overlay', 'classic', 'minimal'] as const).map((cardS) => (
+                      <button
+                        key={cardS}
+                        type="button"
+                        className={`px-3 py-1 text-xs font-bold rounded-md transition capitalize ${
+                          (item.style?.cardStyle || 'overlay') === cardS
+                            ? 'bg-white shadow-xs text-[var(--brand)] font-bold'
+                            : 'text-zinc-600 hover:text-zinc-900'
+                        }`}
+                        onClick={() => handleUpdateLink(item.id, 'style.cardStyle', cardS)}
+                      >
+                        {cardS}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Indicator Pagination */}
+                <div className="space-y-1.5">
+                  <label className="font-bold text-zinc-650 uppercase tracking-wider text-xs block">Slide Indicators</label>
+                  <div className="flex border border-zinc-200/80 rounded-lg p-0.5 bg-zinc-100/60 w-fit">
+                    {(['dots', 'bars', 'badge', 'none'] as const).map((indS) => (
+                      <button
+                        key={indS}
+                        type="button"
+                        className={`px-3 py-1 text-xs font-bold rounded-md transition capitalize ${
+                          (item.style?.indicatorStyle || 'dots') === indS
+                            ? 'bg-white shadow-xs text-[var(--brand)] font-bold'
+                            : 'text-zinc-600 hover:text-zinc-900'
+                        }`}
+                        onClick={() => handleUpdateLink(item.id, 'style.indicatorStyle', indS)}
+                      >
+                        {indS}
                       </button>
                     ))}
                   </div>
@@ -512,20 +625,20 @@ export function LinkEditorItem({
 
             {/* YouTube: Shape & Aspect Ratio & Layout Customizations */}
             {item.type === 'youtube' && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                 {/* Shape & Aspect Ratio */}
-                <div className="space-y-2">
-                  <div className="space-y-1">
-                    <label className="font-semibold text-zinc-400 uppercase tracking-wider text-[10px] block">Video Player Corners</label>
-                    <div className="flex border border-zinc-200 rounded-lg p-0.5 bg-zinc-50 w-fit">
+                <div className="space-y-3">
+                  <div className="space-y-1.5">
+                    <label className="font-bold text-zinc-650 uppercase tracking-wider text-xs block">Video Player Corners</label>
+                    <div className="flex border border-zinc-200/80 rounded-lg p-0.5 bg-zinc-100/60 w-fit">
                       {(['rectangle', 'rounded'] as const).map((shape) => (
                         <button
                           key={shape}
                           type="button"
-                          className={`px-2.5 py-1 text-[11px] font-bold rounded transition capitalize ${
+                          className={`px-3 py-1 text-xs font-bold rounded-md transition capitalize ${
                             (item.style?.shape || 'rounded') === shape
-                              ? 'bg-white shadow-sm text-[var(--brand)]'
-                              : 'text-zinc-500 hover:text-zinc-800'
+                              ? 'bg-white shadow-xs text-[var(--brand)] font-bold'
+                              : 'text-zinc-600 hover:text-zinc-900'
                           }`}
                           onClick={() => handleUpdateLink(item.id, 'style.shape', shape)}
                         >
@@ -535,17 +648,17 @@ export function LinkEditorItem({
                     </div>
                   </div>
 
-                  <div className="space-y-1">
-                    <label className="font-semibold text-zinc-400 uppercase tracking-wider text-[10px] block">Aspect Ratio</label>
-                    <div className="flex border border-zinc-200 rounded-lg p-0.5 bg-zinc-50 w-fit">
+                  <div className="space-y-1.5">
+                    <label className="font-bold text-zinc-650 uppercase tracking-wider text-xs block">Aspect Ratio</label>
+                    <div className="flex border border-zinc-200/80 rounded-lg p-0.5 bg-zinc-100/60 w-fit">
                       {(['16:9', '9:16'] as const).map((ratio) => (
                         <button
                           key={ratio}
                           type="button"
-                          className={`px-2 py-1 text-[11px] font-bold rounded transition ${
+                          className={`px-2.5 py-1 text-xs font-bold rounded-md transition ${
                             (item.style?.aspectRatio || '16:9') === ratio
-                              ? 'bg-white shadow-sm text-[var(--brand)]'
-                              : 'text-zinc-500 hover:text-zinc-800'
+                              ? 'bg-white shadow-xs text-[var(--brand)] font-bold'
+                              : 'text-zinc-600 hover:text-zinc-900'
                           }`}
                           onClick={() => handleUpdateLink(item.id, 'style.aspectRatio', ratio)}
                         >
@@ -557,18 +670,18 @@ export function LinkEditorItem({
                 </div>
 
                 {/* Layout type & Switch Toggles */}
-                <div className="space-y-2">
-                  <div className="space-y-1">
-                    <label className="font-semibold text-zinc-400 uppercase tracking-wider text-[10px] block">Layout Style</label>
-                    <div className="flex border border-zinc-200 rounded-lg p-0.5 bg-zinc-50 w-fit">
+                <div className="space-y-3">
+                  <div className="space-y-1.5">
+                    <label className="font-bold text-zinc-650 uppercase tracking-wider text-xs block">Layout Style</label>
+                    <div className="flex border border-zinc-200/80 rounded-lg p-0.5 bg-zinc-100/60 w-fit">
                       {(['feed', 'card', 'inline'] as const).map((layout) => (
                         <button
                           key={layout}
                           type="button"
-                          className={`px-2.5 py-1 text-[11px] font-bold rounded transition capitalize ${
+                          className={`px-3 py-1 text-xs font-bold rounded-md transition capitalize ${
                             (item.style?.layout || 'feed') === layout
-                              ? 'bg-white shadow-sm text-[var(--brand)]'
-                              : 'text-zinc-500 hover:text-zinc-800'
+                              ? 'bg-white shadow-xs text-[var(--brand)] font-bold'
+                              : 'text-zinc-600 hover:text-zinc-900'
                           }`}
                           onClick={() => handleUpdateLink(item.id, 'style.layout', layout)}
                         >
@@ -578,24 +691,24 @@ export function LinkEditorItem({
                     </div>
                   </div>
 
-                  <div className="flex gap-4 pt-1">
-                    <div className="flex items-center gap-1.5">
+                  <div className="flex flex-col gap-2 pt-1">
+                    <div className="flex items-center gap-2">
                       <Switch
                         id={`show-stats-${item.id}`}
                         checked={item.style?.showStats !== false}
                         onCheckedChange={(checked) => handleUpdateLink(item.id, 'style.showStats', checked)}
-                        className="scale-75 data-[state=checked]:bg-[var(--brand)]"
+                        className="scale-90 data-[state=checked]:bg-[var(--brand)]"
                       />
-                      <label htmlFor={`show-stats-${item.id}`} className="text-xs font-medium text-zinc-600">Show Stats</label>
+                      <label htmlFor={`show-stats-${item.id}`} className="text-xs font-bold text-zinc-700 cursor-pointer">Show Stats</label>
                     </div>
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex items-center gap-2">
                       <Switch
                         id={`show-desc-${item.id}`}
                         checked={item.style?.showDescription !== false}
                         onCheckedChange={(checked) => handleUpdateLink(item.id, 'style.showDescription', checked)}
-                        className="scale-75 data-[state=checked]:bg-[var(--brand)]"
+                        className="scale-90 data-[state=checked]:bg-[var(--brand)]"
                       />
-                      <label htmlFor={`show-desc-${item.id}`} className="text-xs font-medium text-zinc-600">Show Subtitle</label>
+                      <label htmlFor={`show-desc-${item.id}`} className="text-xs font-bold text-zinc-700 cursor-pointer">Show Subtitle</label>
                     </div>
                   </div>
                 </div>

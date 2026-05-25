@@ -93,4 +93,12 @@ export const CAROUSEL_ASPECT_RATIOS = {
     label: '16:9 Video',
     class: 'aspect-video',
   },
+  '3:4': {
+    label: '3:4 Portrait',
+    class: 'aspect-[3/4]',
+  },
+  '4:3': {
+    label: '4:3 Photo',
+    class: 'aspect-[4/3]',
+  },
 } as const

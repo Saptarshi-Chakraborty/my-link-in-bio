@@ -44,7 +44,7 @@ export function CustomLinksCard() {
               type="button"
               onClick={() => handleAddElement('button')}
               size="sm"
-              className="h-8 px-3 text-[10px] gap-1 font-bold shadow-sm bg-[var(--brand)] text-white hover:bg-[var(--brand-light)] transition-all active:scale-95 shrink-0"
+              className="h-8 px-3 text-xs gap-1 font-bold shadow-sm bg-[var(--brand)] text-white hover:bg-[var(--brand-light)] transition-all active:scale-95 shrink-0"
             >
               <Plus size={11} />
               Add Link

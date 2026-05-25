@@ -35,8 +35,10 @@ export const CarouselElementSchema = BaseElementSchema.extend({
   type: z.literal('carousel'),
   items: z.array(CarouselItemSchema),
   style: z.object({
-    aspectRatio: z.enum(['1:1', '16:9']).optional(),
+    aspectRatio: z.enum(['1:1', '16:9', '3:4', '4:3']).optional(),
     shape: z.enum(['rectangle', 'rounded']).optional(),
+    cardStyle: z.enum(['overlay', 'classic', 'minimal']).optional(),
+    indicatorStyle: z.enum(['dots', 'bars', 'badge', 'none']).optional(),
   }).optional(),
 })
 

@@ -1,0 +1,35 @@
+.auth-shell {
+  --auth-page-texture: url("https://cdn.pixabay.com/photo/2016/12/15/20/21/texture-1909992_1280.jpg");
+  position: relative;
+  overflow: hidden;
+  background-color: #f4efe7;
+  background-image:
+    linear-gradient(180deg, rgba(247, 244, 238, 0.52), rgba(247, 244, 238, 0.64)),
+    var(--auth-page-texture);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.dark .auth-shell {
+  background-color: #09090b;
+  background-image:
+    linear-gradient(180deg, rgba(9, 9, 11, 0.58), rgba(9, 9, 11, 0.72)),
+    var(--auth-page-texture);
+}
+
+.auth-shell::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at top, rgba(255, 255, 255, 0.2), transparent 42%),
+    radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.14), transparent 24%),
+    radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.06), transparent 30%);
+  pointer-events: none;
+}
+
+.auth-shell__content {
+  position: relative;
+  z-index: 1;
+}

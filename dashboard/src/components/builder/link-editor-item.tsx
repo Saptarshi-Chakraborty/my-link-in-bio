@@ -241,7 +241,7 @@ export function LinkEditorItem({
             <div className="space-y-3">
               {/* Carousel Title for Editor Reference */}
               <div className="flex items-center justify-between border-b pb-1.5">
-                <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider">Slide Configuration</span>
+                <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Slide Configuration</span>
                 <Button 
                   type="button"
                   variant="outline" 
@@ -266,7 +266,7 @@ export function LinkEditorItem({
               {/* List of carousel slides */}
               <div className="space-y-2 max-h-[220px] overflow-y-auto pr-1 scrollbar-thin">
                 {(!item.items || item.items.length === 0) && (
-                  <p className="text-xs text-zinc-500 font-medium italic py-2 text-center">No slides added. Click "Add Slide" to begin.</p>
+                  <p className="text-xs text-muted-foreground font-medium italic py-2 text-center">No slides added. Click "Add Slide" to begin.</p>
                 )}
                 {item.items?.map((slide, slideIndex) => {
                   const isEditing = editingSlideId === slide.id;
@@ -282,8 +282,8 @@ export function LinkEditorItem({
                       <div className={`grid grid-cols-[50px_1fr_auto] gap-3 ${isEditing ? 'items-start' : 'items-center'}`}>
                         {/* Image Thumbnail with Slide Number Badge */}
                         <div 
-                          className={`w-[50px] h-[50px] rounded-lg border border-zinc-200 bg-zinc-100 overflow-hidden shrink-0 relative shadow-sm self-start mt-0.5 select-none ${
-                            isEditing ? 'cursor-pointer hover:border-zinc-300' : ''
+                          className={`w-[50px] h-[50px] rounded-lg border border-border bg-muted overflow-hidden shrink-0 relative shadow-sm self-start mt-0.5 select-none ${
+                            isEditing ? 'cursor-pointer hover:border-border' : ''
                           }`}
                           onClick={() => {
                             if (isEditing) {
@@ -298,7 +298,7 @@ export function LinkEditorItem({
                           {slide.imageUrl ? (
                             <img src={slide.imageUrl} alt="" className="w-full h-full object-cover" />
                           ) : (
-                            <div className="w-full h-full flex items-center justify-center text-[10px] text-zinc-400 font-bold">No Image</div>
+                            <div className="w-full h-full flex items-center justify-center text-[10px] text-muted-foreground font-bold">No Image</div>
                           )}
                           {/* Slide Index Badge */}
                           <div className="absolute top-1 left-1 bg-black/65 backdrop-blur-xs text-[10px] font-black text-white h-4 min-w-[16px] px-1 rounded-full flex items-center justify-center shadow-xs border border-white/10 select-none">
@@ -314,7 +314,7 @@ export function LinkEditorItem({
                                 type="text"
                                 value={slide.title || ''}
                                 placeholder="Slide Title"
-                                className="w-full h-8 bg-transparent border-0 border-b border-transparent hover:border-zinc-200 focus-visible:border-[var(--brand)] px-0 font-bold text-sm focus-visible:ring-0 shadow-none rounded-none focus-visible:border-b"
+                                className="w-full h-8 bg-transparent border-0 border-b border-transparent hover:border-border focus-visible:border-[var(--brand)] px-0 font-bold text-sm focus-visible:ring-0 shadow-none rounded-none focus-visible:border-b"
                                 onChange={(e) => {
                                   const updated = item.items.map(s => s.id === slide.id ? { ...s, title: e.target.value } : s)
                                   handleUpdateLink(item.id, 'items', updated)
@@ -326,7 +326,7 @@ export function LinkEditorItem({
                                   type="text"
                                   value={slide.imageUrl || ''}
                                   placeholder="https://example.com/image.jpg"
-                                  className="w-full h-7 bg-transparent border-0 border-b border-transparent hover:border-zinc-200 focus-visible:border-[var(--brand)] px-0 text-xs text-zinc-700 font-medium focus-visible:ring-0 shadow-none rounded-none focus-visible:border-b animate-none"
+                                  className="w-full h-7 bg-transparent border-0 border-b border-transparent hover:border-border focus-visible:border-[var(--brand)] px-0 text-xs text-muted-foreground font-medium focus-visible:ring-0 shadow-none rounded-none focus-visible:border-b animate-none"
                                   onChange={(e) => {
                                     const updated = item.items.map(s => s.id === slide.id ? { ...s, imageUrl: e.target.value } : s)
                                     handleUpdateLink(item.id, 'items', updated)
@@ -334,8 +334,8 @@ export function LinkEditorItem({
                                 />
                                 {/* Image Presets Pills */}
                                 {(!slide.imageUrl || slide.imageUrl.trim() === '') && (
-                                  <div className="flex flex-wrap items-center gap-1.5 text-xs text-zinc-550 px-0.5 mt-1.5">
-                                    <span className="font-bold text-zinc-600">Curated:</span>
+                                  <div className="flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground px-0.5 mt-1.5">
+                                    <span className="font-bold text-muted-foreground">Curated:</span>
                                     {PRESET_IMAGES.map((preset) => (
                                       <button
                                         key={preset.name}
@@ -344,7 +344,7 @@ export function LinkEditorItem({
                                           const updated = item.items.map(s => s.id === slide.id ? { ...s, imageUrl: preset.url } : s)
                                           handleUpdateLink(item.id, 'items', updated)
                                         }}
-                                        className="px-2 py-0.5 rounded border border-zinc-200/80 bg-white hover:bg-zinc-100 hover:text-zinc-950 hover:border-zinc-300 transition font-bold text-xs shadow-xs text-zinc-700"
+                                        className="px-2 py-0.5 rounded border border-border bg-background hover:bg-muted hover:text-foreground hover:border-border transition font-bold text-xs shadow-xs text-muted-foreground"
                                       >
                                         {preset.name}
                                       </button>
@@ -356,7 +356,7 @@ export function LinkEditorItem({
                                 type="text"
                                 value={slide.url || ''}
                                 placeholder="https://example.com"
-                                className="w-full h-7 bg-transparent border-0 border-b border-transparent hover:border-zinc-200 focus-visible:border-[var(--brand)] px-0 text-xs text-zinc-700 font-medium focus-visible:ring-0 shadow-none rounded-none focus-visible:border-b animate-none"
+                                className="w-full h-7 bg-transparent border-0 border-b border-transparent hover:border-border focus-visible:border-[var(--brand)] px-0 text-xs text-muted-foreground font-medium focus-visible:ring-0 shadow-none rounded-none focus-visible:border-b animate-none"
                                 onChange={(e) => {
                                   const updated = item.items.map(s => s.id === slide.id ? { ...s, url: e.target.value } : s)
                                   handleUpdateLink(item.id, 'items', updated)
@@ -373,7 +373,7 @@ export function LinkEditorItem({
                                 >
                                   <Check size={11} className="stroke-[2.5]" /> Save & Close
                                 </button>
-                                <span className="text-zinc-300 text-xs">|</span>
+                                <span className="text-border text-xs">|</span>
                                 <button
                                   type="button"
                                   onClick={(e) => {
@@ -464,10 +464,10 @@ export function LinkEditorItem({
       </div>
 
       {/* CUSTOM STYLE SETTINGS DROPDOWN / TOGGLES FOR PREMIUM DESIGN */}
-      <div className="border-t border-zinc-100 pt-3 mt-1 space-y-2.5">
+      <div className="border-t border-border pt-3 mt-1 space-y-2.5">
         {/* Footer toolbar buttons (dx: view stats, copy link, settings, delete block etc) */}
         <div className="flex items-center justify-between text-xs">
-          <div className="flex items-center gap-1 text-zinc-400">
+          <div className="flex items-center gap-1 text-muted-foreground">
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -556,22 +556,22 @@ export function LinkEditorItem({
 
         {/* Dynamic block settings toggled by settings button */}
         {showSettings && (
-          <div className="border-t border-zinc-100 pt-3 mt-1.5 space-y-3.5 animate-in fade-in slide-in-from-top-1 duration-200">
+          <div className="border-t border-border pt-3 mt-1.5 space-y-3.5 animate-in fade-in slide-in-from-top-1 duration-200">
             {/* Buttons: Alignments, Shapes, Style Variants */}
             {item.type === 'button' && (
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
                 {/* Alignment segment */}
                 <div className="space-y-1.5">
-                  <label className="font-bold text-zinc-650 uppercase tracking-wider text-xs block">Alignment</label>
-                  <div className="flex border border-zinc-200/80 rounded-lg p-0.5 bg-zinc-100/60 w-fit">
+                  <label className="font-bold text-muted-foreground uppercase tracking-wider text-xs block">Alignment</label>
+                  <div className="flex border border-border rounded-lg p-0.5 bg-muted w-fit">
                     {(['left', 'center', 'right'] as const).map((align) => (
                       <button
                         key={align}
                         type="button"
                         className={`p-1.5 rounded-md transition ${
                           (item.style?.align || 'left') === align
-                            ? 'bg-white shadow-xs text-[var(--brand)] font-bold'
-                            : 'text-zinc-600 hover:text-zinc-900'
+                            ? 'bg-background shadow-xs text-[var(--brand)] font-bold'
+                            : 'text-muted-foreground hover:text-foreground'
                         }`}
                         onClick={() => handleUpdateLink(item.id, 'style.align', align)}
                         title={`Align ${align}`}
@@ -586,16 +586,16 @@ export function LinkEditorItem({
 
                 {/* Shape segment */}
                 <div className="space-y-1.5">
-                  <label className="font-bold text-zinc-650 uppercase tracking-wider text-xs block">Shape</label>
-                  <div className="flex border border-zinc-200/80 rounded-lg p-0.5 bg-zinc-100/60 w-fit">
+                  <label className="font-bold text-muted-foreground uppercase tracking-wider text-xs block">Shape</label>
+                  <div className="flex border border-border rounded-lg p-0.5 bg-muted w-fit">
                     {(['rectangle', 'rounded', 'pill'] as const).map((shape) => (
                       <button
                         key={shape}
                         type="button"
                         className={`px-3 py-1 text-xs font-bold rounded-md transition capitalize ${
                           (item.style?.shape || 'rounded') === shape
-                            ? 'bg-white shadow-xs text-[var(--brand)] font-bold'
-                            : 'text-zinc-600 hover:text-zinc-900'
+                            ? 'bg-background shadow-xs text-[var(--brand)] font-bold'
+                            : 'text-muted-foreground hover:text-foreground'
                         }`}
                         onClick={() => handleUpdateLink(item.id, 'style.shape', shape)}
                       >
@@ -607,16 +607,16 @@ export function LinkEditorItem({
 
                 {/* Variant Style segment */}
                 <div className="space-y-1.5">
-                  <label className="font-bold text-zinc-650 uppercase tracking-wider text-xs block">Style Theme</label>
-                  <div className="flex border border-zinc-200/80 rounded-lg p-0.5 bg-zinc-100/60 w-fit">
+                  <label className="font-bold text-muted-foreground uppercase tracking-wider text-xs block">Style Theme</label>
+                  <div className="flex border border-border rounded-lg p-0.5 bg-muted w-fit">
                     {(['fill', 'outline', 'soft', 'glass'] as const).map((variant) => (
                       <button
                         key={variant}
                         type="button"
                         className={`px-2.5 py-1 text-xs font-bold rounded-md transition capitalize ${
                           (item.style?.variant || 'fill') === variant
-                            ? 'bg-white shadow-xs text-[var(--brand)] font-bold'
-                            : 'text-zinc-600 hover:text-zinc-900'
+                            ? 'bg-background shadow-xs text-[var(--brand)] font-bold'
+                            : 'text-muted-foreground hover:text-foreground'
                         }`}
                         onClick={() => handleUpdateLink(item.id, 'style.variant', variant)}
                       >
@@ -633,16 +633,16 @@ export function LinkEditorItem({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                 {/* Shape */}
                 <div className="space-y-1.5">
-                  <label className="font-bold text-zinc-650 uppercase tracking-wider text-xs block">Card Corner Shape</label>
-                  <div className="flex border border-zinc-200/80 rounded-lg p-0.5 bg-zinc-100/60 w-fit">
+                  <label className="font-bold text-muted-foreground uppercase tracking-wider text-xs block">Card Corner Shape</label>
+                  <div className="flex border border-border rounded-lg p-0.5 bg-muted w-fit">
                     {(['rectangle', 'rounded'] as const).map((shape) => (
                       <button
                         key={shape}
                         type="button"
                         className={`px-3 py-1 text-xs font-bold rounded-md transition capitalize ${
                           (item.style?.shape || 'rounded') === shape
-                            ? 'bg-white shadow-xs text-[var(--brand)] font-bold'
-                            : 'text-zinc-600 hover:text-zinc-900'
+                            ? 'bg-background shadow-xs text-[var(--brand)] font-bold'
+                            : 'text-muted-foreground hover:text-foreground'
                         }`}
                         onClick={() => handleUpdateLink(item.id, 'style.shape', shape)}
                       >
@@ -654,16 +654,16 @@ export function LinkEditorItem({
 
                 {/* Aspect Ratio */}
                 <div className="space-y-1.5">
-                  <label className="font-bold text-zinc-650 uppercase tracking-wider text-xs block">Aspect Ratio</label>
-                  <div className="flex border border-zinc-200/80 rounded-lg p-0.5 bg-zinc-100/60 w-fit flex-wrap gap-0.5">
+                  <label className="font-bold text-muted-foreground uppercase tracking-wider text-xs block">Aspect Ratio</label>
+                  <div className="flex border border-border rounded-lg p-0.5 bg-muted w-fit flex-wrap gap-0.5">
                     {(['1:1', '16:9', '3:4', '4:3'] as const).map((ratio) => (
                       <button
                         key={ratio}
                         type="button"
                         className={`px-2.5 py-1 text-xs font-bold rounded-md transition ${
                           (item.style?.aspectRatio || '4:3') === ratio
-                            ? 'bg-white shadow-xs text-[var(--brand)] font-bold'
-                            : 'text-zinc-600 hover:text-zinc-900'
+                            ? 'bg-background shadow-xs text-[var(--brand)] font-bold'
+                            : 'text-muted-foreground hover:text-foreground'
                         }`}
                         onClick={() => handleUpdateLink(item.id, 'style.aspectRatio', ratio)}
                       >
@@ -675,16 +675,16 @@ export function LinkEditorItem({
 
                 {/* Card Style */}
                 <div className="space-y-1.5">
-                  <label className="font-bold text-zinc-650 uppercase tracking-wider text-xs block">Card Style Layout</label>
-                  <div className="flex border border-zinc-200/80 rounded-lg p-0.5 bg-zinc-100/60 w-fit">
+                  <label className="font-bold text-muted-foreground uppercase tracking-wider text-xs block">Card Style Layout</label>
+                  <div className="flex border border-border rounded-lg p-0.5 bg-muted w-fit">
                     {(['overlay', 'classic', 'minimal'] as const).map((cardS) => (
                       <button
                         key={cardS}
                         type="button"
                         className={`px-3 py-1 text-xs font-bold rounded-md transition capitalize ${
                           (item.style?.cardStyle || 'overlay') === cardS
-                            ? 'bg-white shadow-xs text-[var(--brand)] font-bold'
-                            : 'text-zinc-600 hover:text-zinc-900'
+                            ? 'bg-background shadow-xs text-[var(--brand)] font-bold'
+                            : 'text-muted-foreground hover:text-foreground'
                         }`}
                         onClick={() => handleUpdateLink(item.id, 'style.cardStyle', cardS)}
                       >
@@ -696,16 +696,16 @@ export function LinkEditorItem({
 
                 {/* Indicator Pagination */}
                 <div className="space-y-1.5">
-                  <label className="font-bold text-zinc-650 uppercase tracking-wider text-xs block">Slide Indicators</label>
-                  <div className="flex border border-zinc-200/80 rounded-lg p-0.5 bg-zinc-100/60 w-fit">
+                  <label className="font-bold text-muted-foreground uppercase tracking-wider text-xs block">Slide Indicators</label>
+                  <div className="flex border border-border rounded-lg p-0.5 bg-muted w-fit">
                     {(['dots', 'bars', 'badge', 'none'] as const).map((indS) => (
                       <button
                         key={indS}
                         type="button"
                         className={`px-3 py-1 text-xs font-bold rounded-md transition capitalize ${
                           (item.style?.indicatorStyle || 'dots') === indS
-                            ? 'bg-white shadow-xs text-[var(--brand)] font-bold'
-                            : 'text-zinc-600 hover:text-zinc-900'
+                            ? 'bg-background shadow-xs text-[var(--brand)] font-bold'
+                            : 'text-muted-foreground hover:text-foreground'
                         }`}
                         onClick={() => handleUpdateLink(item.id, 'style.indicatorStyle', indS)}
                       >
@@ -723,16 +723,16 @@ export function LinkEditorItem({
                 {/* Shape & Aspect Ratio */}
                 <div className="space-y-3">
                   <div className="space-y-1.5">
-                    <label className="font-bold text-zinc-650 uppercase tracking-wider text-xs block">Video Player Corners</label>
-                    <div className="flex border border-zinc-200/80 rounded-lg p-0.5 bg-zinc-100/60 w-fit">
+                    <label className="font-bold text-muted-foreground uppercase tracking-wider text-xs block">Video Player Corners</label>
+                    <div className="flex border border-border rounded-lg p-0.5 bg-muted w-fit">
                       {(['rectangle', 'rounded'] as const).map((shape) => (
                         <button
                           key={shape}
                           type="button"
                           className={`px-3 py-1 text-xs font-bold rounded-md transition capitalize ${
                             (item.style?.shape || 'rounded') === shape
-                              ? 'bg-white shadow-xs text-[var(--brand)] font-bold'
-                              : 'text-zinc-600 hover:text-zinc-900'
+                              ? 'bg-background shadow-xs text-[var(--brand)] font-bold'
+                              : 'text-muted-foreground hover:text-foreground'
                           }`}
                           onClick={() => handleUpdateLink(item.id, 'style.shape', shape)}
                         >
@@ -743,16 +743,16 @@ export function LinkEditorItem({
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="font-bold text-zinc-650 uppercase tracking-wider text-xs block">Aspect Ratio</label>
-                    <div className="flex border border-zinc-200/80 rounded-lg p-0.5 bg-zinc-100/60 w-fit">
+                    <label className="font-bold text-muted-foreground uppercase tracking-wider text-xs block">Aspect Ratio</label>
+                    <div className="flex border border-border rounded-lg p-0.5 bg-muted w-fit">
                       {(['16:9', '9:16'] as const).map((ratio) => (
                         <button
                           key={ratio}
                           type="button"
                           className={`px-2.5 py-1 text-xs font-bold rounded-md transition ${
                             (item.style?.aspectRatio || '16:9') === ratio
-                              ? 'bg-white shadow-xs text-[var(--brand)] font-bold'
-                              : 'text-zinc-600 hover:text-zinc-900'
+                              ? 'bg-background shadow-xs text-[var(--brand)] font-bold'
+                              : 'text-muted-foreground hover:text-foreground'
                           }`}
                           onClick={() => handleUpdateLink(item.id, 'style.aspectRatio', ratio)}
                         >
@@ -766,16 +766,16 @@ export function LinkEditorItem({
                 {/* Layout type & Switch Toggles */}
                 <div className="space-y-3">
                   <div className="space-y-1.5">
-                    <label className="font-bold text-zinc-650 uppercase tracking-wider text-xs block">Layout Style</label>
-                    <div className="flex border border-zinc-200/80 rounded-lg p-0.5 bg-zinc-100/60 w-fit">
+                    <label className="font-bold text-muted-foreground uppercase tracking-wider text-xs block">Layout Style</label>
+                    <div className="flex border border-border rounded-lg p-0.5 bg-muted w-fit">
                       {(['feed', 'card', 'inline'] as const).map((layout) => (
                         <button
                           key={layout}
                           type="button"
                           className={`px-3 py-1 text-xs font-bold rounded-md transition capitalize ${
                             (item.style?.layout || 'feed') === layout
-                              ? 'bg-white shadow-xs text-[var(--brand)] font-bold'
-                              : 'text-zinc-600 hover:text-zinc-900'
+                              ? 'bg-background shadow-xs text-[var(--brand)] font-bold'
+                              : 'text-muted-foreground hover:text-foreground'
                           }`}
                           onClick={() => handleUpdateLink(item.id, 'style.layout', layout)}
                         >
@@ -793,7 +793,7 @@ export function LinkEditorItem({
                         onCheckedChange={(checked) => handleUpdateLink(item.id, 'style.showStats', checked)}
                         className="scale-90 data-[state=checked]:bg-[var(--brand)]"
                       />
-                      <label htmlFor={`show-stats-${item.id}`} className="text-xs font-bold text-zinc-700 cursor-pointer">Show Stats</label>
+                      <label htmlFor={`show-stats-${item.id}`} className="text-xs font-bold text-foreground cursor-pointer">Show Stats</label>
                     </div>
                     <div className="flex items-center gap-2">
                       <Switch
@@ -802,7 +802,7 @@ export function LinkEditorItem({
                         onCheckedChange={(checked) => handleUpdateLink(item.id, 'style.showDescription', checked)}
                         className="scale-90 data-[state=checked]:bg-[var(--brand)]"
                       />
-                      <label htmlFor={`show-desc-${item.id}`} className="text-xs font-bold text-zinc-700 cursor-pointer">Show Subtitle</label>
+                      <label htmlFor={`show-desc-${item.id}`} className="text-xs font-bold text-foreground cursor-pointer">Show Subtitle</label>
                     </div>
                   </div>
                 </div>

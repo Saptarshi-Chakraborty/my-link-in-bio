@@ -321,18 +321,18 @@ export function ProfileHeaderCard() {
                 
                 {/* Avatar Circle */}
                 <div className="shrink-0 relative">
-                  <div className={`h-16 w-16 sm:h-20 sm:w-20 rounded-full flex items-center justify-center text-white text-2xl sm:text-3xl font-bold ${activeAvatarCss} shadow-md border-2 border-white ring-4 ring-zinc-50`}>
+                  <div className={`h-16 w-16 sm:h-20 sm:w-20 rounded-full flex items-center justify-center text-white text-2xl sm:text-3xl font-bold ${activeAvatarCss} shadow-md border-2 border-background ring-4 ring-muted`}>
                     {profileName ? profileName.charAt(0).toUpperCase() : '?'}
                   </div>
                 </div>
                 
                 {/* Profile Meta details */}
                 <div className="flex-1 min-w-0">
-                  <h2 className="text-lg sm:text-xl font-bold tracking-tight text-zinc-900 truncate">
+                  <h2 className="text-lg sm:text-xl font-bold tracking-tight text-foreground truncate">
                     {profileName || 'Untitled Profile'}
                   </h2>
                   
-                  <p className="text-xs sm:text-sm text-zinc-500 mt-1 line-clamp-2 leading-relaxed">
+                  <p className="text-xs sm:text-sm text-muted-foreground mt-1 line-clamp-2 leading-relaxed">
                     {profileBio || 'No biography added yet.'}
                   </p>
 
@@ -346,14 +346,14 @@ export function ProfileHeaderCard() {
                           target="_blank"
                           rel="noopener noreferrer"
                           title={`Open ${social.label}`}
-                          className="p-1.5 rounded-lg bg-zinc-50 border border-zinc-150 text-zinc-500 hover:text-[var(--brand)] hover:bg-zinc-100 hover:border-zinc-300 transition-all duration-150 active:scale-95"
+                          className="p-1.5 rounded-lg bg-muted/50 border border-border text-muted-foreground hover:text-[var(--brand)] hover:bg-muted hover:border-border transition-all duration-150 active:scale-95"
                         >
                           {social.icon}
                         </a>
                       ))}
                     </div>
                   ) : (
-                    <p className="text-[10px] text-zinc-400 mt-3 flex items-center gap-1 font-medium">
+                    <p className="text-[10px] text-muted-foreground mt-3 flex items-center gap-1 font-medium">
                       <Share2 className="w-3 h-3" /> No socials linked
                     </p>
                   )}
@@ -366,9 +366,9 @@ export function ProfileHeaderCard() {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="h-9 px-4 font-semibold text-xs border-zinc-200/80 hover:border-zinc-300 shadow-xs bg-zinc-50 hover:bg-zinc-100 active:scale-95 transition-transform duration-100 text-zinc-700 flex items-center gap-2"
+                    className="h-9 px-4 font-semibold text-xs shadow-xs active:scale-95 transition-transform duration-100 flex items-center gap-2"
                   >
-                    <Settings2 className="w-3.5 h-3.5 text-zinc-500" />
+                    <Settings2 className="w-3.5 h-3.5 text-muted-foreground" />
                     Edit Profile & Socials
                   </Button>
                 </SheetTrigger>
@@ -382,11 +382,11 @@ export function ProfileHeaderCard() {
           <SheetHeader className="p-6 pb-4 border-b border-border shrink-0">
             <div className="flex items-center justify-between">
               <div className="space-y-1">
-                <SheetTitle className="text-base font-bold text-zinc-950 flex items-center gap-2">
+                <SheetTitle className="text-base font-bold text-foreground flex items-center gap-2">
                   <User className="w-4 h-4 text-[var(--brand)]" />
                   Edit Profile Settings
                 </SheetTitle>
-                <SheetDescription className="text-xs text-zinc-500 leading-normal">
+                <SheetDescription className="text-xs text-muted-foreground leading-normal">
                   Customize your page identity, layout presets, and active social media accounts.
                 </SheetDescription>
               </div>
@@ -399,43 +399,43 @@ export function ProfileHeaderCard() {
               
               {/* Section 1: Profile Info */}
               <div className="space-y-4">
-                <div className="flex flex-col sm:flex-row items-center gap-4 bg-zinc-50/50 p-4 rounded-xl border border-zinc-100">
+                <div className="flex flex-col sm:flex-row items-center gap-4 bg-muted/50 p-4 rounded-xl border border-border">
                   <div className="flex flex-col items-center gap-1.5 shrink-0">
-                    <div className={`h-16 w-16 rounded-full flex items-center justify-center text-white text-2xl font-bold ${activeAvatarCss} shadow-md border border-white ring-2 ring-zinc-200/50`}>
+                    <div className={`h-16 w-16 rounded-full flex items-center justify-center text-white text-2xl font-bold ${activeAvatarCss} shadow-md border border-background ring-2 ring-border`}>
                       {profileName ? profileName.charAt(0).toUpperCase() : '?'}
                     </div>
-                    <span className="text-[9px] text-zinc-400 font-bold uppercase tracking-wider">Preview</span>
+                    <span className="text-[9px] text-muted-foreground font-bold uppercase tracking-wider">Preview</span>
                   </div>
 
                   <div className="flex-1 w-full space-y-3">
                     <div className="grid gap-1.5">
-                      <Label htmlFor="profile-title" className="text-xs font-semibold text-zinc-700">Profile Name</Label>
+                      <Label htmlFor="profile-title" className="text-xs font-semibold text-foreground">Profile Name</Label>
                       <Input
                         id="profile-title"
                         value={profileName}
                         onChange={(e) => setProfileName(e.target.value)}
                         placeholder="Display Name"
-                        className="bg-white border-zinc-200/80 focus-visible:border-[var(--brand)] focus-visible:ring-1 focus-visible:ring-[var(--brand)]/20 text-xs h-9"
+                        className="bg-background border-border focus-visible:border-[var(--brand)] focus-visible:ring-1 focus-visible:ring-[var(--brand)]/20 text-xs h-9"
                       />
                     </div>
                   </div>
                 </div>
 
                 <div className="grid gap-1.5">
-                  <Label htmlFor="profile-bio" className="text-xs font-semibold text-zinc-700">Biography</Label>
+                  <Label htmlFor="profile-bio" className="text-xs font-semibold text-foreground">Biography</Label>
                   <Textarea
                     id="profile-bio"
                     value={profileBio}
                     onChange={(e) => setProfileBio(e.target.value)}
                     placeholder="Tell your audience a little bit about yourself..."
                     rows={3}
-                    className="bg-white border-zinc-200/80 focus-visible:border-[var(--brand)] focus-visible:ring-1 focus-visible:ring-[var(--brand)]/20 text-xs resize-none"
+                    className="bg-background border-border focus-visible:border-[var(--brand)] focus-visible:ring-1 focus-visible:ring-[var(--brand)]/20 text-xs resize-none"
                   />
                 </div>
 
                 {/* Avatar Preset Selectors */}
                 <div className="space-y-2">
-                  <Label className="text-xs font-semibold text-zinc-700">Avatar Design Preset</Label>
+                  <Label className="text-xs font-semibold text-foreground">Avatar Design Preset</Label>
                   <div className="grid grid-cols-2 gap-2">
                     {avatarPresets.map((preset) => (
                       <Button
@@ -443,10 +443,10 @@ export function ProfileHeaderCard() {
                         variant="outline"
                         size="sm"
                         onClick={() => setProfileAvatar(preset.id)}
-                        className={`h-9 px-3 text-xs justify-start gap-2 font-medium border-zinc-200/80 transition-all ${
+                        className={`h-9 px-3 text-xs justify-start gap-2 font-medium border-border transition-all ${
                           profileAvatar === preset.id
                             ? 'border-[var(--brand)] bg-[var(--brand)]/5 text-[var(--brand)] font-semibold shadow-xs'
-                            : 'hover:bg-zinc-50'
+                            : 'hover:bg-muted'
                         }`}
                       >
                         <div className={`h-3 w-3 rounded-full shrink-0 ${preset.css}`} />
@@ -457,12 +457,12 @@ export function ProfileHeaderCard() {
                 </div>
               </div>
 
-              <Separator className="bg-zinc-100" />
+              <Separator className="bg-border" />
 
               {/* Section 2: Social Links */}
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-xs font-bold text-zinc-400 uppercase tracking-wider">
+                  <div className="flex items-center gap-2 text-xs font-bold text-muted-foreground uppercase tracking-wider">
                     <Share2 className="w-3.5 h-3.5" />
                     <span>Social Accounts</span>
                   </div>
@@ -475,9 +475,9 @@ export function ProfileHeaderCard() {
                         variant="outline"
                         size="sm"
                         onClick={() => setIsRearrangeOpen(true)}
-                        className="h-7 px-2 text-[10px] font-bold text-zinc-750 hover:bg-zinc-50 border border-zinc-200 rounded-lg flex items-center gap-1 cursor-pointer"
+                        className="h-7 px-2 text-[10px] font-bold text-foreground hover:bg-muted border border-border rounded-lg flex items-center gap-1 cursor-pointer"
                       >
-                        <SlidersHorizontal className="w-3 h-3 text-zinc-500" /> Rearrange
+                        <SlidersHorizontal className="w-3 h-3 text-muted-foreground" /> Rearrange
                       </Button>
                     )}
 
@@ -489,17 +489,17 @@ export function ProfileHeaderCard() {
                             type="button"
                             variant="ghost"
                             size="sm"
-                            className="h-7 px-2 text-[10px] font-bold text-[var(--brand)] hover:text-[var(--brand)] hover:bg-[var(--brand)]/5 rounded-lg border border-zinc-200 border-dashed flex items-center gap-1 cursor-pointer"
+                            className="h-7 px-2 text-[10px] font-bold text-[var(--brand)] hover:text-[var(--brand)] hover:bg-[var(--brand)]/5 rounded-lg border border-border border-dashed flex items-center gap-1 cursor-pointer"
                           >
                             <Plus className="w-3 h-3" /> Add Account
                           </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-48 bg-white border border-zinc-150">
+                        <DropdownMenuContent align="end" className="w-48">
                           {inactivePlatforms.map((platform) => (
                             <DropdownMenuItem
                               key={platform.id}
                               onClick={() => handleAddSocial(platform.id)}
-                              className="flex items-center gap-2 text-xs cursor-pointer hover:bg-zinc-50 py-1.5 px-2.5 rounded-lg"
+                              className="flex items-center gap-2 text-xs cursor-pointer hover:bg-muted py-1.5 px-2.5 rounded-lg"
                             >
                               {platform.icon}
                               {platform.label}
@@ -512,19 +512,19 @@ export function ProfileHeaderCard() {
                 </div>
 
                 {/* Display Position Settings Card */}
-                <div className="flex items-center justify-between bg-zinc-50/50 p-3 rounded-xl border border-zinc-150">
+                <div className="flex items-center justify-between bg-muted/50 p-3 rounded-xl border border-border">
                   <div className="flex flex-col gap-0.5">
-                    <Label className="text-xs font-bold text-zinc-800">Display Position</Label>
-                    <span className="text-[10px] text-zinc-400">Place social icons at top or bottom.</span>
+                    <Label className="text-xs font-bold text-foreground">Display Position</Label>
+                    <span className="text-[10px] text-muted-foreground">Place social icons at top or bottom.</span>
                   </div>
-                  <div className="flex border border-zinc-200/80 bg-zinc-100 rounded-lg p-0.5 shrink-0">
+                  <div className="flex border border-border bg-muted rounded-lg p-0.5 shrink-0">
                     <button
                       type="button"
                       onClick={() => setSocialsPosition('top')}
                       className={`text-[10px] font-bold px-3 py-1 rounded-md transition-all ${
                         socialsPosition === 'top'
-                          ? 'bg-white text-zinc-950 shadow-xs'
-                          : 'text-zinc-500 hover:text-zinc-700'
+                          ? 'bg-background text-foreground shadow-xs'
+                          : 'text-muted-foreground hover:text-foreground'
                       }`}
                     >
                       Top
@@ -534,8 +534,8 @@ export function ProfileHeaderCard() {
                       onClick={() => setSocialsPosition('bottom')}
                       className={`text-[10px] font-bold px-3 py-1 rounded-md transition-all ${
                         socialsPosition === 'bottom'
-                          ? 'bg-white text-zinc-950 shadow-xs'
-                          : 'text-zinc-500 hover:text-zinc-750'
+                          ? 'bg-background text-foreground shadow-xs'
+                          : 'text-muted-foreground hover:text-foreground'
                       }`}
                     >
                       Bottom
@@ -558,12 +558,12 @@ export function ProfileHeaderCard() {
                     ))}
                   </div>
                 ) : (
-                  <div className="text-center py-6 border border-dashed rounded-xl bg-zinc-50/30 border-zinc-200">
-                    <p className="text-xs text-zinc-400 italic">No social accounts added yet.</p>
+                  <div className="text-center py-6 border border-dashed rounded-xl bg-muted/30 border-border">
+                    <p className="text-xs text-muted-foreground italic">No social accounts added yet.</p>
                     {inactivePlatforms.length > 0 ? (
-                      <p className="text-[10px] text-zinc-400 mt-1">Click the button above to link your accounts.</p>
+                      <p className="text-[10px] text-muted-foreground mt-1">Click the button above to link your accounts.</p>
                     ) : (
-                      <p className="text-[10px] text-zinc-400 mt-1">All available platforms have been added.</p>
+                      <p className="text-[10px] text-muted-foreground mt-1">All available platforms have been added.</p>
                     )}
                   </div>
                 )}
@@ -572,7 +572,7 @@ export function ProfileHeaderCard() {
           </ScrollArea>
 
           {/* Footer Area with Save button */}
-          <SheetFooter className="p-4 border-t border-zinc-100 shrink-0 bg-zinc-50/50">
+          <SheetFooter className="p-4 border-t border-border shrink-0 bg-muted/50">
             <Button
               onClick={handleSave}
               className="w-full bg-[var(--brand)] hover:bg-[var(--brand)]/90 text-white font-semibold text-xs h-10 shadow-xs active:scale-[0.98] transition-transform duration-100"
@@ -587,16 +587,16 @@ export function ProfileHeaderCard() {
       <Dialog open={isRearrangeOpen} onOpenChange={setIsRearrangeOpen}>
         <DialogContent className="sm:max-w-md bg-background border border-border rounded-2xl shadow-2xl p-6">
           <DialogHeader className="pb-4 border-b border-border flex flex-col gap-1 text-left">
-            <DialogTitle className="text-base font-bold text-zinc-950 flex items-center gap-2">
+            <DialogTitle className="text-base font-bold text-foreground flex items-center gap-2">
               <Share2 className="w-4 h-4 text-[var(--brand)]" />
               Rearrange Social Icons
             </DialogTitle>
-            <DialogDescription className="text-xs text-zinc-500 leading-normal">
+            <DialogDescription className="text-xs text-muted-foreground leading-normal">
               Drag and drop your active social profiles horizontally (left to right) to rearrange their sequence.
             </DialogDescription>
           </DialogHeader>
 
-          <div className="py-8 flex items-center justify-center min-h-[140px] bg-zinc-50/50 rounded-xl border border-zinc-100 my-4">
+          <div className="py-8 flex items-center justify-center min-h-[140px] bg-muted/50 rounded-xl border border-border my-4">
             <DragDropProvider
               onDragStart={(event) => {
                 setActiveDragId(event.operation.source?.id as string)
@@ -640,7 +640,7 @@ export function ProfileHeaderCard() {
             </DragDropProvider>
           </div>
 
-          <DialogFooter className="pt-4 border-t border-zinc-100 flex justify-end">
+          <DialogFooter className="pt-4 border-t border-border flex justify-end">
             <Button
               onClick={() => setIsRearrangeOpen(false)}
               className="w-full sm:w-auto px-6 bg-[var(--brand)] hover:bg-[var(--brand)]/90 text-white font-semibold text-xs h-9 shadow-xs active:scale-[0.98] transition-transform duration-100"

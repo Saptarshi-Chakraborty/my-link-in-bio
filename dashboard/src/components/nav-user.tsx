@@ -25,15 +25,7 @@ import {
   CreditCardIcon,
   BellIcon,
   LogOutIcon,
-  MoonIcon,
-  SunMediumIcon,
-  MonitorIcon,
 } from "lucide-react"
-import {
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-} from "@/components/ui/dropdown-menu"
-import { useTheme, type ThemeMode } from "@/components/theme-provider"
 
 export function NavUser({
   user,
@@ -45,7 +37,6 @@ export function NavUser({
   }
 }) {
   const { isMobile } = useSidebar()
-  const { theme, setTheme } = useTheme()
 
   return (
     <SidebarMenu>
@@ -93,24 +84,6 @@ export function NavUser({
                 Upgrade to Pro
               </DropdownMenuItem>
             </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuLabel className="px-3 py-2 text-xs font-medium text-muted-foreground">
-              Appearance
-            </DropdownMenuLabel>
-            <DropdownMenuRadioGroup value={theme} onValueChange={(value) => setTheme(value as ThemeMode)}>
-              <DropdownMenuRadioItem value="light">
-                <SunMediumIcon />
-                Light
-              </DropdownMenuRadioItem>
-              <DropdownMenuRadioItem value="dark">
-                <MoonIcon />
-                Dark
-              </DropdownMenuRadioItem>
-              <DropdownMenuRadioItem value="system">
-                <MonitorIcon />
-                System
-              </DropdownMenuRadioItem>
-            </DropdownMenuRadioGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem>

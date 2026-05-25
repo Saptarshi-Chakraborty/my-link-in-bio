@@ -175,7 +175,7 @@ function BuilderPage() {
             {/* Desktop Right Preview Panel (Sticky) */}
             <div className="hidden xl:flex w-[380px] border-l border-border bg-background/50 flex-col items-center justify-center p-6 shrink-0 h-[calc(100vh-4rem)] sticky top-16">
               <div className="w-full flex justify-between items-center border-b pb-3 mb-6">
-                <h3 className="font-bold text-sm text-zinc-800">Live Preview</h3>
+                <h3 className="font-bold text-sm text-foreground">Live Preview</h3>
                 <span className="text-[10px] font-bold bg-background shadow-sm border border-border px-2 py-1 rounded text-muted-foreground">Mockup</span>
               </div>
               <MobileMockup />

@@ -136,20 +136,20 @@ export function LinkEditorItem({
   return (
     <div
       ref={ref}
-      className={`group rounded-xl border p-4 transition-all duration-200 bg-white ${
+      className={`group rounded-xl border border-border p-4 transition-all duration-200 bg-card ${
         isOverlay
-          ? 'border-zinc-300 shadow-2xl scale-[1.02] pointer-events-none ring-4 ring-indigo-500/10'
+          ? 'shadow-2xl scale-[1.02] pointer-events-none ring-4 ring-[var(--brand)]/10'
           : isDragging
-          ? 'opacity-40 border-dashed border-zinc-300 bg-zinc-50/50'
+          ? 'opacity-40 border-dashed bg-muted/40'
           : item.active
-          ? 'border-zinc-200 shadow-sm'
-          : 'border-zinc-200/55 bg-zinc-50/50 opacity-80'
+          ? 'shadow-sm'
+          : 'bg-muted/30 opacity-80'
       }`}
     >
       <div className="mb-3 flex items-start gap-3">
         <div
           ref={handleRef}
-          className="inline-flex h-8 items-center text-zinc-400 cursor-grab active:cursor-grabbing hover:text-zinc-600 p-1 -m-1 rounded transition-colors"
+          className="inline-flex h-8 items-center text-muted-foreground cursor-grab active:cursor-grabbing hover:text-foreground p-1 -m-1 rounded transition-colors"
         >
           <GripVertical size={16} />
         </div>
@@ -159,10 +159,10 @@ export function LinkEditorItem({
           <div className="flex items-center gap-1.5">
             <span className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider ${
               item.type === 'carousel' 
-                ? 'bg-blue-50 text-blue-600 border border-blue-100'
+                ? 'bg-blue-500/10 text-blue-500 border border-blue-500/20'
                 : item.type === 'youtube'
-                ? 'bg-red-50 text-red-600 border border-red-100'
-                : 'bg-indigo-50 text-indigo-600 border border-indigo-100'
+                ? 'bg-red-500/10 text-red-500 border border-red-500/20'
+                : 'bg-[var(--brand)]/10 text-[var(--brand)] border border-[var(--brand)]/20'
             }`}>
               {item.type}
             </span>
@@ -175,14 +175,14 @@ export function LinkEditorItem({
                 type="text"
                 value={item.title}
                 onChange={(e) => handleUpdateLink(item.id, 'title', e.target.value)}
-                className="w-full h-8 bg-transparent border-0 border-b border-transparent hover:border-zinc-200 focus-visible:border-[var(--brand)] px-0 font-bold text-sm focus-visible:ring-0 shadow-none rounded-none focus-visible:border-b"
+                className="w-full h-8 bg-transparent border-0 border-b border-transparent hover:border-border focus-visible:border-[var(--brand)] px-0 font-bold text-sm focus-visible:ring-0 shadow-none rounded-none focus-visible:border-b"
                 placeholder="Link Title"
               />
               <Input
                 type="text"
                 value={item.url}
                 onChange={(e) => handleUpdateLink(item.id, 'url', e.target.value)}
-                className="w-full h-7 bg-transparent border-0 border-b border-transparent hover:border-zinc-200 focus-visible:border-[var(--brand)] px-0 text-xs text-zinc-700 font-medium focus-visible:ring-0 shadow-none rounded-none focus-visible:border-b animate-none"
+                className="w-full h-7 bg-transparent border-0 border-b border-transparent hover:border-border focus-visible:border-[var(--brand)] px-0 text-xs text-foreground font-medium focus-visible:ring-0 shadow-none rounded-none focus-visible:border-b animate-none"
                 placeholder="https://example.com"
               />
             </div>
@@ -201,12 +201,12 @@ export function LinkEditorItem({
                     triggerFetch(val)
                   }
                 }}
-                className="w-full h-8 bg-transparent border-0 border-b border-transparent hover:border-zinc-200 focus-visible:border-[var(--brand)] px-0 text-xs focus-visible:ring-0 shadow-none rounded-none focus-visible:border-b"
+                className="w-full h-8 bg-transparent border-0 border-b border-transparent hover:border-border focus-visible:border-[var(--brand)] px-0 text-xs focus-visible:ring-0 shadow-none rounded-none focus-visible:border-b"
                 placeholder="Paste YouTube Video URL (e.g. https://www.youtube.com/watch?v=...)"
               />
               {youtubeThumbnail && (
-                <div className="flex gap-3 items-center p-2 rounded-lg bg-zinc-50 border border-zinc-150/50">
-                  <div className={`relative ${item.type === 'youtube' && item.style?.aspectRatio === '9:16' ? 'w-10 aspect-[9/16]' : 'w-20 aspect-video'} rounded overflow-hidden bg-black shrink-0 border border-zinc-200 shadow-sm transition-all duration-300`}>
+                <div className="flex gap-3 items-center p-2 rounded-lg bg-muted/40 border border-border/60">
+                  <div className={`relative ${item.type === 'youtube' && item.style?.aspectRatio === '9:16' ? 'w-10 aspect-[9/16]' : 'w-20 aspect-video'} rounded overflow-hidden bg-black shrink-0 border border-border shadow-sm transition-all duration-300`}>
                     <img src={youtubeThumbnail} alt="Thumbnail Preview" className="w-full h-full object-cover" />
                     <div className="absolute inset-0 flex items-center justify-center bg-black/10">
                       <Play size={10} className="text-white fill-current" />
@@ -220,12 +220,12 @@ export function LinkEditorItem({
                     ) : (
                       <>
                         {item.videoTitle ? (
-                          <p className="text-sm font-bold text-black line-clamp-2 leading-tight">{item.videoTitle}</p>
+                          <p className="text-sm font-bold text-foreground line-clamp-2 leading-tight">{item.videoTitle}</p>
                         ) : (
-                          <p className="text-sm font-semibold text-zinc-700 truncate">Connected YouTube Video</p>
+                          <p className="text-sm font-semibold text-foreground truncate">Connected YouTube Video</p>
                         )}
                         {(item.videoDescription || item.videoStats) && (
-                          <p className="text-xs text-zinc-700 line-clamp-1 leading-normal">
+                          <p className="text-xs text-muted-foreground line-clamp-1 leading-normal">
                             {item.videoDescription} {item.videoDescription && item.videoStats ? '•' : ''} {item.videoStats}
                           </p>
                         )}
@@ -245,7 +245,7 @@ export function LinkEditorItem({
                 <Button 
                   type="button"
                   variant="outline" 
-                  className="h-6 px-2 text-xs gap-1 font-bold text-zinc-600 hover:text-zinc-900 border-zinc-200 bg-white"
+                  className="h-6 px-2 text-xs gap-1 font-bold text-foreground hover:text-foreground border-border bg-background"
                   onClick={() => {
                     const currentItems = item.items || []
                     const newSlide = { 
@@ -275,8 +275,8 @@ export function LinkEditorItem({
                       key={slide.id} 
                       className={`rounded-lg border transition-all ${
                         isEditing 
-                          ? 'p-3 border-zinc-300 bg-white shadow-xs' 
-                          : 'py-1.5 px-3 border-zinc-150 bg-zinc-50/50 hover:bg-zinc-50/80'
+                          ? 'p-3 border-border bg-card shadow-xs'
+                          : 'py-1.5 px-3 border-border bg-muted/30 hover:bg-muted/50'
                       }`}
                     >
                       <div className={`grid grid-cols-[50px_1fr_auto] gap-3 ${isEditing ? 'items-start' : 'items-center'}`}>
@@ -380,7 +380,7 @@ export function LinkEditorItem({
                                     e.stopPropagation();
                                     handleCancelEdit(slide.id);
                                   }}
-                                  className="text-[10.5px] font-bold text-zinc-550 hover:text-zinc-800 uppercase tracking-wider flex items-center gap-1 transition-all w-fit"
+                                  className="text-[10.5px] font-bold text-muted-foreground hover:text-foreground uppercase tracking-wider flex items-center gap-1 transition-all w-fit"
                                 >
                                   <X size={11} className="stroke-[2.5]" /> Cancel
                                 </button>
@@ -388,34 +388,34 @@ export function LinkEditorItem({
                             </div>
                           ) : (
                             <div 
-                              className="cursor-pointer group/details py-0.5 px-1.5 -mx-1.5 rounded-md hover:bg-zinc-100/60 transition-colors"
+                              className="cursor-pointer group/details py-0.5 px-1.5 -mx-1.5 rounded-md hover:bg-muted/60 transition-colors"
                               onClick={() => {
                                 setSlideBackup({ title: slide.title || '', imageUrl: slide.imageUrl || '', url: slide.url || '' })
                                 setEditingSlideId(slide.id)
                               }}
                               title="Click to edit slide details"
                             >
-                              <div className="font-bold text-zinc-800 text-sm truncate">
-                                {slide.title || <span className="italic font-medium text-zinc-400">Untitled Slide</span>}
+                              <div className="font-bold text-foreground text-sm truncate">
+                                {slide.title || <span className="italic font-medium text-muted-foreground">Untitled Slide</span>}
                               </div>
-                              <div className="text-zinc-500 text-xs truncate mt-0.5">
-                                {slide.url || <span className="text-zinc-400">No redirect URL</span>}
+                              <div className="text-muted-foreground text-xs truncate mt-0.5">
+                                {slide.url || <span className="text-muted-foreground">No redirect URL</span>}
                               </div>
                               <button
                                 type="button"
-                                className="text-[10.5px] font-bold text-zinc-650 group-hover/details:text-zinc-950 uppercase tracking-wider flex items-center gap-1.5 mt-1 transition-all"
+                                className="text-[10.5px] font-bold text-muted-foreground group-hover/details:text-foreground uppercase tracking-wider flex items-center gap-1.5 mt-1 transition-all"
                               >
-                                <Pencil size={11} className="text-zinc-550 group-hover/details:text-zinc-700" /> Edit Details
+                                <Pencil size={11} className="text-muted-foreground group-hover/details:text-foreground" /> Edit Details
                               </button>
                             </div>
                           )}
                         </div>
 
                       {/* Action Toolbar (Horizontal layout, divider on left) */}
-                      <div className={`flex flex-row items-center gap-1.5 border-l border-zinc-200/85 pl-2.5 shrink-0 ${isEditing ? 'self-start mt-1' : 'self-center'}`}>
+                      <div className={`flex flex-row items-center gap-1.5 border-l border-border pl-2.5 shrink-0 ${isEditing ? 'self-start mt-1' : 'self-center'}`}>
                         <button
                           type="button"
-                          className="size-7 flex items-center justify-center rounded-md border border-zinc-300 bg-white hover:bg-zinc-50 hover:text-zinc-950 text-zinc-800 hover:border-zinc-400 shadow-xs transition disabled:opacity-30 disabled:pointer-events-none active:scale-95"
+                          className="size-7 flex items-center justify-center rounded-md border border-border bg-background hover:bg-muted hover:text-foreground text-foreground shadow-xs transition disabled:opacity-30 disabled:pointer-events-none active:scale-95"
                           onClick={() => moveSlide(slide.id, 'up')}
                           disabled={slideIndex === 0}
                           title="Move Slide Up"
@@ -424,7 +424,7 @@ export function LinkEditorItem({
                         </button>
                         <button
                           type="button"
-                          className="size-7 flex items-center justify-center rounded-md border border-zinc-300 bg-white hover:bg-zinc-50 hover:text-zinc-950 text-zinc-800 hover:border-zinc-400 shadow-xs transition disabled:opacity-30 disabled:pointer-events-none active:scale-95"
+                          className="size-7 flex items-center justify-center rounded-md border border-border bg-background hover:bg-muted hover:text-foreground text-foreground shadow-xs transition disabled:opacity-30 disabled:pointer-events-none active:scale-95"
                           onClick={() => moveSlide(slide.id, 'down')}
                           disabled={slideIndex === (item.items || []).length - 1}
                           title="Move Slide Down"
@@ -433,7 +433,7 @@ export function LinkEditorItem({
                         </button>
                         <button
                           type="button"
-                          className="size-7 flex items-center justify-center rounded-md border border-red-200/80 bg-red-50/30 hover:bg-red-50 hover:text-red-600 hover:border-red-300 text-red-500 shadow-xs transition active:scale-95"
+                          className="size-7 flex items-center justify-center rounded-md border border-red-500/20 bg-red-500/10 hover:bg-red-500/15 hover:text-red-600 hover:border-red-500/30 text-red-500 shadow-xs transition active:scale-95"
                           onClick={() => {
                             const currentItems = item.items || []
                             handleUpdateLink(item.id, 'items', currentItems.filter(s => s.id !== slide.id))
@@ -471,7 +471,7 @@ export function LinkEditorItem({
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button variant="ghost" size="icon" className="h-7 w-7 text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100">
+                  <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-foreground hover:bg-muted">
                     <ImageIcon size={14} />
                   </Button>
                 </TooltipTrigger>
@@ -482,7 +482,7 @@ export function LinkEditorItem({
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button variant="ghost" size="icon" className="h-7 w-7 text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100">
+                  <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-foreground hover:bg-muted">
                     <ChartColumn size={14} />
                   </Button>
                 </TooltipTrigger>
@@ -497,7 +497,7 @@ export function LinkEditorItem({
                     type="button"
                     variant="ghost" 
                     size="icon" 
-                    className="h-7 w-7 text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100" 
+                    className="h-7 w-7 text-muted-foreground hover:text-foreground hover:bg-muted"
                     onClick={() => {
                       const urlToCopy = item.type === 'youtube' ? item.videoUrl : item.type === 'carousel' ? '' : item.url
                       if (urlToCopy) navigator.clipboard.writeText(urlToCopy)
@@ -518,7 +518,7 @@ export function LinkEditorItem({
                     variant="ghost" 
                     size="icon" 
                     className={`h-7 w-7 transition-colors ${
-                      showSettings ? 'text-[var(--brand)] bg-zinc-100' : 'text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100'
+                      showSettings ? 'text-[var(--brand)] bg-muted' : 'text-muted-foreground hover:text-foreground hover:bg-muted'
                     }`}
                     onClick={() => setShowSettings(!showSettings)}
                   >
@@ -536,7 +536,7 @@ export function LinkEditorItem({
                     type="button"
                     variant="ghost" 
                     size="icon" 
-                    className="h-7 w-7 text-red-500 hover:text-red-600 hover:bg-red-50" 
+                    className="h-7 w-7 text-red-500 hover:text-red-600 hover:bg-red-500/10"
                     onClick={() => handleDeleteLink(item.id)}
                   >
                     <Trash2 size={14} />
@@ -548,7 +548,7 @@ export function LinkEditorItem({
           </div>
           
           {item.type === 'button' && (
-            <div className="font-semibold text-zinc-500 bg-zinc-100 px-2 py-0.5 rounded text-[10px]">
+            <div className="font-semibold text-muted-foreground bg-muted px-2 py-0.5 rounded text-[10px]">
               {item.clicks} clicks
             </div>
           )}

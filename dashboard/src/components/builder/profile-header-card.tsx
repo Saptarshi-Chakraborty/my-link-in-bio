@@ -67,29 +67,28 @@ function SortableSocialItem({ platformId, label, icon, index, isOverlay = false 
         transform: isDragging ? 'scale(1.05)' : undefined,
         opacity: isDragging ? 0.6 : 1,
       }}
-      className={`flex flex-col items-center justify-center border p-4 rounded-xl shadow-xs min-w-[90px] select-none bg-white transition-all ${
+      className={`flex flex-col items-center justify-center border border-border p-4 rounded-xl shadow-xs min-w-[90px] select-none bg-card transition-all ${
         isOverlay 
-          ? 'border-zinc-300 shadow-xl ring-2 ring-indigo-500/10 scale-[1.05] pointer-events-none' 
+          ? 'shadow-xl ring-2 ring-[var(--brand)]/10 scale-[1.05] pointer-events-none'
           : isDragging
-          ? 'opacity-40 border-dashed border-zinc-200 bg-zinc-50/50'
-          : 'border-zinc-200 hover:border-zinc-300 hover:bg-zinc-50'
+          ? 'opacity-40 border-dashed bg-muted/40'
+          : 'hover:border-border hover:bg-muted/60'
       }`}
     >
       {/* Grab Handle */}
       <div
         ref={handleRef}
-        className="cursor-grab active:cursor-grabbing text-zinc-400 hover:text-zinc-650 mb-1.5 p-1 rounded transition-colors"
+        className="cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground mb-1.5 p-1 rounded transition-colors"
       >
         <GripHorizontal size={14} />
       </div>
       
-      {/* Icon */}
-      <div className="p-2 rounded-lg bg-zinc-50 border border-zinc-100 text-zinc-650 mb-1 shrink-0">
+      <div className="p-2 rounded-lg bg-muted/50 border border-border text-muted-foreground mb-1 shrink-0">
         {icon}
       </div>
       
       {/* Label */}
-      <span className="text-[10px] font-bold text-zinc-700">{label}</span>
+      <span className="text-[10px] font-bold text-foreground">{label}</span>
     </div>
   )
 }
@@ -313,7 +312,7 @@ export function ProfileHeaderCard() {
   return (
     <>
       <Sheet open={isOpen} onOpenChange={handleOpenChange}>
-        <Card className="border border-zinc-200/80 shadow-xs bg-white overflow-hidden relative group/header transition-all duration-200 hover:shadow-md py-2">
+        <Card className="border border-border shadow-xs bg-card overflow-hidden relative group/header transition-all duration-200 hover:shadow-md py-2">
           <CardContent className="p-6 py-2">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
               
@@ -379,8 +378,8 @@ export function ProfileHeaderCard() {
         </Card>
 
         {/* Editing Sidebar Panel */}
-        <SheetContent side="right" className="w-full sm:max-w-md p-0 flex flex-col bg-white border-l border-zinc-200 shadow-2xl">
-          <SheetHeader className="p-6 pb-4 border-b border-zinc-100 shrink-0">
+        <SheetContent side="right" className="w-full sm:max-w-md p-0 flex flex-col bg-background border-l border-border shadow-2xl">
+          <SheetHeader className="p-6 pb-4 border-b border-border shrink-0">
             <div className="flex items-center justify-between">
               <div className="space-y-1">
                 <SheetTitle className="text-base font-bold text-zinc-950 flex items-center gap-2">
@@ -586,8 +585,8 @@ export function ProfileHeaderCard() {
 
       {/* Rearrange Socials Dialog Modal */}
       <Dialog open={isRearrangeOpen} onOpenChange={setIsRearrangeOpen}>
-        <DialogContent className="sm:max-w-md bg-white border border-zinc-200 rounded-2xl shadow-2xl p-6">
-          <DialogHeader className="pb-4 border-b border-zinc-100 flex flex-col gap-1 text-left">
+        <DialogContent className="sm:max-w-md bg-background border border-border rounded-2xl shadow-2xl p-6">
+          <DialogHeader className="pb-4 border-b border-border flex flex-col gap-1 text-left">
             <DialogTitle className="text-base font-bold text-zinc-950 flex items-center gap-2">
               <Share2 className="w-4 h-4 text-[var(--brand)]" />
               Rearrange Social Icons

@@ -143,7 +143,7 @@ function CarouselRenderer({ carousel }: { carousel: CarouselElement }) {
         <button
           type="button"
           onClick={() => scrollTo(activeIndex - 1)}
-          className="absolute left-2 top-1/2 -translate-y-1/2 z-20 size-6 rounded-full bg-white/90 hover:bg-white shadow-md flex items-center justify-center text-zinc-800 transition-all duration-200 active:scale-90 hover:scale-105 opacity-0 group-hover/carousel:opacity-100 hidden md:flex"
+          className="absolute left-2 top-1/2 -translate-y-1/2 z-20 size-6 rounded-full bg-background/90 hover:bg-background shadow-md flex items-center justify-center text-foreground transition-all duration-200 active:scale-90 hover:scale-105 opacity-0 group-hover/carousel:opacity-100 hidden md:flex border border-border"
           aria-label="Previous slide"
         >
           <ChevronLeft size={14} className="stroke-[2.5]" />
@@ -154,7 +154,7 @@ function CarouselRenderer({ carousel }: { carousel: CarouselElement }) {
         <button
           type="button"
           onClick={() => scrollTo(activeIndex + 1)}
-          className="absolute right-2 top-1/2 -translate-y-1/2 z-20 size-6 rounded-full bg-white/90 hover:bg-white shadow-md flex items-center justify-center text-zinc-800 transition-all duration-200 active:scale-90 hover:scale-105 opacity-0 group-hover/carousel:opacity-100 hidden md:flex"
+          className="absolute right-2 top-1/2 -translate-y-1/2 z-20 size-6 rounded-full bg-background/90 hover:bg-background shadow-md flex items-center justify-center text-foreground transition-all duration-200 active:scale-90 hover:scale-105 opacity-0 group-hover/carousel:opacity-100 hidden md:flex border border-border"
           aria-label="Next slide"
         >
           <ChevronRight size={14} className="stroke-[2.5]" />

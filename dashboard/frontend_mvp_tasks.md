@@ -51,8 +51,8 @@ Implement the routes and client views for user access and setting up their uniqu
 ## 2. Drag & Drop Reordering Engine
 Enable intuitive vertical reordering of user elements (links, carousels, embeds).
 
-- [ ] **2.1. Implement HTML5 Drag and Drop Handlers**
-  - [ ] Inside `src/routes/builder-new.tsx`, write state reordering logic:
+- [x] **2.1. Implement HTML5 Drag and Drop Handlers**
+  - [x] Inside `src/routes/builder-new.tsx`, write state reordering logic:
     ```typescript
     const handleReorderLinks = (draggedId: string, targetId: string) => {
       setLinks((prev) => {
@@ -66,15 +66,15 @@ Enable intuitive vertical reordering of user elements (links, carousels, embeds)
       });
     };
     ```
-- [ ] **2.2. Add Drag Events to `LinkEditorItem`**
-  - [ ] In `src/components/builder/link-editor-item.tsx`, add HTML5 drag attributes:
-    - [ ] Add `draggable` to the item card wrapper or drag handle.
-    - [ ] Implement `onDragStart` (store the item's ID in `e.dataTransfer.setData('text/plain', item.id)`).
-    - [ ] Implement `onDragOver` (call `e.preventDefault()`).
-    - [ ] Implement `onDrop` (retrieve the dragged ID and invoke the reorder state function).
-- [ ] **2.3. Apply Drag-and-Drop Visual Polish**
-  - [ ] Apply custom Tailwind class transitions for active dragging states (e.g. drop shadow, opacity change, border glow).
-  - [ ] Ensure the grab cursor is correctly set on `GripVertical` icon.
+- [x] **2.2. Add Drag Events to `LinkEditorItem`**
+  - [x] In `src/components/builder/link-editor-item.tsx`, add HTML5 drag attributes:
+    - [x] Add `draggable` to the item card wrapper or drag handle.
+    - [x] Implement `onDragStart` (store the item's ID in `e.dataTransfer.setData('text/plain', item.id)`).
+    - [x] Implement `onDragOver` (call `e.preventDefault()`).
+    - [x] Implement `onDrop` (retrieve the dragged ID and invoke the reorder state function).
+- [x] **2.3. Apply Drag-and-Drop Visual Polish**
+  - [x] Apply custom Tailwind class transitions for active dragging states (e.g. drop shadow, opacity change, border glow).
+  - [x] Ensure the grab cursor is correctly set on `GripVertical` icon.
 
 ---
 

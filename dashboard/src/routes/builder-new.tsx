@@ -80,7 +80,7 @@ function BuilderPage() {
   return (
     <TooltipProvider>
       <SidebarProvider>
-        <div className="flex h-screen w-screen overflow-hidden bg-[var(--page-bg)]">
+        <div className="flex h-screen w-screen overflow-hidden bg-[var(--page-bg)] text-foreground">
         {/* Animated background gradients (subtle, non-intrusive) */}
         <div className="pointer-events-none fixed inset-0 z-0">
           <div className="absolute -left-40 -top-40 h-96 w-96 rounded-full bg-indigo-500/5 blur-3xl animate-float" />
@@ -91,7 +91,7 @@ function BuilderPage() {
         
         <SidebarInset className="relative z-10 flex flex-col flex-1 overflow-hidden bg-transparent">
           {/* Header Bar */}
-          <header className="flex h-16 shrink-0 items-center justify-between gap-4 border-b bg-white/70 backdrop-blur-md px-6 sticky top-0 z-20">
+          <header className="flex h-16 shrink-0 items-center justify-between gap-4 border-b border-border bg-background/70 backdrop-blur-md px-6 sticky top-0 z-20 text-foreground">
             <div className="flex items-center gap-2">
               <SidebarTrigger className="-ml-1" />
               <Separator orientation="vertical" className="mr-2 h-4" />
@@ -109,7 +109,7 @@ function BuilderPage() {
             </div>
 
             <div className="flex items-center gap-3">
-              <div className="hidden sm:flex items-center gap-1.5 text-xs text-muted-foreground bg-zinc-100/80 px-3 py-1.5 rounded-lg border border-zinc-200/50">
+              <div className="hidden sm:flex items-center gap-1.5 text-xs text-muted-foreground bg-muted/70 px-3 py-1.5 rounded-lg border border-border">
                 <span>My Linktree:</span>
                 <a
                   href="https://vibelink.co/saptarshi"
@@ -140,7 +140,7 @@ function BuilderPage() {
                     <span className="sr-only">Toggle Mobile Preview</span>
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="w-[300px] sm:w-[380px] p-0 flex flex-col justify-center items-center bg-zinc-950 border-l border-zinc-800">
+                <SheetContent side="right" className="w-[300px] sm:w-[380px] p-0 flex flex-col justify-center items-center bg-background border-l border-border">
                   <div className="sr-only">
                     <SheetTitle>Mobile Preview</SheetTitle>
                   </div>
@@ -160,7 +160,7 @@ function BuilderPage() {
                 
                 {/* Page Title */}
                 <div className="flex flex-col gap-1">
-                  <h1 className="text-2xl font-bold font-display text-zinc-900 tracking-tight">Builder Workspace</h1>
+                  <h1 className="text-2xl font-bold font-display text-foreground tracking-tight">Builder Workspace</h1>
                   <p className="text-sm text-muted-foreground">Design your public page, add custom links, and check your performance.</p>
                 </div>
 
@@ -173,10 +173,10 @@ function BuilderPage() {
             </ScrollArea>
 
             {/* Desktop Right Preview Panel (Sticky) */}
-            <div className="hidden xl:flex w-[380px] border-l bg-zinc-50/50 flex-col items-center justify-center p-6 shrink-0 h-[calc(100vh-4rem)] sticky top-16">
+            <div className="hidden xl:flex w-[380px] border-l border-border bg-background/50 flex-col items-center justify-center p-6 shrink-0 h-[calc(100vh-4rem)] sticky top-16">
               <div className="w-full flex justify-between items-center border-b pb-3 mb-6">
                 <h3 className="font-bold text-sm text-zinc-800">Live Preview</h3>
-                <span className="text-[10px] font-bold bg-white shadow-sm border px-2 py-1 rounded text-zinc-500">Mockup</span>
+                <span className="text-[10px] font-bold bg-background shadow-sm border border-border px-2 py-1 rounded text-muted-foreground">Mockup</span>
               </div>
               <MobileMockup />
             </div>

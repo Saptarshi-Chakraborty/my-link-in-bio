@@ -55,7 +55,7 @@ export function CustomLinksCard() {
                   type="button"
                   variant="outline"
                   size="sm"
-                  className="h-8 px-2.5 shadow-sm border-zinc-200 hover:bg-zinc-50 active:scale-95 text-zinc-700 bg-white shrink-0"
+                  className="h-8 px-2.5 shadow-sm border-border hover:bg-muted active:scale-95 text-foreground bg-background shrink-0"
                 >
                   <MoreHorizontal size={14} />
                 </Button>
@@ -76,8 +76,8 @@ export function CustomLinksCard() {
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
         {activeLinks.length === 0 && (
-          <div className="flex items-center gap-3 p-3 bg-amber-50 border border-amber-200 rounded-xl text-amber-800 text-xs leading-relaxed">
-            <Info size={16} className="text-amber-600 flex-shrink-0" />
+          <div className="flex items-center gap-3 p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl text-amber-900 dark:text-amber-100 text-xs leading-relaxed">
+            <Info size={16} className="text-amber-600 dark:text-amber-300 flex-shrink-0" />
             <p>All elements are currently hidden or inactive. Toggles must be switched ON to display them in the live preview.</p>
           </div>
         )}
@@ -99,7 +99,7 @@ export function CustomLinksCard() {
             }
           }}
         >
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-3 pb-24">
             {links.map((item, index) => (
               <LinkEditorItem
                 key={item.id}

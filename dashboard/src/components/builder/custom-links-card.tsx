@@ -99,7 +99,7 @@ export function CustomLinksCard() {
             }
           }}
         >
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-3 pb-24">
             {links.map((item, index) => (
               <LinkEditorItem
                 key={item.id}

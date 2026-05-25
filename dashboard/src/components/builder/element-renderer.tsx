@@ -75,7 +75,7 @@ function ButtonRenderer({ button }: { button: ButtonElement }) {
 
 function CarouselRenderer({ carousel }: { carousel: CarouselElement }) {
   const { items, style } = carousel
-  const aspectRatioClass = CAROUSEL_ASPECT_RATIOS[style?.aspectRatio || '1:1']?.class || CAROUSEL_ASPECT_RATIOS['1:1'].class
+  const aspectRatioClass = CAROUSEL_ASPECT_RATIOS[style?.aspectRatio || '4:3']?.class || CAROUSEL_ASPECT_RATIOS['4:3'].class
   const shapeClass = style?.shape === 'rectangle' ? 'rounded-none' : 'rounded-xl'
   
   const cardStyle = style?.cardStyle || 'overlay' // 'overlay', 'classic', 'minimal'

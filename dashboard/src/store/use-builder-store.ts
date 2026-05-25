@@ -51,8 +51,10 @@ const defaultLinks: PageElement[] = [
     type: 'carousel',
     active: true,
     style: {
-      aspectRatio: '16:9',
-      shape: 'rounded'
+      aspectRatio: '4:3',
+      shape: 'rounded',
+      cardStyle: 'overlay',
+      indicatorStyle: 'dots'
     },
     items: [
       {
@@ -214,8 +216,10 @@ export const useBuilderStore = create<BuilderState>((set) => ({
           type: 'carousel',
           active: true,
           style: {
-            aspectRatio: '1:1',
+            aspectRatio: '4:3',
             shape: 'rounded',
+            cardStyle: 'overlay',
+            indicatorStyle: 'dots',
           },
           items: [
             {

@@ -13,7 +13,10 @@ import {
   Sparkles,
   SlidersHorizontal,
   ChevronUp,
-  ChevronDown
+  ChevronDown,
+  Pencil,
+  Check,
+  X
 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
@@ -53,6 +56,22 @@ export function LinkEditorItem({
 
   const [isFetching, setIsFetching] = useState(false)
   const [showSettings, setShowSettings] = useState(false)
+  const [editingSlideId, setEditingSlideId] = useState<string | null>(null)
+  const [slideBackup, setSlideBackup] = useState<{ title: string; imageUrl: string; url: string } | null>(null)
+
+  const handleSaveEdit = () => {
+    setEditingSlideId(null)
+    setSlideBackup(null)
+  }
+
+  const handleCancelEdit = (slideId: string) => {
+    if (slideBackup && item.type === 'carousel') {
+      const updated = (item.items || []).map(s => s.id === slideId ? { ...s, ...slideBackup } : s)
+      handleUpdateLink(item.id, 'items', updated)
+    }
+    setEditingSlideId(null)
+    setSlideBackup(null)
+  }
 
   const moveSlide = (slideId: string, direction: 'up' | 'down') => {
     if (item.type !== 'carousel') return
@@ -231,11 +250,13 @@ export function LinkEditorItem({
                     const currentItems = item.items || []
                     const newSlide = { 
                       id: `slide-${Date.now()}`, 
-                      imageUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150', 
-                      title: 'Slide Title', 
-                      url: 'https://example.com' 
+                      imageUrl: '', 
+                      title: '', 
+                      url: '' 
                     }
                     handleUpdateLink(item.id, 'items', [...currentItems, newSlide])
+                    setSlideBackup({ title: '', imageUrl: '', url: '' })
+                    setEditingSlideId(newSlide.id)
                   }}
                 >
                   <Plus size={10} /> Add Slide
@@ -247,79 +268,151 @@ export function LinkEditorItem({
                 {(!item.items || item.items.length === 0) && (
                   <p className="text-xs text-zinc-500 font-medium italic py-2 text-center">No slides added. Click "Add Slide" to begin.</p>
                 )}
-                {item.items?.map((slide, slideIndex) => (
-                  <div key={slide.id} className="p-3 rounded-lg border border-zinc-150 bg-zinc-50/50 transition-all">
-                    <div className="grid grid-cols-[50px_1fr_40px] gap-3 items-center">
-                      {/* Image Thumbnail with Slide Number Badge */}
-                      <div className="w-[50px] h-[50px] rounded-lg border border-zinc-200 bg-zinc-100 overflow-hidden shrink-0 relative shadow-sm self-start mt-0.5">
-                        {slide.imageUrl ? (
-                          <img src={slide.imageUrl} alt="" className="w-full h-full object-cover" />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center text-[10px] text-zinc-400 font-bold">No Image</div>
-                        )}
-                        {/* Slide Index Badge */}
-                        <div className="absolute top-1 left-1 bg-black/65 backdrop-blur-xs text-[10px] font-black text-white h-4 min-w-[16px] px-1 rounded-full flex items-center justify-center shadow-xs border border-white/10 select-none">
-                          {slideIndex + 1}
-                        </div>
-                      </div>
-                      
-                      {/* Slide Inputs */}
-                      <div className="space-y-2">
-                        <Input
-                          type="text"
-                          value={slide.title || ''}
-                          placeholder="Slide Title"
-                          className="w-full h-8 bg-transparent border-0 border-b border-transparent hover:border-zinc-200 focus-visible:border-[var(--brand)] px-0 font-bold text-sm focus-visible:ring-0 shadow-none rounded-none focus-visible:border-b"
-                          onChange={(e) => {
-                            const updated = item.items.map(s => s.id === slide.id ? { ...s, title: e.target.value } : s)
-                            handleUpdateLink(item.id, 'items', updated)
+                {item.items?.map((slide, slideIndex) => {
+                  const isEditing = editingSlideId === slide.id;
+                  return (
+                    <div 
+                      key={slide.id} 
+                      className={`rounded-lg border transition-all ${
+                        isEditing 
+                          ? 'p-3 border-zinc-300 bg-white shadow-xs' 
+                          : 'py-1.5 px-3 border-zinc-150 bg-zinc-50/50 hover:bg-zinc-50/80'
+                      }`}
+                    >
+                      <div className={`grid grid-cols-[50px_1fr_auto] gap-3 ${isEditing ? 'items-start' : 'items-center'}`}>
+                        {/* Image Thumbnail with Slide Number Badge */}
+                        <div 
+                          className={`w-[50px] h-[50px] rounded-lg border border-zinc-200 bg-zinc-100 overflow-hidden shrink-0 relative shadow-sm self-start mt-0.5 select-none ${
+                            isEditing ? 'cursor-pointer hover:border-zinc-300' : ''
+                          }`}
+                          onClick={() => {
+                            if (isEditing) {
+                              handleSaveEdit();
+                            } else {
+                              setSlideBackup({ title: slide.title || '', imageUrl: slide.imageUrl || '', url: slide.url || '' })
+                              setEditingSlideId(slide.id);
+                            }
                           }}
-                        />
-                        <div className="space-y-1">
-                          <Input
-                            type="text"
-                            value={slide.imageUrl || ''}
-                            placeholder="https://example.com/image.jpg"
-                            className="w-full h-7 bg-transparent border-0 border-b border-transparent hover:border-zinc-200 focus-visible:border-[var(--brand)] px-0 text-xs text-zinc-700 font-medium focus-visible:ring-0 shadow-none rounded-none focus-visible:border-b animate-none"
-                            onChange={(e) => {
-                              const updated = item.items.map(s => s.id === slide.id ? { ...s, imageUrl: e.target.value } : s)
-                              handleUpdateLink(item.id, 'items', updated)
-                            }}
-                          />
-                          {/* Image Presets Pills */}
-                          {(!slide.imageUrl || slide.imageUrl.trim() === '') && (
-                            <div className="flex flex-wrap items-center gap-1.5 text-xs text-zinc-550 px-0.5 mt-1.5">
-                              <span className="font-bold text-zinc-600">Curated:</span>
-                              {PRESET_IMAGES.map((preset) => (
-                                <button
-                                  key={preset.name}
-                                  type="button"
-                                  onClick={() => {
-                                    const updated = item.items.map(s => s.id === slide.id ? { ...s, imageUrl: preset.url } : s)
+                          title={isEditing ? "Click to close" : "Click to edit"}
+                        >
+                          {slide.imageUrl ? (
+                            <img src={slide.imageUrl} alt="" className="w-full h-full object-cover" />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-[10px] text-zinc-400 font-bold">No Image</div>
+                          )}
+                          {/* Slide Index Badge */}
+                          <div className="absolute top-1 left-1 bg-black/65 backdrop-blur-xs text-[10px] font-black text-white h-4 min-w-[16px] px-1 rounded-full flex items-center justify-center shadow-xs border border-white/10 select-none">
+                            {slideIndex + 1}
+                          </div>
+                        </div>
+                        
+                        {/* Slide Details (View or Edit Mode) */}
+                        <div className="flex-1 min-w-0">
+                          {isEditing ? (
+                            <div className="space-y-2">
+                              <Input
+                                type="text"
+                                value={slide.title || ''}
+                                placeholder="Slide Title"
+                                className="w-full h-8 bg-transparent border-0 border-b border-transparent hover:border-zinc-200 focus-visible:border-[var(--brand)] px-0 font-bold text-sm focus-visible:ring-0 shadow-none rounded-none focus-visible:border-b"
+                                onChange={(e) => {
+                                  const updated = item.items.map(s => s.id === slide.id ? { ...s, title: e.target.value } : s)
+                                  handleUpdateLink(item.id, 'items', updated)
+                                }}
+                                autoFocus
+                              />
+                              <div className="space-y-1">
+                                <Input
+                                  type="text"
+                                  value={slide.imageUrl || ''}
+                                  placeholder="https://example.com/image.jpg"
+                                  className="w-full h-7 bg-transparent border-0 border-b border-transparent hover:border-zinc-200 focus-visible:border-[var(--brand)] px-0 text-xs text-zinc-700 font-medium focus-visible:ring-0 shadow-none rounded-none focus-visible:border-b animate-none"
+                                  onChange={(e) => {
+                                    const updated = item.items.map(s => s.id === slide.id ? { ...s, imageUrl: e.target.value } : s)
                                     handleUpdateLink(item.id, 'items', updated)
                                   }}
-                                  className="px-2 py-0.5 rounded border border-zinc-200/80 bg-white hover:bg-zinc-100 hover:text-zinc-950 hover:border-zinc-300 transition font-bold text-xs shadow-xs text-zinc-700"
+                                />
+                                {/* Image Presets Pills */}
+                                {(!slide.imageUrl || slide.imageUrl.trim() === '') && (
+                                  <div className="flex flex-wrap items-center gap-1.5 text-xs text-zinc-550 px-0.5 mt-1.5">
+                                    <span className="font-bold text-zinc-600">Curated:</span>
+                                    {PRESET_IMAGES.map((preset) => (
+                                      <button
+                                        key={preset.name}
+                                        type="button"
+                                        onClick={() => {
+                                          const updated = item.items.map(s => s.id === slide.id ? { ...s, imageUrl: preset.url } : s)
+                                          handleUpdateLink(item.id, 'items', updated)
+                                        }}
+                                        className="px-2 py-0.5 rounded border border-zinc-200/80 bg-white hover:bg-zinc-100 hover:text-zinc-950 hover:border-zinc-300 transition font-bold text-xs shadow-xs text-zinc-700"
+                                      >
+                                        {preset.name}
+                                      </button>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                              <Input
+                                type="text"
+                                value={slide.url || ''}
+                                placeholder="https://example.com"
+                                className="w-full h-7 bg-transparent border-0 border-b border-transparent hover:border-zinc-200 focus-visible:border-[var(--brand)] px-0 text-xs text-zinc-700 font-medium focus-visible:ring-0 shadow-none rounded-none focus-visible:border-b animate-none"
+                                onChange={(e) => {
+                                  const updated = item.items.map(s => s.id === slide.id ? { ...s, url: e.target.value } : s)
+                                  handleUpdateLink(item.id, 'items', updated)
+                                }}
+                              />
+                              <div className="flex items-center gap-2 mt-2.5">
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleSaveEdit();
+                                  }}
+                                  className="text-[10.5px] font-bold text-[var(--brand)] hover:opacity-85 uppercase tracking-wider flex items-center gap-1 transition-all w-fit"
                                 >
-                                  {preset.name}
+                                  <Check size={11} className="stroke-[2.5]" /> Save & Close
                                 </button>
-                              ))}
+                                <span className="text-zinc-300 text-xs">|</span>
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleCancelEdit(slide.id);
+                                  }}
+                                  className="text-[10.5px] font-bold text-zinc-550 hover:text-zinc-800 uppercase tracking-wider flex items-center gap-1 transition-all w-fit"
+                                >
+                                  <X size={11} className="stroke-[2.5]" /> Cancel
+                                </button>
+                              </div>
+                            </div>
+                          ) : (
+                            <div 
+                              className="cursor-pointer group/details py-0.5 px-1.5 -mx-1.5 rounded-md hover:bg-zinc-100/60 transition-colors"
+                              onClick={() => {
+                                setSlideBackup({ title: slide.title || '', imageUrl: slide.imageUrl || '', url: slide.url || '' })
+                                setEditingSlideId(slide.id)
+                              }}
+                              title="Click to edit slide details"
+                            >
+                              <div className="font-bold text-zinc-800 text-sm truncate">
+                                {slide.title || <span className="italic font-medium text-zinc-400">Untitled Slide</span>}
+                              </div>
+                              <div className="text-zinc-500 text-xs truncate mt-0.5">
+                                {slide.url || <span className="text-zinc-400">No redirect URL</span>}
+                              </div>
+                              <button
+                                type="button"
+                                className="text-[10.5px] font-bold text-zinc-650 group-hover/details:text-zinc-950 uppercase tracking-wider flex items-center gap-1.5 mt-1 transition-all"
+                              >
+                                <Pencil size={11} className="text-zinc-550 group-hover/details:text-zinc-700" /> Edit Details
+                              </button>
                             </div>
                           )}
                         </div>
-                        <Input
-                          type="text"
-                          value={slide.url || ''}
-                          placeholder="https://example.com"
-                          className="w-full h-7 bg-transparent border-0 border-b border-transparent hover:border-zinc-200 focus-visible:border-[var(--brand)] px-0 text-xs text-zinc-700 font-medium focus-visible:ring-0 shadow-none rounded-none focus-visible:border-b animate-none"
-                          onChange={(e) => {
-                            const updated = item.items.map(s => s.id === slide.id ? { ...s, url: e.target.value } : s)
-                            handleUpdateLink(item.id, 'items', updated)
-                          }}
-                        />
-                      </div>
 
-                      {/* Action Toolbar (Vertically stacked, divider on left) */}
-                      <div className="flex flex-col items-center gap-1.5 border-l border-zinc-200/85 pl-2.5 py-1 self-stretch justify-center shrink-0">
+                      {/* Action Toolbar (Horizontal layout, divider on left) */}
+                      <div className={`flex flex-row items-center gap-1.5 border-l border-zinc-200/85 pl-2.5 shrink-0 ${isEditing ? 'self-start mt-1' : 'self-center'}`}>
                         <button
                           type="button"
                           className="size-7 flex items-center justify-center rounded-md border border-zinc-300 bg-white hover:bg-zinc-50 hover:text-zinc-950 text-zinc-800 hover:border-zinc-400 shadow-xs transition disabled:opacity-30 disabled:pointer-events-none active:scale-95"
@@ -352,7 +445,8 @@ export function LinkEditorItem({
                       </div>
                     </div>
                   </div>
-                ))}
+                )
+              })}
               </div>
             </div>
           )}
@@ -567,7 +661,7 @@ export function LinkEditorItem({
                         key={ratio}
                         type="button"
                         className={`px-2.5 py-1 text-xs font-bold rounded-md transition ${
-                          (item.style?.aspectRatio || '1:1') === ratio
+                          (item.style?.aspectRatio || '4:3') === ratio
                             ? 'bg-white shadow-xs text-[var(--brand)] font-bold'
                             : 'text-zinc-600 hover:text-zinc-900'
                         }`}

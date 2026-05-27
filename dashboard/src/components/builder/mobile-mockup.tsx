@@ -1,4 +1,5 @@
-import { useMemo, useEffect } from 'react'
+import { useMemo } from 'react'
+import { useGoogleFont } from '@/hooks/use-google-font'
 import { Share2 } from 'lucide-react'
 import { GithubIcon, LinkedinIcon, FacebookIcon, InstagramIcon, XIcon, SnapchatIcon, ThreadsIcon, MastodonIcon } from './icons'
 import { ElementRenderer } from './element-renderer'
@@ -64,20 +65,7 @@ export function MobileMockup() {
   }, [pageTheme])
 
   // Dynamically load Google Font when fontFamily changes
-  useEffect(() => {
-    const font = pageTheme.fontFamily
-    if (!font) return
-    
-    const linkId = 'vibelink-dynamic-google-font'
-    let link = document.getElementById(linkId) as HTMLLinkElement | null
-    if (!link) {
-      link = document.createElement('link')
-      link.id = linkId
-      link.rel = 'stylesheet'
-      document.head.appendChild(link)
-    }
-    link.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(font)}:wght@400;500;600;700&display=swap`
-  }, [pageTheme.fontFamily])
+  useGoogleFont(pageTheme.fontFamily)
 
   const hasActiveSocials = useMemo(() => socials.some(s => s.value && s.value.trim() !== ''), [socials])
 

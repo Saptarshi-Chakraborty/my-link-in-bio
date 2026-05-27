@@ -119,97 +119,9 @@ interface Migration {
   migrate: (data: any) => any
 }
 
-// Theme string → HEX preset mapping for v4 migration
-const THEME_TO_HEX_MAP: Record<string, {
-  bgColor: string
-  textColor: string
-  btnBgColor: string
-  btnTextColor: string
-}> = {
-  minimalist: { bgColor: '#ffffff', textColor: '#18181b', btnBgColor: '#18181b', btnTextColor: '#ffffff' },
-  neon:       { bgColor: '#0f0c1b', textColor: '#f4f4f5', btnBgColor: '#6366f1', btnTextColor: '#ffffff' },
-  warm:       { bgColor: '#ffffff', textColor: '#18181b', btnBgColor: '#18181b', btnTextColor: '#ffffff' },
-  vivid:      { bgColor: '#0f0c1b', textColor: '#f4f4f5', btnBgColor: '#6366f1', btnTextColor: '#ffffff' },
-  glass:      { bgColor: '#0f0c1b', textColor: '#f4f4f5', btnBgColor: '#6366f1', btnTextColor: '#ffffff' },
-}
-
-const DEFAULT_PAGE_THEME = {
-  bgColor: '#ffffff',
-  textColor: '#18181b',
-  btnBgColor: '#18181b',
-  btnTextColor: '#ffffff',
-  btnShape: 'rounded' as const,
-  fontFamily: 'Inter' as const,
-}
-
+// All devices are on v4+. Only the v4→v5 migration is needed.
+// Future migrations (v5→v6, etc.) can be appended to this array.
 const MIGRATIONS: Migration[] = [
-  {
-    version: 2,
-    migrate: (data) => {
-      if (!data) return data
-      
-      const socialsArray: Array<{ platform: string; value: string }> = []
-      const oldSocials = data.socials || {}
-      const oldActive = data.socialsActive || {}
-      
-      const platforms: Array<'github' | 'linkedin' | 'facebook' | 'instagram'> = [
-        'github',
-        'linkedin',
-        'facebook',
-        'instagram',
-      ]
-      
-      for (const platform of platforms) {
-        const val = oldSocials[platform]
-        const isActive = oldActive[platform]
-        if (isActive && typeof val === 'string' && val.trim() !== '') {
-          socialsArray.push({
-            platform,
-            value: val.trim(),
-          })
-        }
-      }
-      
-      const migrated = {
-        ...data,
-        socials: socialsArray,
-      }
-      
-      delete migrated.socialsActive
-      return migrated
-    }
-  },
-  {
-    version: 3,
-    migrate: (data) => {
-      if (!data) return data
-      return {
-        ...data,
-        socialsPosition: 'top',
-      }
-    }
-  },
-  {
-    version: 4,
-    migrate: (data) => {
-      if (!data) return data
-
-      // Map old theme string to HEX values
-      const oldTheme = typeof data.theme === 'string' ? data.theme : 'minimalist'
-      const hexValues = THEME_TO_HEX_MAP[oldTheme] || THEME_TO_HEX_MAP.minimalist
-
-      const migrated = {
-        ...data,
-        pageTheme: {
-          ...DEFAULT_PAGE_THEME,
-          ...hexValues,
-        },
-      }
-
-      delete migrated.theme
-      return migrated
-    }
-  },
   {
     version: 5,
     migrate: (data) => {
@@ -229,7 +141,7 @@ const MIGRATIONS: Migration[] = [
         links: migratedLinks,
       }
     }
-  }
+  },
 ]
 
 export function migrateProfileData(rawData: unknown): any {

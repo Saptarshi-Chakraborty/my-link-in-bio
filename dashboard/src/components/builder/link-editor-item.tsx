@@ -588,20 +588,32 @@ export function LinkEditorItem({
                 <div className="space-y-1.5">
                   <label className="font-bold text-muted-foreground uppercase tracking-wider text-xs block">Shape</label>
                   <div className="flex border border-border rounded-lg p-0.5 bg-muted w-fit">
-                    {(['rectangle', 'rounded', 'pill'] as const).map((shape) => (
-                      <button
-                        key={shape}
-                        type="button"
-                        className={`px-3 py-1 text-xs font-bold rounded-md transition capitalize ${
-                          (item.style?.shape || 'rounded') === shape
-                            ? 'bg-background shadow-xs text-[var(--brand)] font-bold'
-                            : 'text-muted-foreground hover:text-foreground'
-                        }`}
-                        onClick={() => handleUpdateLink(item.id, 'style.shape', shape)}
-                      >
-                        {shape === 'rectangle' ? 'Rect' : shape === 'rounded' ? 'Round' : 'Pill'}
-                      </button>
-                    ))}
+                    {(['theme', 'rectangle', 'rounded', 'pill'] as const).map((shape) => {
+                      const isSelected = shape === 'theme'
+                        ? !item.style?.shape
+                        : item.style?.shape === shape
+
+                      return (
+                        <button
+                          key={shape}
+                          type="button"
+                          className={`px-2.5 py-1 text-xs font-bold rounded-md transition capitalize ${
+                            isSelected
+                              ? 'bg-background shadow-xs text-[var(--brand)] font-bold'
+                              : 'text-muted-foreground hover:text-foreground'
+                          }`}
+                          onClick={() => {
+                            if (shape === 'theme') {
+                              handleUpdateLink(item.id, 'style.shape', undefined)
+                            } else {
+                              handleUpdateLink(item.id, 'style.shape', shape)
+                            }
+                          }}
+                        >
+                          {shape === 'theme' ? 'Theme' : shape === 'rectangle' ? 'Rect' : shape === 'rounded' ? 'Round' : 'Pill'}
+                        </button>
+                      )
+                    })}
                   </div>
                 </div>
 

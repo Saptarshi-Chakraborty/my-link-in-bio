@@ -81,29 +81,67 @@ export const SocialsActiveStateSchema = z.object({
   instagram: z.boolean(),
 })
 
-// 8. Unified Root Profile Page Schema (Version 3)
+// 8. Page Theme Schema (v4)
+export const PageThemeSchema = z.object({
+  bgColor: z.string().default('#ffffff'),
+  textColor: z.string().default('#18181b'),
+  btnBgColor: z.string().default('#18181b'),
+  btnTextColor: z.string().default('#ffffff'),
+  btnShape: z.enum(['rectangle', 'rounded', 'pill']).default('rounded'),
+  fontFamily: z.enum(['Inter', 'Playfair Display', 'Roboto', 'Courier']).default('Inter'),
+})
+
+// 9. Unified Root Profile Page Schema (Version 5)
 export const ProfilePageDataSchema = z.object({
-  version: z.literal(3).default(3),
+  version: z.literal(5).default(5),
   profileName: z.string().default(''),
   profileBio: z.string().default(''),
   profileAvatar: z.string().default('neon'),
   socials: SocialsStateSchema,
   socialsPosition: z.enum(['top', 'bottom']).default('top'),
   links: z.array(PageElementSchema).default([]),
-  theme: z.string().default('minimalist'),
+  pageTheme: PageThemeSchema.default({
+    bgColor: '#ffffff',
+    textColor: '#18181b',
+    btnBgColor: '#18181b',
+    btnTextColor: '#ffffff',
+    btnShape: 'rounded',
+    fontFamily: 'Inter',
+  }),
 })
 
 // Export type inferred from Schema
 export type ProfilePageData = z.infer<typeof ProfilePageDataSchema>
 
-// 9. Schema Migration Engine
+// 10. Schema Migration Engine
 interface Migration {
   version: number
   migrate: (data: any) => any
 }
 
-// In the future, append migration steps here.
-// e.g. { version: 2, migrate: (data) => ({ ...data, newField: 'default' }) }
+// Theme string → HEX preset mapping for v4 migration
+const THEME_TO_HEX_MAP: Record<string, {
+  bgColor: string
+  textColor: string
+  btnBgColor: string
+  btnTextColor: string
+}> = {
+  minimalist: { bgColor: '#ffffff', textColor: '#18181b', btnBgColor: '#18181b', btnTextColor: '#ffffff' },
+  neon:       { bgColor: '#0f0c1b', textColor: '#f4f4f5', btnBgColor: '#6366f1', btnTextColor: '#ffffff' },
+  warm:       { bgColor: '#ffffff', textColor: '#18181b', btnBgColor: '#18181b', btnTextColor: '#ffffff' },
+  vivid:      { bgColor: '#0f0c1b', textColor: '#f4f4f5', btnBgColor: '#6366f1', btnTextColor: '#ffffff' },
+  glass:      { bgColor: '#0f0c1b', textColor: '#f4f4f5', btnBgColor: '#6366f1', btnTextColor: '#ffffff' },
+}
+
+const DEFAULT_PAGE_THEME = {
+  bgColor: '#ffffff',
+  textColor: '#18181b',
+  btnBgColor: '#18181b',
+  btnTextColor: '#ffffff',
+  btnShape: 'rounded' as const,
+  fontFamily: 'Inter' as const,
+}
+
 const MIGRATIONS: Migration[] = [
   {
     version: 2,
@@ -148,6 +186,47 @@ const MIGRATIONS: Migration[] = [
       return {
         ...data,
         socialsPosition: 'top',
+      }
+    }
+  },
+  {
+    version: 4,
+    migrate: (data) => {
+      if (!data) return data
+
+      // Map old theme string to HEX values
+      const oldTheme = typeof data.theme === 'string' ? data.theme : 'minimalist'
+      const hexValues = THEME_TO_HEX_MAP[oldTheme] || THEME_TO_HEX_MAP.minimalist
+
+      const migrated = {
+        ...data,
+        pageTheme: {
+          ...DEFAULT_PAGE_THEME,
+          ...hexValues,
+        },
+      }
+
+      delete migrated.theme
+      return migrated
+    }
+  },
+  {
+    version: 5,
+    migrate: (data) => {
+      if (!data) return data
+      const migratedLinks = Array.isArray(data.links)
+        ? data.links.map((link: any) => {
+            if (link.type === 'button' && link.style) {
+              const newStyle = { ...link.style }
+              delete newStyle.shape // Remove explicit shape override to inherit theme shape
+              return { ...link, style: newStyle }
+            }
+            return link
+          })
+        : []
+      return {
+        ...data,
+        links: migratedLinks,
       }
     }
   }

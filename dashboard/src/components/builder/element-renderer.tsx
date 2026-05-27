@@ -33,12 +33,16 @@ function ButtonRenderer({ button }: { button: ButtonElement }) {
 
   // Resolve config options, falling back to defaults
   const alignment = style?.align || 'left'
+  const hasIndividualShape = !!style?.shape
   const shape = style?.shape || 'rounded'
   const variant = style?.variant || 'fill'
   const animation = style?.animation || 'none'
 
   const alignmentClass = BUTTON_ALIGNMENTS[alignment]?.class || BUTTON_ALIGNMENTS.left.class
-  const shapeClass = BUTTON_SHAPES[shape]?.class || BUTTON_SHAPES.rounded.class
+  // Only use Tailwind shape class if the button has an individual shape override
+  const shapeClass = hasIndividualShape
+    ? (BUTTON_SHAPES[shape]?.class || BUTTON_SHAPES.rounded.class)
+    : '' // Will use --phone-btn-radius CSS variable instead
   const animationClass = BUTTON_ANIMATIONS[animation]?.class || BUTTON_ANIMATIONS.none.class
   const variantStyles = BUTTON_VARIANTS[variant]?.style || BUTTON_VARIANTS.fill.style
 
@@ -46,6 +50,11 @@ function ButtonRenderer({ button }: { button: ButtonElement }) {
   const backdropBlurStyle = variant === 'glass' 
     ? { backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' } 
     : {}
+
+  // Use global theme radius if no per-element shape is set
+  const shapeStyle = hasIndividualShape
+    ? {}
+    : { borderRadius: 'var(--phone-btn-radius, 8px)' }
 
   return (
     <a
@@ -56,6 +65,7 @@ function ButtonRenderer({ button }: { button: ButtonElement }) {
       style={{
         ...variantStyles,
         ...backdropBlurStyle,
+        ...shapeStyle,
       }}
     >
       {/* Label */}

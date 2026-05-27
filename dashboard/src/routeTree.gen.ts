@@ -14,6 +14,8 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as BuilderNewRouteImport } from './routes/builder-new'
 import { Route as BuilderRouteImport } from './routes/builder'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as BuilderNewIndexRouteImport } from './routes/builder-new/index'
+import { Route as BuilderNewAppearanceRouteImport } from './routes/builder-new/appearance'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -40,41 +42,77 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BuilderNewIndexRoute = BuilderNewIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => BuilderNewRoute,
+} as any)
+const BuilderNewAppearanceRoute = BuilderNewAppearanceRouteImport.update({
+  id: '/appearance',
+  path: '/appearance',
+  getParentRoute: () => BuilderNewRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/builder': typeof BuilderRoute
-  '/builder-new': typeof BuilderNewRoute
+  '/builder-new': typeof BuilderNewRouteWithChildren
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/builder-new/appearance': typeof BuilderNewAppearanceRoute
+  '/builder-new/': typeof BuilderNewIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/builder': typeof BuilderRoute
-  '/builder-new': typeof BuilderNewRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/builder-new/appearance': typeof BuilderNewAppearanceRoute
+  '/builder-new': typeof BuilderNewIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/builder': typeof BuilderRoute
-  '/builder-new': typeof BuilderNewRoute
+  '/builder-new': typeof BuilderNewRouteWithChildren
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/builder-new/appearance': typeof BuilderNewAppearanceRoute
+  '/builder-new/': typeof BuilderNewIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/builder' | '/builder-new' | '/login' | '/signup'
+  fullPaths:
+    | '/'
+    | '/builder'
+    | '/builder-new'
+    | '/login'
+    | '/signup'
+    | '/builder-new/appearance'
+    | '/builder-new/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/builder' | '/builder-new' | '/login' | '/signup'
-  id: '__root__' | '/' | '/builder' | '/builder-new' | '/login' | '/signup'
+  to:
+    | '/'
+    | '/builder'
+    | '/login'
+    | '/signup'
+    | '/builder-new/appearance'
+    | '/builder-new'
+  id:
+    | '__root__'
+    | '/'
+    | '/builder'
+    | '/builder-new'
+    | '/login'
+    | '/signup'
+    | '/builder-new/appearance'
+    | '/builder-new/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BuilderRoute: typeof BuilderRoute
-  BuilderNewRoute: typeof BuilderNewRoute
+  BuilderNewRoute: typeof BuilderNewRouteWithChildren
   LoginRoute: typeof LoginRoute
   SignupRoute: typeof SignupRoute
 }
@@ -116,13 +154,41 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/builder-new/': {
+      id: '/builder-new/'
+      path: '/'
+      fullPath: '/builder-new/'
+      preLoaderRoute: typeof BuilderNewIndexRouteImport
+      parentRoute: typeof BuilderNewRoute
+    }
+    '/builder-new/appearance': {
+      id: '/builder-new/appearance'
+      path: '/appearance'
+      fullPath: '/builder-new/appearance'
+      preLoaderRoute: typeof BuilderNewAppearanceRouteImport
+      parentRoute: typeof BuilderNewRoute
+    }
   }
 }
+
+interface BuilderNewRouteChildren {
+  BuilderNewAppearanceRoute: typeof BuilderNewAppearanceRoute
+  BuilderNewIndexRoute: typeof BuilderNewIndexRoute
+}
+
+const BuilderNewRouteChildren: BuilderNewRouteChildren = {
+  BuilderNewAppearanceRoute: BuilderNewAppearanceRoute,
+  BuilderNewIndexRoute: BuilderNewIndexRoute,
+}
+
+const BuilderNewRouteWithChildren = BuilderNewRoute._addFileChildren(
+  BuilderNewRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BuilderRoute: BuilderRoute,
-  BuilderNewRoute: BuilderNewRoute,
+  BuilderNewRoute: BuilderNewRouteWithChildren,
   LoginRoute: LoginRoute,
   SignupRoute: SignupRoute,
 }

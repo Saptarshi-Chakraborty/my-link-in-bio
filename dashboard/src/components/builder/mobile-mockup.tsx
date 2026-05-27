@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useEffect } from 'react'
 import { Share2 } from 'lucide-react'
 import { GithubIcon, LinkedinIcon, FacebookIcon, InstagramIcon, XIcon, SnapchatIcon, ThreadsIcon, MastodonIcon } from './icons'
 import { ElementRenderer } from './element-renderer'
@@ -29,7 +29,7 @@ export function MobileMockup() {
   const socials = useBuilderStore((state) => state.socials)
   const socialsPosition = useBuilderStore((state) => state.socialsPosition)
   const links = useBuilderStore((state) => state.links)
-  const selectedTheme = useBuilderStore((state) => state.theme)
+  const pageTheme = useBuilderStore((state) => state.pageTheme)
 
   const activeLinks = useMemo(
     () => links.filter((item) => item.active),
@@ -40,6 +40,44 @@ export function MobileMockup() {
     const preset = avatarPresets.find(p => p.id === profileAvatar)
     return preset ? preset.css : 'bg-zinc-800'
   }, [profileAvatar])
+
+  // Compute CSS custom properties from pageTheme HEX values
+  const phoneStyles = useMemo(() => {
+    const { bgColor, textColor, btnBgColor, btnTextColor, btnShape, fontFamily } = pageTheme
+    const btnRadius = btnShape === 'rectangle' ? '0px' : btnShape === 'rounded' ? '8px' : '9999px'
+
+    return {
+      '--phone-bg': bgColor,
+      '--phone-text': textColor,
+      '--phone-text-muted': textColor, // opacity handled via CSS
+      '--phone-btn-bg': btnBgColor,
+      '--phone-btn-text': btnTextColor,
+      '--phone-btn-border': btnBgColor,
+      '--phone-btn-radius': btnRadius,
+      '--phone-font': fontFamily,
+      '--phone-scrollbar-thumb': `${textColor}40`,
+      '--phone-scrollbar-thumb-hover': `${textColor}73`,
+      background: bgColor,
+      color: textColor,
+      fontFamily: fontFamily,
+    } as React.CSSProperties
+  }, [pageTheme])
+
+  // Dynamically load Google Font when fontFamily changes
+  useEffect(() => {
+    const font = pageTheme.fontFamily
+    if (!font) return
+    
+    const linkId = 'vibelink-dynamic-google-font'
+    let link = document.getElementById(linkId) as HTMLLinkElement | null
+    if (!link) {
+      link = document.createElement('link')
+      link.id = linkId
+      link.rel = 'stylesheet'
+      document.head.appendChild(link)
+    }
+    link.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(font)}:wght@400;500;600;700&display=swap`
+  }, [pageTheme.fontFamily])
 
   const hasActiveSocials = useMemo(() => socials.some(s => s.value && s.value.trim() !== ''), [socials])
 
@@ -107,8 +145,8 @@ export function MobileMockup() {
 
       {/* Inner Device Screen */}
       <div
-        className={`flex-1 min-h-0 rounded-[1.8rem] p-3 pt-6 flex flex-col items-center relative overflow-y-auto overflow-x-hidden phone-scrollbar theme-preview-${selectedTheme} transition-all duration-300`}
-        style={{ background: 'var(--phone-bg)', color: 'var(--phone-text)' }}
+        className="flex-1 min-h-0 rounded-[1.8rem] p-3 pt-6 flex flex-col items-center relative overflow-y-auto overflow-x-hidden phone-scrollbar transition-all duration-300"
+        style={phoneStyles}
       >
         {/* Phone Address Header */}
         <div className="w-full bg-black/10 backdrop-blur-md rounded-lg py-1 px-2 mb-4 flex items-center justify-between text-[8px] text-[var(--phone-text)] font-semibold border border-white/5">

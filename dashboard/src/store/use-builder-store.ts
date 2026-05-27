@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import type { PageElement, SocialsState } from '@/components/builder/types'
+import type { PageElement, SocialsState, PageTheme } from '@/components/builder/types'
 import type { ProfilePageData } from '@/lib/schemas/profile'
 import { profileStorage } from '@/lib/storage'
 
@@ -13,7 +13,6 @@ const defaultLinks: PageElement[] = [
     active: true,
     style: {
       align: 'center',
-      shape: 'pill',
       variant: 'fill'
     }
   },
@@ -26,7 +25,6 @@ const defaultLinks: PageElement[] = [
     active: true,
     style: {
       align: 'center',
-      shape: 'rounded',
       variant: 'outline'
     }
   },
@@ -73,9 +71,18 @@ const defaultLinks: PageElement[] = [
   }
 ]
 
+const DEFAULT_PAGE_THEME: PageTheme = {
+  bgColor: '#ffffff',
+  textColor: '#18181b',
+  btnBgColor: '#18181b',
+  btnTextColor: '#ffffff',
+  btnShape: 'rounded',
+  fontFamily: 'Inter',
+}
+
 const getInitialData = (): ProfilePageData => {
   return profileStorage.load() || {
-    version: 3,
+    version: 5,
     profileName: 'Saptarshi Chakraborty',
     profileBio: 'Designer & Developer',
     profileAvatar: 'neon',
@@ -87,7 +94,7 @@ const getInitialData = (): ProfilePageData => {
     ],
     socialsPosition: 'top',
     links: defaultLinks,
-    theme: 'minimalist'
+    pageTheme: DEFAULT_PAGE_THEME,
   }
 }
 
@@ -100,7 +107,7 @@ interface BuilderState {
   socials: SocialsState
   socialsPosition: 'top' | 'bottom'
   links: PageElement[]
-  theme: string
+  pageTheme: PageTheme
 
   setProfileName: (name: string) => void
   setProfileBio: (bio: string) => void
@@ -123,7 +130,8 @@ interface BuilderState {
   updateLink: (id: string, key: string, value: any) => void
   toggleLink: (id: string) => void
   reorderLinks: (fromIndex: number, toIndex: number) => void
-  setTheme: (theme: string) => void
+  setPageTheme: (theme: PageTheme) => void
+  updatePageTheme: <K extends keyof PageTheme>(key: K, value: PageTheme[K]) => void
 }
 
 export const useBuilderStore = create<BuilderState>((set) => ({
@@ -133,7 +141,7 @@ export const useBuilderStore = create<BuilderState>((set) => ({
   socials: initialData.socials,
   socialsPosition: initialData.socialsPosition || 'top',
   links: initialData.links,
-  theme: initialData.theme,
+  pageTheme: initialData.pageTheme,
 
   setProfileName: (name) => set({ profileName: name }),
   setProfileBio: (bio) => set({ profileBio: bio }),
@@ -189,7 +197,6 @@ export const useBuilderStore = create<BuilderState>((set) => ({
           active: true,
           style: {
             align: 'center',
-            shape: 'rounded',
             variant: 'fill',
           },
         }
@@ -270,5 +277,9 @@ export const useBuilderStore = create<BuilderState>((set) => ({
       updated.splice(toIndex, 0, moved)
       return { links: updated }
     }),
-  setTheme: (theme) => set({ theme }),
+  setPageTheme: (pageTheme) => set({ pageTheme }),
+  updatePageTheme: (key, value) =>
+    set((state) => ({
+      pageTheme: { ...state.pageTheme, [key]: value },
+    })),
 }))

@@ -279,74 +279,11 @@ body {
 }
 
 /* ---------------------------------------------------- */
-/* Live Preview Mobile Mockup Custom Themes             */
+/* Old theme-preview-* classes removed (v4)             */
+/* Phone mockup now uses inline CSS custom properties   */
+/* from the Zustand store's pageTheme HEX values.       */
 /* ---------------------------------------------------- */
 
-.theme-preview-neon {
-  --phone-bg: linear-gradient(135deg, #090d16 0%, #170d2b 100%);
-  --phone-text: #f4f4f5;
-  --phone-text-muted: #a1a1aa;
-  --phone-btn-bg: rgba(255, 255, 255, 0.05);
-  --phone-btn-border: rgba(99, 102, 241, 0.4);
-  --phone-btn-text: #f4f4f5;
-  --phone-btn-hover-bg: rgba(99, 102, 241, 0.2);
-  --phone-shadow: 0 0 20px rgba(99, 102, 241, 0.35);
-  --phone-scrollbar-thumb: rgba(244, 244, 245, 0.25);
-  --phone-scrollbar-thumb-hover: rgba(244, 244, 245, 0.45);
-}
-
-.theme-preview-warm {
-  --phone-bg: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-  --phone-text: #78350f;
-  --phone-text-muted: #b45309;
-  --phone-btn-bg: #ffffff;
-  --phone-btn-border: #f59e0b;
-  --phone-btn-text: #78350f;
-  --phone-btn-hover-bg: #fffbeb;
-  --phone-shadow: 0 4px 6px -1px rgba(180, 83, 9, 0.1);
-  --phone-scrollbar-thumb: rgba(120, 53, 15, 0.25);
-  --phone-scrollbar-thumb-hover: rgba(120, 53, 15, 0.45);
-}
-
-.theme-preview-vivid {
-  --phone-bg: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
-  --phone-text: #ffffff;
-  --phone-text-muted: rgba(255, 255, 255, 0.7);
-  --phone-btn-bg: rgba(255, 255, 255, 0.15);
-  --phone-btn-border: rgba(255, 255, 255, 0.3);
-  --phone-btn-text: #ffffff;
-  --phone-btn-hover-bg: rgba(255, 255, 255, 0.25);
-  --phone-shadow: none;
-  --phone-scrollbar-thumb: rgba(255, 255, 255, 0.25);
-  --phone-scrollbar-thumb-hover: rgba(255, 255, 255, 0.45);
-}
-
-.theme-preview-minimalist {
-  --phone-bg: #ffffff;
-  --phone-text: #18181b;
-  --phone-text-muted: #71717a;
-  --phone-btn-bg: #18181b;
-  --phone-btn-border: #18181b;
-  --phone-btn-text: #ffffff;
-  --phone-btn-hover-bg: #27272a;
-  --phone-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  --phone-scrollbar-thumb: rgba(24, 24, 27, 0.2);
-  --phone-scrollbar-thumb-hover: rgba(24, 24, 27, 0.35);
-}
-
-.theme-preview-glass {
-  --phone-bg: radial-gradient(circle at top left, #3b82f6, #8b5cf6);
-  --phone-text: #ffffff;
-  --phone-text-muted: rgba(255, 255, 255, 0.75);
-  --phone-btn-bg: rgba(255, 255, 255, 0.12);
-  --phone-btn-border: rgba(255, 255, 255, 0.2);
-  --phone-btn-text: #ffffff;
-  --phone-btn-hover-bg: rgba(255, 255, 255, 0.22);
-  --phone-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.25);
-  --phone-backdrop-blur: blur(8px);
-  --phone-scrollbar-thumb: rgba(255, 255, 255, 0.25);
-  --phone-scrollbar-thumb-hover: rgba(255, 255, 255, 0.45);
-}
 
 /* Hide scrollbar for Chrome, Safari, Opera and Firefox */
 .no-scrollbar::-webkit-scrollbar {

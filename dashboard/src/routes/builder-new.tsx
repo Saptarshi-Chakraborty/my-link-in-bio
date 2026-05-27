@@ -1,5 +1,5 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { Copy, ExternalLink, Phone } from 'lucide-react'
+import { createFileRoute, Outlet, Link } from '@tanstack/react-router'
+import { Copy, ExternalLink, Phone, Palette, LinkIcon } from 'lucide-react'
 import { useEffect } from 'react'
 
 import { SidebarProvider, SidebarInset, SidebarTrigger } from '@/components/ui/sidebar'
@@ -21,12 +21,9 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet'
 import { TooltipProvider } from '@/components/ui/tooltip'
-import { ScrollArea } from '@/components/ui/scroll-area'
 
 // Extracted Modular Components
 import { MobileMockup } from '@/components/builder/mobile-mockup'
-import { ProfileHeaderCard } from '@/components/builder/profile-header-card'
-import { CustomLinksCard } from '@/components/builder/custom-links-card'
 
 // Validation Schema & Storage Imports
 import { profileStorage } from '@/lib/storage'
@@ -34,30 +31,31 @@ import type { ProfilePageData } from '@/lib/schemas/profile'
 import { useBuilderStore } from '@/store/use-builder-store'
 
 export const Route = createFileRoute('/builder-new')({
-  component: BuilderPage,
+  component: BuilderLayout,
 })
 
-function BuilderPage() {
-  // Retrieve Zustand states
+function BuilderLayout() {
+  // Retrieve Zustand states for auto-save
   const profileName = useBuilderStore((state) => state.profileName)
   const profileBio = useBuilderStore((state) => state.profileBio)
   const profileAvatar = useBuilderStore((state) => state.profileAvatar)
   const socials = useBuilderStore((state) => state.socials)
   const socialsPosition = useBuilderStore((state) => state.socialsPosition)
   const links = useBuilderStore((state) => state.links)
-  const theme = useBuilderStore((state) => state.theme)
+  const pageTheme = useBuilderStore((state) => state.pageTheme)
+
 
   // Debounced auto-save effect
   useEffect(() => {
     const dataToSave: ProfilePageData = {
-      version: 3,
+      version: 5,
       profileName,
       profileBio,
       profileAvatar,
       socials,
       socialsPosition,
       links,
-      theme,
+      pageTheme,
     }
 
     const timer = setTimeout(() => {
@@ -74,7 +72,7 @@ function BuilderPage() {
       clearTimeout(timer)
       window.removeEventListener('beforeunload', handleUnload)
     }
-  }, [profileName, profileBio, profileAvatar, socials, socialsPosition, links, theme])
+  }, [profileName, profileBio, profileAvatar, socials, socialsPosition, links, pageTheme])
 
 
   return (
@@ -155,7 +153,7 @@ function BuilderPage() {
           {/* Main workspace layout */}
           <div className="flex flex-1 flex-row overflow-hidden">
             {/* Scrollable Editor Container */}
-            <ScrollArea className="flex-1 w-full">
+            <div className="flex-1 w-full overflow-y-auto">
               <div className="max-w-4xl mx-auto px-4 py-8 md:px-8 flex flex-col gap-6">
                 
                 {/* Page Title */}
@@ -164,13 +162,41 @@ function BuilderPage() {
                   <p className="text-sm text-muted-foreground">Design your public page, add custom links, and check your performance.</p>
                 </div>
 
-                {/* Card 1: Profile Header & Socials (Read-only + Slide Edit) */}
-                <ProfileHeaderCard />
+                {/* Sub-Navigation Tabs */}
+                <nav className="flex items-center gap-1 p-1 bg-muted/60 rounded-xl border border-border w-fit">
+                  <Link
+                    to="/builder-new"
+                    activeOptions={{ exact: true }}
+                    className="flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all duration-200"
+                    activeProps={{
+                      className: 'flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all duration-200 bg-background text-foreground shadow-sm border border-border',
+                    }}
+                    inactiveProps={{
+                      className: 'flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all duration-200 text-muted-foreground hover:text-foreground hover:bg-background/50',
+                    }}
+                  >
+                    <LinkIcon size={14} />
+                    Links
+                  </Link>
+                  <Link
+                    to="/builder-new/appearance"
+                    className="flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all duration-200"
+                    activeProps={{
+                      className: 'flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all duration-200 bg-background text-foreground shadow-sm border border-border',
+                    }}
+                    inactiveProps={{
+                      className: 'flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all duration-200 text-muted-foreground hover:text-foreground hover:bg-background/50',
+                    }}
+                  >
+                    <Palette size={14} />
+                    Appearance
+                  </Link>
+                </nav>
 
-                {/* Card 3: Manage Links */}
-                <CustomLinksCard />
+                {/* Child Route Content */}
+                <Outlet />
               </div>
-            </ScrollArea>
+            </div>
 
             {/* Desktop Right Preview Panel (Sticky) */}
             <div className="hidden xl:flex w-[380px] border-l border-border bg-background/50 flex-col items-center justify-center p-6 shrink-0 h-[calc(100vh-4rem)] sticky top-16">

@@ -1,5 +1,5 @@
 import { createFileRoute, Outlet, Link } from '@tanstack/react-router'
-import { Copy, ExternalLink, Phone, Palette, LinkIcon } from 'lucide-react'
+import { Copy, ExternalLink, Eye, Palette, LinkIcon } from 'lucide-react'
 import { useEffect } from 'react'
 
 import { SidebarProvider, SidebarInset, SidebarTrigger } from '@/components/ui/sidebar'
@@ -134,7 +134,7 @@ function BuilderLayout() {
               <Sheet>
                 <SheetTrigger asChild>
                   <Button variant="outline" size="icon" className="xl:hidden h-8 w-8">
-                    <Phone size={14} />
+                    <Eye size={14} />
                     <span className="sr-only">Toggle Mobile Preview</span>
                   </Button>
                 </SheetTrigger>

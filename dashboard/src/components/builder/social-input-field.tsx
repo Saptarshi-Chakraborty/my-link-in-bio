@@ -14,8 +14,8 @@ interface SocialInputFieldProps {
 
 export function SocialInputField({ id, label, icon, value, onChange, onRemove }: SocialInputFieldProps) {
   return (
-    <div className="flex items-center gap-3 rounded-xl border bg-zinc-50 p-2.5 text-xs">
-      <div className="flex items-center gap-2 text-zinc-700 font-semibold shrink-0">
+    <div className="flex items-center gap-3 rounded-xl border border-zinc-200 dark:border-zinc-800/80 bg-zinc-50 dark:bg-zinc-900/30 p-2.5 text-xs">
+      <div className="flex items-center gap-2 text-zinc-700 dark:text-zinc-300 font-semibold shrink-0">
         {icon}
         <span className="hidden sm:inline">{label}</span>
       </div>
@@ -25,7 +25,7 @@ export function SocialInputField({ id, label, icon, value, onChange, onRemove }:
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder="Username / Handle"
-        className="flex-1 bg-transparent text-zinc-800 border-0 border-b border-transparent focus-visible:border-[var(--brand)] px-1 leading-none text-xs min-w-0 h-6 shadow-none rounded-none focus-visible:ring-0"
+        className="flex-1 bg-transparent text-zinc-800 dark:text-zinc-100 placeholder:text-zinc-400 dark:placeholder:text-zinc-500 border-0 border-b border-transparent focus-visible:border-[var(--brand)] px-1 leading-none text-xs min-w-0 h-6 shadow-none rounded-none focus-visible:ring-0"
       />
       <Button
         type="button"
@@ -33,7 +33,7 @@ export function SocialInputField({ id, label, icon, value, onChange, onRemove }:
         size="icon"
         onClick={onRemove}
         aria-label={`Remove ${label}`}
-        className="h-8 w-8 text-zinc-400 hover:text-red-500 hover:bg-red-50 rounded-lg active:scale-95 transition-all"
+        className="h-8 w-8 text-zinc-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/20 rounded-lg active:scale-95 transition-all"
       >
         <Trash2 className="w-4 h-4" />
       </Button>

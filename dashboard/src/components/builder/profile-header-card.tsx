@@ -1,5 +1,5 @@
 import { useState, useMemo, useRef } from 'react'
-import { Settings2, User, Share2, Plus, GripHorizontal, SlidersHorizontal } from 'lucide-react'
+import { Settings2, User, Share2, Plus, GripVertical, SlidersHorizontal, MoreHorizontal, Info } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -30,10 +30,17 @@ import {
   DialogDescription,
   DialogFooter,
 } from '@/components/ui/dialog'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 import { DragDropProvider, DragOverlay } from '@dnd-kit/react'
 import { isSortable, useSortable } from '@dnd-kit/react/sortable'
 
 import { SocialInputField } from './social-input-field'
+import { ButtonGroup } from '@/components/ui/button-group'
 import { GithubIcon, LinkedinIcon, FacebookIcon, InstagramIcon, XIcon, SnapchatIcon, ThreadsIcon, MastodonIcon } from './icons'
 import { useBuilderStore } from '@/store/use-builder-store'
 import type { SocialsState } from './types'
@@ -64,31 +71,31 @@ function SortableSocialItem({ platformId, label, icon, index, isOverlay = false 
     <div
       ref={ref}
       style={{
-        transform: isDragging ? 'scale(1.05)' : undefined,
+        transform: isDragging ? 'scale(1.02)' : undefined,
         opacity: isDragging ? 0.6 : 1,
       }}
-      className={`flex flex-col items-center justify-center border border-border p-4 rounded-xl shadow-xs min-w-[90px] select-none bg-card transition-all ${
+      className={`flex flex-row items-center gap-3 border rounded-xl shadow-xs w-full select-none transition-all ${
         isOverlay 
-          ? 'shadow-xl ring-2 ring-[var(--brand)]/10 scale-[1.05] pointer-events-none'
+          ? 'shadow-xl ring-2 ring-[var(--brand)]/20 scale-[1.02] pointer-events-none bg-zinc-50 dark:bg-zinc-900/90 border-[var(--brand)]/50'
           : isDragging
-          ? 'opacity-40 border-dashed bg-muted/40'
-          : 'hover:border-border hover:bg-muted/60'
-      }`}
+          ? 'opacity-40 border-dashed border-zinc-300 dark:border-zinc-800 bg-zinc-100/50 dark:bg-zinc-900/10'
+          : 'bg-white dark:bg-zinc-900/30 border-zinc-200 dark:border-zinc-800/80 hover:bg-zinc-50 dark:hover:bg-zinc-900/50 hover:border-zinc-300 dark:hover:border-zinc-700/80'
+      } p-3`}
     >
       {/* Grab Handle */}
       <div
         ref={handleRef}
-        className="cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground mb-1.5 p-1 rounded transition-colors"
+        className="cursor-grab active:cursor-grabbing text-zinc-400 dark:text-zinc-500 hover:text-zinc-850 dark:hover:text-zinc-200 p-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800/50 transition-colors shrink-0"
       >
-        <GripHorizontal size={14} />
+        <GripVertical size={16} />
       </div>
       
-      <div className="p-2 rounded-lg bg-muted/50 border border-border text-muted-foreground mb-1 shrink-0">
+      <div className="p-2 rounded-lg bg-zinc-100 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-800/80 text-zinc-650 dark:text-zinc-400 shrink-0">
         {icon}
       </div>
       
       {/* Label */}
-      <span className="text-[10px] font-bold text-foreground">{label}</span>
+      <span className="text-xs font-bold text-zinc-800 dark:text-zinc-250 flex-1">{label}</span>
     </div>
   )
 }
@@ -461,54 +468,102 @@ export function ProfileHeaderCard() {
 
               {/* Section 2: Social Links */}
               <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-xs font-bold text-muted-foreground uppercase tracking-wider">
-                    <Share2 className="w-3.5 h-3.5" />
-                    <span>Social Accounts</span>
+                <div className="flex flex-row items-center justify-between gap-3 bg-zinc-50 dark:bg-zinc-900/30 p-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800/80">
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <Share2 className="w-3.5 h-3.5 text-[var(--brand)]" />
+                    <span className="text-[11px] font-bold text-zinc-900 dark:text-zinc-50 uppercase tracking-wider">
+                      Social Accounts
+                    </span>
+                    
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <button
+                            type="button"
+                            className="text-zinc-400 hover:text-zinc-650 dark:text-zinc-500 dark:hover:text-zinc-300 transition-colors p-0.5 rounded cursor-pointer"
+                          >
+                            <Info className="w-3.5 h-3.5" />
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent className="bg-zinc-900 dark:bg-zinc-950 text-white dark:text-zinc-200 border border-zinc-800 p-2 text-[10px] rounded-lg max-w-xs shadow-xl">
+                          Manage, customize, and drag-and-drop to reorder your profiles.
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   </div>
 
-                  <div className="flex items-center gap-2">
-                    {/* Rearrange button - only if > 1 active social profiles are linked */}
-                    {activePlatforms.length > 1 && (
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setIsRearrangeOpen(true)}
-                        className="h-7 px-2 text-[10px] font-bold text-foreground hover:bg-muted border border-border rounded-lg flex items-center gap-1 cursor-pointer"
-                      >
-                        <SlidersHorizontal className="w-3 h-3 text-muted-foreground" /> Rearrange
-                      </Button>
-                    )}
-
-                    {/* Add Social Account Dropdown Trigger */}
-                    {inactivePlatforms.length > 0 && (
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
+                  {/* Dual Action Buttons Row */}
+                  {(activePlatforms.length > 1 || inactivePlatforms.length > 0) && (
+                    <div className="shrink-0">
+                      {inactivePlatforms.length > 0 ? (
+                        <ButtonGroup className="flex">
+                          {/* Main Button: Add Account Dropdown */}
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                className="h-7 text-[11px] font-bold text-[var(--brand)] hover:bg-[var(--brand)]/5 border border-zinc-200 dark:border-zinc-800 flex items-center justify-center gap-1 cursor-pointer active:scale-95 transition-all"
+                              >
+                                <Plus className="w-3 h-3" /> Add
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="w-48 bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800">
+                              {inactivePlatforms.map((platform) => (
+                                <DropdownMenuItem
+                                  key={platform.id}
+                                  onClick={() => handleAddSocial(platform.id)}
+                                  className="flex items-center gap-2 text-xs cursor-pointer hover:bg-zinc-100 dark:hover:bg-zinc-900 py-2 px-3 rounded-lg"
+                                >
+                                  {platform.icon}
+                                  {platform.label}
+                                </DropdownMenuItem>
+                              ))}
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+ 
+                          {/* Three-dots menu for Rearrange */}
+                          {activePlatforms.length > 1 && (
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  size="sm"
+                                  className="h-7 px-2 shadow-sm border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800 active:scale-95 text-zinc-700 dark:text-zinc-350 bg-background shrink-0"
+                                >
+                                  <MoreHorizontal className="w-3.5 h-3.5" />
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end" className="w-40 bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800">
+                                <DropdownMenuItem
+                                  onClick={() => setIsRearrangeOpen(true)}
+                                  className="flex items-center gap-2 text-xs cursor-pointer hover:bg-zinc-100 dark:hover:bg-zinc-900 py-2 px-3 rounded-lg"
+                                >
+                                  <SlidersHorizontal className="w-3.5 h-3.5 text-zinc-500" />
+                                  <span>Rearrange Order</span>
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          )}
+                        </ButtonGroup>
+                      ) : (
+                        /* If no inactive platforms, just show Rearrange as a full button since there is no Add Account button to save space */
+                        activePlatforms.length > 1 && (
                           <Button
                             type="button"
-                            variant="ghost"
+                            variant="outline"
                             size="sm"
-                            className="h-7 px-2 text-[10px] font-bold text-[var(--brand)] hover:text-[var(--brand)] hover:bg-[var(--brand)]/5 rounded-lg border border-border border-dashed flex items-center gap-1 cursor-pointer"
+                            onClick={() => setIsRearrangeOpen(true)}
+                            className="h-7 text-[11px] font-bold text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 border border-zinc-200 dark:border-zinc-800 flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 transition-all"
                           >
-                            <Plus className="w-3 h-3" /> Add Account
+                            <SlidersHorizontal className="w-3.5 h-3.5 text-zinc-500" /> Rearrange
                           </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-48">
-                          {inactivePlatforms.map((platform) => (
-                            <DropdownMenuItem
-                              key={platform.id}
-                              onClick={() => handleAddSocial(platform.id)}
-                              className="flex items-center gap-2 text-xs cursor-pointer hover:bg-muted py-1.5 px-2.5 rounded-lg"
-                            >
-                              {platform.icon}
-                              {platform.label}
-                            </DropdownMenuItem>
-                          ))}
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    )}
-                  </div>
+                        )
+                      )}
+                    </div>
+                  )}
                 </div>
 
                 {/* Display Position Settings Card */}
@@ -592,11 +647,11 @@ export function ProfileHeaderCard() {
               Rearrange Social Icons
             </DialogTitle>
             <DialogDescription className="text-xs text-muted-foreground leading-normal">
-              Drag and drop your active social profiles horizontally (left to right) to rearrange their sequence.
+              Drag and drop your active social profiles vertically (up or down) to rearrange their sequence.
             </DialogDescription>
           </DialogHeader>
-
-          <div className="py-8 flex items-center justify-center min-h-[140px] bg-muted/50 rounded-xl border border-border my-4">
+ 
+          <div className="p-3 bg-zinc-50 dark:bg-zinc-900/10 rounded-xl border border-zinc-200 dark:border-zinc-800/80 my-4 w-full">
             <DragDropProvider
               onDragStart={(event) => {
                 setActiveDragId(event.operation.source?.id as string)
@@ -604,7 +659,7 @@ export function ProfileHeaderCard() {
               onDragEnd={(event) => {
                 setActiveDragId(null)
                 if (event.canceled) return
-
+ 
                 const { source } = event.operation
                 if (isSortable(source)) {
                   const { initialIndex, index } = source
@@ -614,7 +669,7 @@ export function ProfileHeaderCard() {
                 }
               }}
             >
-              <div className="flex flex-row gap-3 items-center justify-center flex-wrap px-4">
+              <div className="flex flex-col gap-2 w-full max-h-[300px] overflow-y-auto pr-1">
                 {activePlatforms.map((platform, index) => (
                   <SortableSocialItem
                     key={platform.id}
@@ -625,15 +680,15 @@ export function ProfileHeaderCard() {
                   />
                 ))}
               </div>
-
+ 
               <DragOverlay>
                 {activeDragId && activeDragItem ? (
                   <SortableSocialItem
                     platformId={activeDragItem.id}
                     label={activeDragItem.label}
                     icon={activeDragItem.icon}
-                    index={-1}
                     isOverlay
+                    index={-1}
                   />
                 ) : null}
               </DragOverlay>

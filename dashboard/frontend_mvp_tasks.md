@@ -124,9 +124,9 @@ Attack Linktree's paywalls by giving users dynamic HEX color pickers, fonts, and
 ## 5. Killer Feature: Direct WhatsApp Button
 Create an offline business lead generation block that generates WhatsApp chat redirects.
 
-- [ ] **5.1. Add WhatsApp Block Type to Element Types**
-  - [ ] In `src/components/builder/types.ts`, add `'whatsapp'` to `ElementType`.
-  - [ ] Extend the `PageElement` union type:
+- [x] **5.1. Add WhatsApp Block Type to Element Types**
+  - [x] In `src/components/builder/types.ts`, add `'whatsapp'` to `ElementType`.
+  - [x] Extend the `PageElement` union type:
     ```typescript
     export interface WhatsAppElement extends BaseElement {
       type: 'whatsapp';
@@ -135,15 +135,15 @@ Create an offline business lead generation block that generates WhatsApp chat re
       title: string;
     }
     ```
-- [ ] **5.2. Add WhatsApp Editor Interface**
-  - [ ] In `src/components/builder/link-editor-item.tsx`, add a renderer for type `'whatsapp'`:
-    - [ ] Text field for "Button Label" (default: "Chat on WhatsApp").
-    - [ ] Phone number field with validation helper.
-    - [ ] Pre-filled message textarea (e.g. "Hi, I'd like a quote!").
-- [ ] **5.3. Build WhatsApp Mockup Render**
-  - [ ] In `src/components/builder/element-renderer.tsx`, add support for rendering `'whatsapp'`:
-    - [ ] Renders a styled button with a WhatsApp brand icon (colored green `#25D366` or styled matching custom buttons).
-    - [ ] URL structure: `https://wa.me/{phone}?text={encodeURIComponent(message)}`.
+- [x] **5.2. Add WhatsApp Editor Interface**
+  - [x] In `src/components/builder/link-editor-item.tsx`, add a renderer for type `'whatsapp'`:
+    - [x] Text field for "Button Label" (default: "Chat on WhatsApp").
+    - [x] Phone number field with validation helper.
+    - [x] Pre-filled message textarea (e.g. "Hi, I'd like a quote!").
+- [x] **5.3. Build WhatsApp Mockup Render**
+  - [x] In `src/components/builder/element-renderer.tsx`, add support for rendering `'whatsapp'`:
+    - [x] Renders a styled button with a WhatsApp brand icon (colored green `#25D366` or styled matching custom buttons).
+    - [x] URL structure: `https://wa.me/{phone}?text={encodeURIComponent(message)}`.
 
 ---
 

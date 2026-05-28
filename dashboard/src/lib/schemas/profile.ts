@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 // 1. Element Types & Base Schema
-export const ElementTypeSchema = z.enum(['button', 'carousel', 'youtube'])
+export const ElementTypeSchema = z.enum(['button', 'carousel', 'youtube', 'whatsapp'])
 
 export const BaseElementSchema = z.object({
   id: z.string(),
@@ -58,11 +58,23 @@ export const YoutubeElementSchema = BaseElementSchema.extend({
   }).optional(),
 })
 
+// 4.5. WhatsApp Element Schema
+export const WhatsAppElementSchema = BaseElementSchema.extend({
+  type: z.literal('whatsapp'),
+  title: z.string().default('Chat on WhatsApp'),
+  phone: z.string().default(''),
+  message: z.string().default(''),
+  style: z.object({
+    useBrandColor: z.boolean().optional(),
+  }).optional(),
+})
+
 // 5. Page Element Union Schema
 export const PageElementSchema = z.discriminatedUnion('type', [
   ButtonElementSchema,
   CarouselElementSchema,
   YoutubeElementSchema,
+  WhatsAppElementSchema,
 ])
 
 // 6. Socials State Schema

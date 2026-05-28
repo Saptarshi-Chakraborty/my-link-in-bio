@@ -99,44 +99,25 @@ Add a specialized row block at the top or bottom of the profile rather than stan
 ## 4. Customization & Styling Engine
 Attack Linktree's paywalls by giving users dynamic HEX color pickers, fonts, and style options.
 
-- [ ] **4.1. Define Design State Variables**
-  - [ ] In `src/routes/builder-new.tsx`, add a custom styling state:
-    ```typescript
-    const [pageTheme, setPageTheme] = useState({
-      bgColor: '#ffffff',
-      textColor: '#18181b',
-      btnBgColor: '#18181b',
-      btnTextColor: '#ffffff',
-      btnShape: 'rounded', // 'rectangle' | 'rounded' | 'pill'
-      fontFamily: 'Inter',  // 'Inter' | 'Playfair Display' | 'Roboto' | 'Courier'
-    });
-    ```
-- [ ] **4.2. Create Design Customizer Card Component**
-  - [ ] Create `src/components/builder/design-customizer-card.tsx`:
-    - [ ] **HEX Pickers:** Render color picker fields (`<input type="color" />`) styled as sleek circles showing the color code next to them. Include color pickers for: Page Background, Text, Button Background, Button Text.
-    - [ ] **Button Style Selector:** A segmented picker for:
-      - [ ] Solid Rectangle (`border-radius: 0px`)
-      - [ ] Rounded Edges (`border-radius: 8px`)
-      - [ ] Pill Shape (`border-radius: 9999px`)
-    - [ ] **Font Picker:** A custom select dropdown showcasing available Google Fonts: Inter (Modern), Playfair Display (Elegant), Roboto (Clean), Courier (Tech).
-    - [ ] **Pre-made Themes:** Buttons to instantly apply preset themes:
-      - [ ] *Light Mode:* Bg `#ffffff`, Text `#18181b`, Button Bg `#18181b`, Button Text `#ffffff`
-      - [ ] *Dark Mode:* Bg `#121214`, Text `#f4f4f5`, Button Bg `#ffffff`, Button Text `#121214`
-      - [ ] *Neon:* Bg `#0f0c1b`, Text `#f4f4f5`, Button Bg `#6366f1`, Button Text `#ffffff`
-- [ ] **4.3. Implement Live Styling Application in Preview**
-  - [ ] Modify `src/components/builder/mobile-mockup.tsx` and `src/components/builder/element-renderer.tsx`:
-    - [ ] Use inline style injection or dynamic CSS custom properties:
-      ```typescript
-      style={{
-        '--phone-bg': pageTheme.bgColor,
-        '--phone-text': pageTheme.textColor,
-        '--phone-btn-bg': pageTheme.btnBgColor,
-        '--phone-btn-text': pageTheme.btnTextColor,
-        '--phone-btn-radius': pageTheme.btnShape === 'rectangle' ? '0px' : pageTheme.btnShape === 'rounded' ? '8px' : '9999px',
-        '--phone-font': pageTheme.fontFamily,
-      } as React.CSSProperties}
-      ```
-    - [ ] Dynamically load the Google Font by appending a `<link>` stylesheet inside the React component's `useEffect` when the font changes.
+- [x] **4.1. Define Design State Variables**
+  - [x] In `src/routes/builder-new.tsx`, add a custom styling state: (Implemented globally in Zustand store with v5 schema validation and schema migration)
+- [x] **4.2. Create Design Customizer Card Component**
+  - [x] Create `src/components/builder/design-customizer-card.tsx`:
+    - [x] **HEX Pickers:** Render color picker fields (`<input type="color" />`) styled as sleek circles showing the color code next to them. Include color pickers for: Page Background, Text, Button Background, Button Text.
+    - [x] **Button Style Selector:** A segmented picker for:
+      - [x] Solid Rectangle (`border-radius: 0px`)
+      - [x] Rounded Edges (`border-radius: 8px`)
+      - [x] Pill Shape (`border-radius: 9999px`)
+    - [x] **Font Picker:** A custom select dropdown showcasing available Google Fonts: Inter (Modern), Playfair Display (Elegant), Roboto (Clean), Courier (Tech).
+    - [x] **Pre-made Themes:** Buttons to instantly apply preset themes:
+      - [x] *Light Mode:* Bg `#ffffff`, Text `#18181b`, Button Bg `#18181b`, Button Text `#ffffff`
+      - [x] *Dark Mode:* Bg `#121214`, Text `#f4f4f5`, Button Bg `#ffffff`, Button Text `#121214`
+      - [x] *Neon:* Bg `#0f0c1b`, Text `#f4f4f5`, Button Bg `#6366f1`, Button Text `#ffffff`
+- [x] **4.3. Implement Live Styling Application in Preview**
+  - [x] Modify `src/components/builder/mobile-mockup.tsx` and `src/components/builder/element-renderer.tsx`:
+    - [x] Use inline style injection or dynamic CSS custom properties:
+    - [x] Dynamically load the Google Font by appending a `<link>` stylesheet inside the React component's `useEffect` when the font changes. (Refactored into a reusable `useGoogleFont` hook)
+
 
 ---
 

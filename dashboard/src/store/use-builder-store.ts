@@ -125,7 +125,7 @@ interface BuilderState {
     socials: SocialsState
     socialsPosition: 'top' | 'bottom'
   }) => void
-  addElement: (type: 'button' | 'carousel' | 'youtube') => void
+  addElement: (type: 'button' | 'carousel' | 'youtube' | 'whatsapp') => void
   deleteLink: (id: string) => void
   updateLink: (id: string, key: string, value: any) => void
   toggleLink: (id: string) => void
@@ -215,6 +215,18 @@ export const useBuilderStore = create<BuilderState>((set) => ({
             layout: 'card',
             showStats: true,
             showDescription: true
+          },
+        }
+      } else if (type === 'whatsapp') {
+        newElement = {
+          id: newId,
+          type: 'whatsapp',
+          title: 'Chat on WhatsApp',
+          phone: '',
+          message: "Hi, I'd like a quote!",
+          active: true,
+          style: {
+            useBrandColor: true,
           },
         }
       } else {

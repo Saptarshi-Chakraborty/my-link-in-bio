@@ -69,6 +69,10 @@ export function CustomLinksCard() {
                   <Plus />
                   <span>YouTube</span>
                 </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleAddElement('whatsapp')} className="cursor-pointer">
+                  <Plus />
+                  <span>WhatsApp Button</span>
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </ButtonGroup>

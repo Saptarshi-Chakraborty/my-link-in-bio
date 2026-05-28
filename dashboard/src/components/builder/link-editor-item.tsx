@@ -30,6 +30,7 @@ import {
 import { useSortable } from '@dnd-kit/react/sortable'
 import type { PageElement } from './types'
 import { useBuilderStore } from '@/store/use-builder-store'
+import { sanitizePhoneNumber } from '@/lib/utils'
 
 const PRESET_IMAGES = [
   { name: 'Gradient', url: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400' },
@@ -162,6 +163,8 @@ export function LinkEditorItem({
                 ? 'bg-blue-500/10 text-blue-500 border border-blue-500/20'
                 : item.type === 'youtube'
                 ? 'bg-red-500/10 text-red-500 border border-red-500/20'
+                : item.type === 'whatsapp'
+                ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20'
                 : 'bg-[var(--brand)]/10 text-[var(--brand)] border border-[var(--brand)]/20'
             }`}>
               {item.type}
@@ -185,6 +188,54 @@ export function LinkEditorItem({
                 className="w-full h-7 bg-transparent border-0 border-b border-transparent hover:border-border focus-visible:border-[var(--brand)] px-0 text-xs text-foreground font-medium focus-visible:ring-0 shadow-none rounded-none focus-visible:border-b animate-none"
                 placeholder="https://example.com"
               />
+            </div>
+          )}
+
+          {item.type === 'whatsapp' && (
+            <div className="space-y-1.5">
+              <Input
+                type="text"
+                value={item.title}
+                onChange={(e) => handleUpdateLink(item.id, 'title', e.target.value)}
+                className="w-full h-8 bg-transparent border-0 border-b border-transparent hover:border-border focus-visible:border-[var(--brand)] px-0 font-bold text-sm focus-visible:ring-0 shadow-none rounded-none focus-visible:border-b"
+                placeholder="Button Label (e.g. Chat on WhatsApp)"
+              />
+              <Input
+                type="text"
+                value={item.phone || ''}
+                onChange={(e) => handleUpdateLink(item.id, 'phone', e.target.value)}
+                className="w-full h-7 bg-transparent border-0 border-b border-transparent hover:border-border focus-visible:border-[var(--brand)] px-0 text-xs text-foreground font-medium focus-visible:ring-0 shadow-none rounded-none focus-visible:border-b animate-none"
+                placeholder="Phone Number (e.g. +1 555 123 4567)"
+              />
+
+              <div className="mt-2.5 p-3 rounded-xl bg-muted/30 border border-border/60 space-y-2.5">
+                <div className="flex flex-col gap-1">
+                  <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Pre-filled Chat Message</span>
+                  <Input
+                    type="text"
+                    value={item.message || ''}
+                    onChange={(e) => handleUpdateLink(item.id, 'message', e.target.value)}
+                    className="w-full h-7 bg-transparent border-0 border-b border-transparent hover:border-border focus-visible:border-[var(--brand)] px-0 text-xs text-foreground focus-visible:ring-0 shadow-none rounded-none focus-visible:border-b animate-none"
+                    placeholder="Hi! I'd like to get in touch."
+                  />
+                </div>
+                
+                <div className="text-[10px] text-muted-foreground pt-1 flex items-center justify-between border-t border-border/40">
+                  <span>Sanitized for WhatsApp:</span>
+                  {item.phone ? (
+                    <code className="bg-background px-1.5 py-0.5 rounded border border-border/50 font-mono text-[9px] text-[var(--brand)] font-bold">
+                      +{sanitizePhoneNumber(item.phone)}
+                    </code>
+                  ) : (
+                    <span className="text-amber-500 font-semibold">Missing phone number</span>
+                  )}
+                </div>
+                {item.phone && sanitizePhoneNumber(item.phone).length < 10 && (
+                  <p className="text-[9px] text-amber-500 font-semibold leading-normal mt-0.5">
+                    ⚠️ Include country code (e.g. 1 for US, 91 for India) without leading + or 0.
+                  </p>
+                )}
+              </div>
             </div>
           )}
 
@@ -499,7 +550,13 @@ export function LinkEditorItem({
                     size="icon" 
                     className="h-7 w-7 text-muted-foreground hover:text-foreground hover:bg-muted"
                     onClick={() => {
-                      const urlToCopy = item.type === 'youtube' ? item.videoUrl : item.type === 'carousel' ? '' : item.url
+                      const urlToCopy = item.type === 'youtube' 
+                        ? item.videoUrl 
+                        : item.type === 'carousel' 
+                        ? '' 
+                        : item.type === 'whatsapp'
+                        ? `https://wa.me/${sanitizePhoneNumber(item.phone)}?text=${encodeURIComponent(item.message)}`
+                        : item.url
                       if (urlToCopy) navigator.clipboard.writeText(urlToCopy)
                     }}
                   >
@@ -635,6 +692,36 @@ export function LinkEditorItem({
                         {variant === 'fill' ? 'Fill' : variant === 'outline' ? 'Out' : variant === 'soft' ? 'Soft' : 'Glas'}
                       </button>
                     ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {item.type === 'whatsapp' && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs animate-in fade-in slide-in-from-top-1 duration-200">
+                <div className="space-y-1.5">
+                  <label className="font-bold text-muted-foreground uppercase tracking-wider text-xs block">Button Color Style</label>
+                  <div className="flex border border-border rounded-lg p-0.5 bg-muted w-fit">
+                    {[
+                      { label: 'Brand Green', value: true },
+                      { label: 'Theme Match', value: false }
+                    ].map((opt) => {
+                      const isSelected = !!item.style?.useBrandColor === opt.value
+                      return (
+                        <button
+                          key={opt.label}
+                          type="button"
+                          className={`px-3 py-1 text-xs font-bold rounded-md transition ${
+                            isSelected
+                              ? 'bg-background shadow-xs text-[var(--brand)] font-bold'
+                              : 'text-muted-foreground hover:text-foreground'
+                          }`}
+                          onClick={() => handleUpdateLink(item.id, 'style.useBrandColor', opt.value)}
+                        >
+                          {opt.label}
+                        </button>
+                      )
+                    })}
                   </div>
                 </div>
               </div>

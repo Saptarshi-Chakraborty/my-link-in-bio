@@ -6,6 +6,7 @@ import {
   CarouselItemSchema,
   CarouselElementSchema,
   YoutubeElementSchema,
+  WhatsAppElementSchema,
   PageElementSchema,
   PageThemeSchema,
   SocialsStateSchema,
@@ -23,6 +24,7 @@ export type LinkItem = ButtonElement
 export type CarouselItem = z.infer<typeof CarouselItemSchema>
 export type CarouselElement = z.infer<typeof CarouselElementSchema>
 export type YoutubeElement = z.infer<typeof YoutubeElementSchema>
+export type WhatsAppElement = z.infer<typeof WhatsAppElementSchema>
 export type PageElement = z.infer<typeof PageElementSchema>
 export type PageTheme = z.infer<typeof PageThemeSchema>
 

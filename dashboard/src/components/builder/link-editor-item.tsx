@@ -66,51 +66,33 @@ export function LinkEditorItem({
           : 'bg-muted/30 opacity-80'
       }`}
     >
-      <div className="mb-3 flex items-start gap-3">
-        {/* Grab Handle */}
-        <div
-          ref={handleRef}
-          className="inline-flex h-8 items-center text-muted-foreground cursor-grab active:cursor-grabbing hover:text-foreground p-1 -m-1 rounded transition-colors"
-        >
-          <GripVertical size={16} />
-        </div>
-        
-        <div className="flex-1 min-w-0 space-y-2">
-          {/* Header Info (Element Type Badge) */}
-          <div className="flex items-center gap-1.5">
-            <span className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider ${
-              item.type === 'carousel' 
-                ? 'bg-blue-500/10 text-blue-500 border border-blue-500/20'
-                : item.type === 'youtube'
-                ? 'bg-red-500/10 text-red-500 border border-red-500/20'
-                : item.type === 'whatsapp'
-                ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20'
-                : 'bg-[var(--brand)]/10 text-[var(--brand)] border border-[var(--brand)]/20'
-            }`}>
-              {item.type}
-            </span>
+      {/* Block Header Bar */}
+      <div className="mb-3 flex items-center justify-between gap-3 pb-2 border-b border-border/40">
+        <div className="flex items-center gap-2">
+          {/* Grab Handle */}
+          <div
+            ref={handleRef}
+            className="inline-flex h-8 items-center text-muted-foreground cursor-grab active:cursor-grabbing hover:text-foreground p-1 -m-1 rounded transition-colors"
+          >
+            <GripVertical size={16} />
           </div>
-
-          {/* Render editor fields based on Element Type */}
-          {item.type === 'button' && (
-            <ButtonEditorFields item={item} onUpdate={handleUpdateLink} />
-          )}
-
-          {item.type === 'whatsapp' && (
-            <WhatsAppEditorFields item={item} onUpdate={handleUpdateLink} />
-          )}
-
-          {item.type === 'youtube' && (
-            <YoutubeEditorFields item={item} onUpdate={handleUpdateLink} />
-          )}
-
-          {item.type === 'carousel' && (
-            <CarouselEditorFields item={item} onUpdate={handleUpdateLink} />
-          )}
+          
+          {/* Header Info (Element Type Badge) */}
+          <span className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider ${
+            item.type === 'carousel' 
+              ? 'bg-blue-500/10 text-blue-500 border border-blue-500/20'
+              : item.type === 'youtube'
+              ? 'bg-red-500/10 text-red-500 border border-red-500/20'
+              : item.type === 'whatsapp'
+              ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20'
+              : 'bg-[var(--brand)]/10 text-[var(--brand)] border border-[var(--brand)]/20'
+          }`}>
+            {item.type}
+          </span>
         </div>
 
         {/* Switch Toggle (Active / Inactive) */}
-        <div className="flex items-center gap-2 h-8 ml-2">
+        <div className="flex items-center gap-2 h-8">
           <Switch
             checked={item.active}
             onCheckedChange={() => toggleLink(item.id)}
@@ -118,6 +100,26 @@ export function LinkEditorItem({
             className="data-[state=checked]:bg-emerald-500"
           />
         </div>
+      </div>
+
+      {/* Editor Fields (Full Width) */}
+      <div className="min-w-0 space-y-2 mb-3">
+        {/* Render editor fields based on Element Type */}
+        {item.type === 'button' && (
+          <ButtonEditorFields item={item} onUpdate={handleUpdateLink} />
+        )}
+
+        {item.type === 'whatsapp' && (
+          <WhatsAppEditorFields item={item} onUpdate={handleUpdateLink} />
+        )}
+
+        {item.type === 'youtube' && (
+          <YoutubeEditorFields item={item} onUpdate={handleUpdateLink} />
+        )}
+
+        {item.type === 'carousel' && (
+          <CarouselEditorFields item={item} onUpdate={handleUpdateLink} />
+        )}
       </div>
 
       {/* FOOTER TOOLBAR & SETTINGS FOR PREMIUM DESIGN */}
